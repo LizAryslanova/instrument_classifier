@@ -1,1 +1,55 @@
-Notes
+=================================================================
+
+Datasets for instruments:
+
+
+URMP:
+https://labsites.rochester.edu/air/projects/URMP.html
+    contains audio recordings of 13 different instruments
+    also has a lot of other data such as MIDI transcriptions and video
+
+NSynth:
+https://magenta.tensorflow.org/datasets/nsynth
+    has electronic, synthetic and acoustic musical instrument sounds
+    audio is grouped into families of instruments, which could be a target for classification
+
+
+Guitar, Drum, Violin, Piano:
+https://www.kaggle.com/datasets/soumendraprasad/musical-instruments-sound-dataset
+    - Guitar_Sound - 700 Sounds in Train Set
+    - Drum_Souund - 700 Sounds in Train Set
+    - Violin_Sound - 700 Sound in Train Set
+    - Piano_Sound - 528 Sound in Train Set
+
+=================================================================
+
+Recommended resourses:
+
+- Librosa is a python package useful for audio analysis: https://librosa.org/doc/latest/index.html
+    I use this library most for fourier transforms, it's very common to train audio models ograms rather than time domain audio
+    Check this out for some example usage
+
+- Pandas is a python package for tabular data analysis: https://pandas.pydata.org/
+
+- Matplotlib is a python package for graphing: https://matplotlib.org/
+
+- Google Colab is useful for training models if your local machine isn't very powerful: https://colab.google/
+    There are paid and free tiers, you can get GPU access even on free tiers
+    If you haven't used code notebooks before, you can find more info at https://jupyter.org/. I love notebooks for playing around with and visualizing data.
+
+=================================================================
+
+Articles:
+
+For the musical instrument classification problem you're looking to tackle, there are tons of resources online
+
+    - I found this article that treats audio spectrograms as images for sound classification: https://towardsdatascience.com/sound-classification-using-images-68d4770df426
+
+    - Heres another article about classifying audio using convolutional networks: https://towardsdatascience.com/cnns-for-audio-classification-6244954665ab
+
+    - Some academic articles on sound classification
+    https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=8922774
+    https://ieeexplore.ieee.org/ielaam/97/7837777/7829341-aam.pdf
+
+
+=================================================================
