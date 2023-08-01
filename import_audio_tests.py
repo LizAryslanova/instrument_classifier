@@ -52,22 +52,27 @@ import librosa.display
 
 
 
+kaggle_train_address = '/Users/cookie/dev/instrumant_classifier/audio_files/from_kaggle/Train_submission/Train_submission/'
 
 
+
+from librosa.effects import trim
 
 # =================================
 
 def create_spectrogram (file):
     spectrogram_path = '/Users/cookie/dev/instrumant_classifier/'
-    audio_path = '/Users/cookie/dev/instrumant_classifier/audio_for_testing_import/'
+    audio_path = kaggle_train_address
     print ('Processing ' + file)
 
 
     audio_file = audio_path + file + '.wav'
 
-    samples, sample_rate = librosa.load(audio_file, mono=False, sr=None, duration=5.0)
-    mono_samples = samples[0,]
+    samples, sample_rate = librosa.load(audio_file)
 
+    trimed_signal, _ = librosa.effects.trim(samples, top_db=15)
+
+    cut_signal = trimed_signal[0:int(20050*5)]
 
     fig = plt.figure(figsize=[1,1])
     ax = fig.add_subplot(111)
@@ -77,7 +82,7 @@ def create_spectrogram (file):
 
     filename = spectrogram_path + file + '.png'
 
-    D = librosa.stft(mono_samples)
+    D = librosa.stft(cut_signal)
     S_db = librosa.amplitude_to_db(abs(D), ref=np.max)
     librosa.display.specshow(S_db, x_axis='time', y_axis='log', sr=sample_rate)
 
@@ -89,7 +94,7 @@ def create_spectrogram (file):
 
 
 
-create_spectrogram ('1')
+create_spectrogram ('0_oliver-colbentson_bwv1006_mov3')
 
 # ============================================
 
