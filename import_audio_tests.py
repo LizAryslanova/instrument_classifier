@@ -72,7 +72,7 @@ def create_spectrogram (file):
 
     trimed_signal, _ = librosa.effects.trim(samples, top_db=15)
 
-    cut_signal = trimed_signal[0:int(20050*5)]
+    cut_signal = trimed_signal[0:int(20050*0.5)]
 
     fig = plt.figure(figsize=[1,1])
     ax = fig.add_subplot(111)
@@ -94,7 +94,7 @@ def create_spectrogram (file):
 
 
 
-create_spectrogram ('0_oliver-colbentson_bwv1006_mov3')
+create_spectrogram ('WaveDrum02_43HH (68)')
 
 # ============================================
 
