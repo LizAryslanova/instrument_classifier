@@ -35,8 +35,6 @@ def test_on_folder(address):
 
         if(file[-4:] == '.wav'):
 
-
-
             audio_file = audio_path + file
             samples, sample_rate = librosa.load(audio_file)
             trimed_signal, _ = librosa.effects.trim(samples, top_db=15)
