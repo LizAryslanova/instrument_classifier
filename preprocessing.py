@@ -20,14 +20,26 @@ def audio_to_spectrogram(folder_address, file, destination_address):
             - saves image destination_address with the same name as the original file (.png)
     '''
 
-    sr = 22050 # sample rate, used to cut 3 seconds
+
 
     if(file[-4:] == '.wav'):
 
         audio_file = folder_address + file
         samples, sample_rate = librosa.load(audio_file)
         trimed_signal, _ = librosa.effects.trim(samples, top_db=15)
-        cut_signal = trimed_signal[0:int(sr*3)]
+
+
+        sr = 22050 # sample rate, used to cut 3 seconds
+        seconds_to_cut = 3
+        cut_time = int(sr * seconds_to_cut)
+        cut_signal = trimed_signal[0:cut_time]
+
+        # padding with 0 for things shorter that 3 seconds
+        if (len(cut_signal) < cut_time):
+            cut_signal = np.pad(cut_signal, pad_width=(0, cut_time - len(cut_signal)))
+
+
+        # NB! normalizing the loudness
 
         fig = plt.figure(figsize=[1, 1])
         ax = fig.add_subplot(111)
@@ -64,9 +76,31 @@ def process_folder(folder_address, destination_address):
     ============================================
 """
 
+
+# kaggle set
+
 kaggle_train_address = '/Users/cookie/dev/instrumant_classifier/audio_files/from_kaggle/Train_submission/Train_submission/'
 
 kaggle_train_picture_address = '/Users/cookie/dev/instrumant_classifier/audio_files/from_kaggle/Train_spectrograms/'
 
 
 process_folder(kaggle_train_address, kaggle_train_picture_address)
+
+
+
+
+kaggle_test_address = '/Users/cookie/dev/instrumant_classifier/audio_files/from_kaggle/Test_submission/Test_submission/'
+
+kaggle_test_picture_address = '/Users/cookie/dev/instrumant_classifier/audio_files/from_kaggle/Test_spectrograms/'
+
+process_folder(kaggle_test_address, kaggle_test_picture_address)
+
+
+
+# Nsynth train set
+
+nsynth_train_address = '/Users/cookie/dev/instrumant_classifier/audio_files/nsynth/audio/'
+
+nsynth_train_picture_address = '/Users/cookie/dev/instrumant_classifier/audio_files/nsynth/Nsynth_train_spectrograms'
+
+process_folder(nsynth_train_address, nsynth_train_picture_address)

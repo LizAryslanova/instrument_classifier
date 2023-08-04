@@ -61,7 +61,7 @@ from librosa.effects import trim
 # =================================
 
 def create_spectrogram (file):
-    spectrogram_path = '/Users/cookie/dev/instrumant_classifier/'
+    spectrogram_path = '/Users/cookie/dev/instrumant_classifier/code_snippets/'
     audio_path = kaggle_train_address
     print ('Processing ' + file)
 
@@ -72,7 +72,22 @@ def create_spectrogram (file):
 
     trimed_signal, _ = librosa.effects.trim(samples, top_db=15)
 
-    cut_signal = trimed_signal[0:int(20050*0.5)]
+    print('LEN trimmed = ', len(trimed_signal))
+
+    seconds_to_cut = 3
+    sr = 20050
+    cut_time = int(sr * seconds_to_cut)
+    cut_signal = trimed_signal[0:cut_time]
+
+    print('LEN cut = ', len(cut_signal))
+    print('cut_time = ', cut_time)
+    print('shape = ', cut_signal.shape)
+    print('type = ', type(cut_signal))
+
+    if (len(cut_signal) < cut_time):
+        cut_signal = np.pad(cut_signal, pad_width=(0, cut_time - len(cut_signal)))
+
+
 
     fig = plt.figure(figsize=[1,1])
     ax = fig.add_subplot(111)
@@ -80,7 +95,7 @@ def create_spectrogram (file):
     ax.axes.get_yaxis().set_visible (False)
     ax.set_frame_on(False)
 
-    filename = spectrogram_path + file + '.png'
+    filename = spectrogram_path + '3 sec' + file + '.png'
 
     D = librosa.stft(cut_signal)
     S_db = librosa.amplitude_to_db(abs(D), ref=np.max)
