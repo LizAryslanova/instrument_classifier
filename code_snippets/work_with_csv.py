@@ -20,7 +20,7 @@ result = pd.DataFrame(df[ df['FileName'] == '2-E1-Minor 08' + '.wav' ], columns=
 
 print('this one: ', result)
 
-# reading allfiles from foder and asiigning them labels from csv
+# reading all files from foder and asigning them labels from csv
 
 def load_data(address):
 

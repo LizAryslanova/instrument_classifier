@@ -63,8 +63,11 @@ def process_folder(folder_address, destination_address):
         Takes in the address of a folder, converts all .wav files into spectrograms (cuts the silence, takes the first 3 seconds). Saves the spectrograms in destination_address with the same names as original .wav (but in .png)
     '''
 
+    count = 0
+
     for file in os.listdir(folder_address):
-        print ('Processing ' + file)
+        count += 1
+        print ('Processing: ' + str(count) + '   Name: ' + file)
         audio_to_spectrogram(folder_address, file, destination_address)
 
 
@@ -84,8 +87,7 @@ kaggle_train_address = '/Users/cookie/dev/instrumant_classifier/audio_files/from
 kaggle_train_picture_address = '/Users/cookie/dev/instrumant_classifier/audio_files/from_kaggle/Train_spectrograms/'
 
 
-process_folder(kaggle_train_address, kaggle_train_picture_address)
-
+# process_folder(kaggle_train_address, kaggle_train_picture_address)
 
 
 
@@ -93,14 +95,44 @@ kaggle_test_address = '/Users/cookie/dev/instrumant_classifier/audio_files/from_
 
 kaggle_test_picture_address = '/Users/cookie/dev/instrumant_classifier/audio_files/from_kaggle/Test_spectrograms/'
 
-process_folder(kaggle_test_address, kaggle_test_picture_address)
+# process_folder(kaggle_test_address, kaggle_test_picture_address)
 
 
 
 # Nsynth train set
 
-nsynth_train_address = '/Users/cookie/dev/instrumant_classifier/audio_files/nsynth/audio/'
+nsynth_train_address = '/Users/cookie/dev/instrumant_classifier/audio_files/nsynth/Training_audios/'
 
-nsynth_train_picture_address = '/Users/cookie/dev/instrumant_classifier/audio_files/nsynth/Nsynth_train_spectrograms'
+nsynth_train_picture_address = '/Users/cookie/dev/instrumant_classifier/audio_files/nsynth/Nsynth_train_spectrograms/'
 
-process_folder(nsynth_train_address, nsynth_train_picture_address)
+process_folder(nsynth_train_address + '1' + '/', nsynth_train_picture_address)
+# process_folder(nsynth_train_address + '/' + '2', nsynth_train_picture_address)
+# process_folder(nsynth_train_address + '/' + '3', nsynth_train_picture_address)
+# process_folder(nsynth_train_address + '/' + '4', nsynth_train_picture_address)
+# process_folder(nsynth_train_address + '/' + '5', nsynth_train_picture_address)
+# process_folder(nsynth_train_address + '/' + '6', nsynth_train_picture_address)
+# process_folder(nsynth_train_address + '/' + '7', nsynth_train_picture_address)
+# process_folder(nsynth_train_address + '/' + '8', nsynth_train_picture_address)
+# process_folder(nsynth_train_address + '/' + '9', nsynth_train_picture_address)
+# process_folder(nsynth_train_address + '/' + '10', nsynth_train_picture_address)
+# process_folder(nsynth_train_address + '/' + '11', nsynth_train_picture_address)
+# process_folder(nsynth_train_address + '/' + '12', nsynth_train_picture_address)
+# process_folder(nsynth_train_address + '/' + '13', nsynth_train_picture_address)
+# process_folder(nsynth_train_address + '/' + '14', nsynth_train_picture_address)
+# process_folder(nsynth_train_address + '/' + '15', nsynth_train_picture_address)
+# process_folder(nsynth_train_address + '/' + '16', nsynth_train_picture_address)
+# process_folder(nsynth_train_address + '/' + '17', nsynth_train_picture_address)
+# process_folder(nsynth_train_address + '/' + '18', nsynth_train_picture_address)
+# process_folder(nsynth_train_address + '/' + '19', nsynth_train_picture_address)
+# process_folder(nsynth_train_address + '/' + '20', nsynth_train_picture_address)
+# process_folder(nsynth_train_address + '/' + '21', nsynth_train_picture_address)
+# process_folder(nsynth_train_address + '/' + '22', nsynth_train_picture_address)
+# process_folder(nsynth_train_address + '/' + '23', nsynth_train_picture_address)
+# process_folder(nsynth_train_address + '/' + '24', nsynth_train_picture_address)
+# process_folder(nsynth_train_address + '/' + '25', nsynth_train_picture_address)
+# process_folder(nsynth_train_address + '/' + '26', nsynth_train_picture_address)
+# process_folder(nsynth_train_address + '/' + '27', nsynth_train_picture_address)
+# process_folder(nsynth_train_address + '/' + '28', nsynth_train_picture_address)
+# process_folder(nsynth_train_address + '/' + '29', nsynth_train_picture_address)
+# process_folder(nsynth_train_address + '/' + '30', nsynth_train_picture_address)
+# process_folder(nsynth_train_address + '/' + '31', nsynth_train_picture_address)
