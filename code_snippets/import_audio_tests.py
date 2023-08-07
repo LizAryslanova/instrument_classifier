@@ -95,14 +95,14 @@ def create_spectrogram (file):
     ax.axes.get_yaxis().set_visible (False)
     ax.set_frame_on(False)
 
-    filename = spectrogram_path + '3 sec' + file + '.png'
+    filename = spectrogram_path + 'test_image' + '.png'
 
     D = librosa.stft(cut_signal)
     S_db = librosa.amplitude_to_db(abs(D), ref=np.max)
     librosa.display.specshow(S_db, x_axis='time', y_axis='log', sr=sample_rate)
 
 
-    plt.savefig(filename, dpi=400, bbox_inches='tight', pad_inches=0)
+    plt.savefig(filename, dpi=400, bbox_inches='tight', pad_inches=0, transparent=False)
     plt.close('all')
 
 
