@@ -87,5 +87,3 @@ print(type(x))
             #  shape
 print(x.shape)
 
-
-print(x)
