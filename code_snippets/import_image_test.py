@@ -86,4 +86,3 @@ x = process_image_folder(kaggle_folder_address)
 print(type(x))
             #  shape
 print(x.shape)
-

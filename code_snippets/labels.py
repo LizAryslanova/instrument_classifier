@@ -4,6 +4,7 @@ import librosa
 import librosa.display
 from librosa.effects import trim
 import numpy as np
+import pandas as pd
 
 
 
@@ -55,3 +56,32 @@ nsynth_label_list()
     ======================================
 
 '''
+
+def get_label(file):
+
+    kaggle_csv_address = '/Users/cookie/dev/instrumant_classifier/audio_files/from_kaggle/Metadata_Train.csv'
+    df = pd.read_csv(kaggle_csv_address)
+    row_num = df[df['FileName'] == file[:-4] + '.wav'].index.to_numpy() # gets a row number of the entry (as a numpy array)
+
+    if row_num.shape == (1,):
+        print ('Processing ' + file)
+        label = df['Class'][row_num[0]]
+    else:
+        label = 'skip' # in case the fie is not in scv
+
+    return label
+
+
+
+
+
+kaggle_train_picture_address = '/Users/cookie/dev/instrumant_classifier/audio_files/from_kaggle/Train_spectrograms/'
+counter = 0
+
+for file in os.listdir(kaggle_train_picture_address):
+
+    if get_label(file) != 'skip':
+
+        counter += 1
+        print('Processing # = ' + str(counter) + '    ' + file)
+
