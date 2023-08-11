@@ -120,12 +120,9 @@ def process_image_folder(folder_address):
 
 
 
-
 kaggle_folder_address = '/Users/cookie/dev/instrumant_classifier/audio_files/from_kaggle/Train_spectrograms/'
 
-
 train_x, train_y = process_image_folder(kaggle_folder_address)
-
 
 
 print('Train x shape = ', train_x.shape)
