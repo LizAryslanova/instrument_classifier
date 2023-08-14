@@ -11,9 +11,23 @@ import pandas as pd
 
 
 
+'''
+
+    =================================================================
+    =================================================================
+
+        Currently Im loading everything into a numpy array. Check if pytorch/tensor actually work with numpy or do they need an image with 3 channels. In that case - rewrite a thing and dont forget that my current spectrograms have 4 channels!!!!
+
+    =================================================================
+    =================================================================
+
 
 '''
-    Function to import a RGBA .png image as a RGB nupy array
+
+
+
+'''
+    Function to import a RGBA .png image as a RGB numpy array
 '''
 
 def import_image(address):
