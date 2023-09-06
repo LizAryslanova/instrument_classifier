@@ -29,26 +29,27 @@ import pandas as pd
 '''
     Function to import a RGBA .png image as a RGB numpy array
 '''
-
 def import_image(address):
     rgba_image = Image.open(address)
     rgb_image = rgba_image.convert('RGB')
     numpydata = asarray(rgb_image)
     return numpydata
 
+
 '''
     Function to get the label for a file
 '''
-
-def get_label(file):
+def get_label(file, csv_address):
 
     Sound_Guitar = 0
     Sound_Drum = 1
     Sound_Violin = 2
     Sound_Piano = 3
 
-    kaggle_csv_address = '/Users/cookie/dev/instrumant_classifier/audio_files/from_kaggle/Metadata_Train.csv'
-    df = pd.read_csv(kaggle_csv_address)
+    Skip = 'skip'
+
+
+    df = pd.read_csv(csv_address)
     row_num = df[df['FileName'] == file[:-4] + '.wav'].index.to_numpy() # gets a row number of the entry (as a numpy array)
 
     if row_num.shape == (1,):
@@ -64,8 +65,11 @@ def get_label(file):
         elif label_str == 'Sound_Piano':
             label = Sound_Piano
 
+        else:
+            label = 'Error in labelling' # in case the file is not in scv
+
     else:
-        label = 'skip' # in case the fie is not in scv
+        label = Skip # in case the file is not in scv
 
     return label
 
@@ -77,7 +81,7 @@ def get_label(file):
 
 
 
-def process_image_folder(folder_address):
+def process_image_folder(folder_address, csv_address):
     '''
         Takes in the address of a folder, converts all .wav files into spectrograms (cuts the silence, takes the first 3 seconds). Saves the spectrograms in destination_address with the same names as original .wav (but in .png)
     '''
@@ -85,11 +89,12 @@ def process_image_folder(folder_address):
 
     # how many files have a label in the csv?
 
+
     file_number = 0
 
     for file in os.listdir(folder_address):
         if(file[-4:] == '.png'):
-            if get_label(file) != 'skip':
+            if get_label(file, csv_address) != 'skip':
                 file_number += 1
 
                 # geting the shape of the images
@@ -97,49 +102,55 @@ def process_image_folder(folder_address):
                     image = import_image(folder_address + file)
                     image_shape_a, image_shape_b, channels = image.shape
 
-
-    print('Number of labellled fies = ', file_number)
-
-
-    # create train_x and train_y numpy arrays of correct sizes
+    print('Number of labelled files = ', file_number)
 
 
-    train_x = np.ndarray(shape=(file_number, image_shape_a, image_shape_b, channels),
+    # create x and y numpy arrays of correct sizes
+    x = np.ndarray(shape=(file_number, image_shape_a, image_shape_b, channels),
                      dtype=np.float32)
-
-    train_y = np.ndarray(shape=(1, file_number))
+    # y = np.ndarray(shape=(1, file_number))
+    y = np.ndarray(shape=(file_number))
 
 
     # for loop that goes through all files in the folder
-
     count = 0
-
     for file in os.listdir(folder_address):
-
         if(file[-4:] == '.png'):
-            if get_label(file) != 'skip':
+            if get_label(file, csv_address) != 'skip':
 
                 # add a picture to train_x
-                print ('Processing: ' + str(count+1))
-                train_x[count] = import_image(folder_address + file)
+                # print ('Processing: ' + str(count+1))
+                x[count] = import_image(folder_address + file)
 
                 # add a label to train_y (that corresponds to the train_x entry)
-                train_y[0, count] = get_label(file)
+                y[count] = get_label(file, csv_address)
 
                 count += 1
-
-    return train_x, train_y
-
+    return np.rollaxis(x, 3, 1), y
 
 
 
+'''
 
 kaggle_folder_address = '/Users/cookie/dev/instrumant_classifier/audio_files/from_kaggle/Train_spectrograms/'
 
-train_x, train_y = process_image_folder(kaggle_folder_address)
+kaggle_csv_address = '/Users/cookie/dev/instrumant_classifier/audio_files/from_kaggle/Metadata_Train.csv'
+
+train_x, train_y = process_image_folder(kaggle_folder_address, kaggle_csv_address)
 
 
 print('Train x shape = ', train_x.shape)
 print('Train y shape = ', train_y.shape)
 
 
+kaggle_test_address = '/Users/cookie/dev/instrumant_classifier/audio_files/from_kaggle/Test_spectrograms/'
+
+kaggle_csv_test_address = '/Users/cookie/dev/instrumant_classifier/audio_files/from_kaggle/Metadata_Test.csv'
+
+
+test_x, test_y = process_image_folder(kaggle_test_address, kaggle_csv_test_address)
+
+
+print('Test x shape = ', test_x.shape)
+print('Test y shape = ', test_y.shape)
+'''
