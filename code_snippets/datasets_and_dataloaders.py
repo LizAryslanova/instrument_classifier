@@ -19,12 +19,7 @@ class WineDataset(Dataset):
 
 
     def __getitem__(self, index):
-        # dataset[0]
-        sample self.x[index], self.y[index]
-        if self.transform:
-            sample = self.transform(sample)
-
-        return sample
+        return self.x[index], self.y[index]
 
     def __len__(self):
         #len(dataset)

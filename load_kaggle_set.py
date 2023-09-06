@@ -42,9 +42,9 @@ def import_image(address):
 def get_label(file, csv_address):
 
     Sound_Guitar = 0
-    Sound_Drum = 1
-    Sound_Violin = 2
-    Sound_Piano = 3
+    Sound_Piano = 1
+    Sound_Drum = 2
+    Sound_Violin = 3
 
     Skip = 'skip'
 
@@ -52,24 +52,32 @@ def get_label(file, csv_address):
     df = pd.read_csv(csv_address)
     row_num = df[df['FileName'] == file[:-4] + '.wav'].index.to_numpy() # gets a row number of the entry (as a numpy array)
 
-    if row_num.shape == (1,):
+    if row_num.shape != (0,):
         # print ('Processing ' + file)
         label_str = df['Class'][row_num[0]]
 
         if label_str == 'Sound_Guitar':
             label = Sound_Guitar
+        elif label_str == 'Sound_Piano':
+            label = Sound_Piano
         elif label_str == 'Sound_Drum':
             label = Sound_Drum
         elif label_str == 'Sound_Violin':
             label = Sound_Violin
-        elif label_str == 'Sound_Piano':
-            label = Sound_Piano
-
         else:
-            label = 'Error in labelling' # in case the file is not in scv
+            label  = Skip
 
     else:
-        label = Skip # in case the file is not in scv
+        label = Skip
+
+
+    # Checking names of files to get the label
+    if label != Sound_Guitar and label != Sound_Piano and label != Sound_Violin and label != Sound_Drum:
+        if 'violin' in file or 'VIOLIN' in file:
+            label = Sound_Violin
+        else:
+            label = Skip # in case the file is not in scv
+
 
     return label
 
@@ -128,8 +136,6 @@ def process_image_folder(folder_address, csv_address):
                 count += 1
     return np.rollaxis(x, 3, 1), y
 
-
-
 '''
 
 kaggle_folder_address = '/Users/cookie/dev/instrumant_classifier/audio_files/from_kaggle/Train_spectrograms/'
@@ -142,6 +148,15 @@ train_x, train_y = process_image_folder(kaggle_folder_address, kaggle_csv_addres
 print('Train x shape = ', train_x.shape)
 print('Train y shape = ', train_y.shape)
 
+
+
+for i in range(245):
+    print('i: ',  train_y[(5*i):(5*i+5)])
+
+'''
+
+
+'''
 
 kaggle_test_address = '/Users/cookie/dev/instrumant_classifier/audio_files/from_kaggle/Test_spectrograms/'
 
