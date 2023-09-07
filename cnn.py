@@ -5,9 +5,6 @@ from torch.utils.data import Dataset, DataLoader
 import numpy as np
 import torch.optim as optim
 
-
-
-
 '''
     ===================================
     Prearing the dataset
