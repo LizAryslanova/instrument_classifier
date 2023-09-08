@@ -65,11 +65,10 @@ def get_label(file, csv_address):
         elif label_str == 'Sound_Violin':
             label = Sound_Violin
         else:
-            label  = Skip
+            label = Skip
 
     else:
         label = Skip
-
 
     # Checking names of files to get the label
     if label != Sound_Guitar and label != Sound_Piano and label != Sound_Violin and label != Sound_Drum:
@@ -77,7 +76,6 @@ def get_label(file, csv_address):
             label = Sound_Violin
         else:
             label = Skip # in case the file is not in scv
-
 
     return label
 
@@ -96,8 +94,6 @@ def process_image_folder(folder_address, csv_address):
 
 
     # how many files have a label in the csv?
-
-
     file_number = 0
 
     for file in os.listdir(folder_address):

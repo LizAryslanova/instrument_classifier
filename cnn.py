@@ -108,8 +108,6 @@ class CNN(nn.Module):
 
 
 
-
-
 '''
     ===================================
     Hyperparameters
@@ -125,7 +123,6 @@ num_epochs = 5
 
 loss_function = nn.CrossEntropyLoss()  # softmax is included
 optimizer = optim.SGD(CNN_model.parameters(), lr = learning_rate)
-
 
 
 
@@ -146,12 +143,9 @@ for epoch in range(num_epochs):
 
         loss = loss_function(y_predicted, labels)
 
-        # zero gradients
-        optimizer.zero_grad()
-        # backward
+        optimizer.zero_grad()     # zero gradients
         loss.backward()
-        # updates
-        optimizer.step()
+        optimizer.step()                 # updates
 
         if (i+1) % 50 == 0:
             print (f'Epoch [{epoch+1}/{num_epochs}], Step [{i+1}/{n_total_steps}], Loss: {loss.item():.4f}')
@@ -179,7 +173,7 @@ with torch.no_grad():
 
     print('Predicted = ', predicted)
 
-    for i in range(80):
+    for i in range(80):   # 80 - number of files in the test set
         label = y_test[i]
         pred = predicted[i]
         if (label == pred):
@@ -199,14 +193,8 @@ with torch.no_grad():
 
 
 
-
-
-
 import os
-
 os.system('say "your program has finished" ')
-
-
 
 
 

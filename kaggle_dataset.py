@@ -11,7 +11,6 @@ import pandas as pd
 
 
 
-
 '''
     =============================
     Importing and Processing Kaggle dataset
@@ -20,13 +19,15 @@ import pandas as pd
 
 
 
-kaggle_train = '/Users/cookie/dev/instrumant_classifier/audio_files/from_kaggle/Train_spectrograms/'
-kaggle_test = '/Users/cookie/dev/instrumant_classifier/audio_files/from_kaggle/Test_spectrograms/'
+kaggle_train = '/Users/cookie/dev/instrumant_classifier/audio_files/from_kaggle/Train_submission/Train_submission/'
+kaggle_test = '/Users/cookie/dev/instrumant_classifier/audio_files/from_kaggle/Test_submission/Test_submission/'
 
 kaggle_train_csv = '/Users/cookie/dev/instrumant_classifier/audio_files/from_kaggle/Metadata_Train.csv'
 kaggle_test_csv = '/Users/cookie/dev/instrumant_classifier/audio_files/from_kaggle/Metadata_Test.csv'
 
 
+number_of_files_train = 2630
+number_of_files_test = 80
 
 
 def audio_to_numpy(folder_address, file):
@@ -38,6 +39,7 @@ def audio_to_numpy(folder_address, file):
             - stft
             - returns a numpy array
     '''
+
 
     if(file[-4:] == '.wav'):
 
@@ -65,13 +67,17 @@ def audio_to_numpy(folder_address, file):
         # filename = destination_address + file[:-4] + '.png'
 
         D = librosa.stft(cut_signal)
-        S_db = librosa.amplitude_to_db(abs(D), ref=np.max)
-        # librosa.display.specshow(S_db, x_axis='time', y_axis='log')
+        # S_db = librosa.amplitude_to_db(abs(D), ref=np.max)
 
-        # plt.savefig(filename, dpi=400, bbox_inches='tight', pad_inches=0)
+        # img = librosa.display.specshow(S_db, x_axis='time', y_axis='log')
+
+        print(D.shape)
+        print(D[10,50])
+
+        plt.savefig(img, dpi=400, bbox_inches='tight', pad_inches=0)
         # plt.close('all')
 
-        return S_db
+        return img
 
 
 def get_label(file, csv_address):
@@ -111,17 +117,19 @@ def get_label(file, csv_address):
     return label
 
 
+# Shape of the spectrogram
+def dim_of_spectrogram():
+    folder_address = '/Users/cookie/dev/instrumant_classifier/audio_files/from_kaggle/Train_submission/Train_submission/'
 
+    done = False
 
-
-
-
-
-
-
-
-
-
+    import random
+    while done == False:
+        file = random.choice(os.listdir(folder_address)) #change dir name to whatever
+        if (file[-4:] == '.wav'):
+            N = audio_to_numpy(folder_address, file)
+            done = True
+    return N.shape
 
 
 
@@ -133,19 +141,63 @@ def get_label(file, csv_address):
 
 
 
-def process_folder(folder_address, destination_address, csv_address):
+
+
+def process_folder(folder_address, csv_address, number_of_files):
     '''
         Takes in the address of a folder, converts all .wav files into spectrograms (cuts the silence, takes the first 3 seconds). Saves the spectrograms in destination_address with the same names as original .wav (but in .png)
     '''
 
+    image_shape_a, image_shape_b, channels = dim_of_spectrogram()
+
+    # create empty X and y arrays
+    X_long = np.zeros(shape=(number_of_files, image_shape_a, image_shape_b, channels),
+                     dtype=np.float32)
+    y_long = np.zeros(shape=(number_of_files))
+
+    # =====================
+
     number_of_labelled_files = 0
     for file in os.listdir(folder_address):
         if get_label(file, csv_address) != 'skip':      # checking if label exists for this file
+
+            print ('Processing: ' + str(number_of_labelled_files) + '   Name: ' + file)
+            # !!!!! create a numpy array od the correct shape and a second one with labels !!!!!!
+            X_long[number_of_labelled_files] = audio_to_numpy(folder_address, file)
+            y_long[number_of_labelled_files] = get_label(file, csv_address)
             number_of_labelled_files += 1
 
-        if get_label(file, csv_address) != 'skip':
-            print ('Processing: ' + str(number_of_labelled_files) + '   Name: ' + file)
 
-            # !!!!! create a numpy array od the correct shape and a second one with labels !!!!!!
-            audio_to_numpy(folder_address, file, destination_address)
+    # create new arrays considering the number_of_labelled_files
+    X = np.zeros(shape=(number_of_labelled_files, image_shape_a, image_shape_b, channels),
+                     dtype=np.float32)
+    y = np.zeros(shape=(number_of_labelled_files))
+
+    # copy only files that were labelled
+    X = X_long[:number_of_labelled_files]
+    y = y_long[:number_of_labelled_files]
+
+
+    return np.rollaxis(X, 3, 1), y
+
+
+
+
+
+
+train_x, train_y = process_folder(kaggle_train, kaggle_train_csv, number_of_files_train)
+
+print('Train x shape = ', train_x.shape)
+print('Train y shape = ', train_y.shape)
+
+for i in range(245):
+    print('i: ',  train_y[(5*i):(5*i+5)])
+
+
+
+
+test_x, test_y = process_folder(kaggle_test, kaggle_test_csv, number_of_files_test)
+print('Test x shape = ', test_x.shape)
+print('Test y shape = ', test_y.shape)
+
 

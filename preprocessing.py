@@ -82,9 +82,9 @@ def process_folder(folder_address, destination_address):
 
 # kaggle set
 
-kaggle_train_address = '/Users/cookie/dev/instrumant_classifier/audio_files/from_kaggle/Train_submission/Train_submission/'
+# kaggle_train_address = '/Users/cookie/dev/instrumant_classifier/audio_files/from_kaggle/Train_submission/Train_submission/'
 
-kaggle_train_picture_address = '/Users/cookie/dev/instrumant_classifier/audio_files/from_kaggle/Train_spectrograms/'
+# kaggle_train_picture_address = '/Users/cookie/dev/instrumant_classifier/audio_files/from_kaggle/Train_spectrograms/'
 
 
 # process_folder(kaggle_train_address, kaggle_train_picture_address)
@@ -95,7 +95,7 @@ kaggle_test_address = '/Users/cookie/dev/instrumant_classifier/audio_files/from_
 
 kaggle_test_picture_address = '/Users/cookie/dev/instrumant_classifier/audio_files/from_kaggle/Test_spectrograms/'
 
-# process_folder(kaggle_test_address, kaggle_test_picture_address)
+process_folder(kaggle_test_address, kaggle_test_picture_address)
 
 
 
@@ -105,7 +105,7 @@ nsynth_train_address = '/Users/cookie/dev/instrumant_classifier/audio_files/nsyn
 
 nsynth_train_picture_address = '/Users/cookie/dev/instrumant_classifier/audio_files/nsynth/Nsynth_train_spectrograms/'
 
-process_folder(nsynth_train_address + '1' + '/', nsynth_train_picture_address)
+# process_folder(nsynth_train_address + '1' + '/', nsynth_train_picture_address)
 # process_folder(nsynth_train_address + '/' + '2', nsynth_train_picture_address)
 # process_folder(nsynth_train_address + '/' + '3', nsynth_train_picture_address)
 # process_folder(nsynth_train_address + '/' + '4', nsynth_train_picture_address)
