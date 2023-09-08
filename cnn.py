@@ -5,47 +5,43 @@ from torch.utils.data import Dataset, DataLoader
 import numpy as np
 import torch.optim as optim
 
+import pickle
+
 '''
     ===================================
     Prearing the dataset
     ===================================
 '''
 
-import load_kaggle_set
 
-
-kaggle_folder_address = '/Users/cookie/dev/instrumant_classifier/audio_files/from_kaggle/Train_spectrograms/'
-kaggle_csv_address = '/Users/cookie/dev/instrumant_classifier/audio_files/from_kaggle/Metadata_Train.csv'
-
-
-kaggle_test_address = '/Users/cookie/dev/instrumant_classifier/audio_files/from_kaggle/Test_spectrograms/'
-kaggle_csv_test_address = '/Users/cookie/dev/instrumant_classifier/audio_files/from_kaggle/Metadata_Test.csv'
 
 classes = ('guitar', 'piano', 'drum', 'violin')
 
 
-#import data as numpy arrays
-#X_train, y_train = load_kaggle_set.process_image_folder(kaggle_folder_address, kaggle_csv_address)
-X_test, y_test = load_kaggle_set.process_image_folder(kaggle_test_address, kaggle_csv_test_address)
+# Un-Pickle Test sets
+with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_test_x', 'rb') as f:
+    X_test = pickle.load(f)
+with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_test_y', 'rb') as f:
+    y_test = pickle.load(f)
 
-# print('y_train.shape = ', y_train.shape)
 
 
-#X_train = torch.from_numpy(X_train.astype(np.float32))
+# Calculate dimensions for the nn.Linear layer
+o_01 = (X_test.shape[2] - 5 + 0) / 1 + 1
+o_02 = o_01 // 2
+o_03 = (o_02 - 5 + 0) / 1 + 1
+output_shape_1 = o_03 // 2
+
+o_11 = (X_test.shape[3] - 5 + 0) / 1 + 1
+o_12 = o_11 // 2
+o_13 = (o_12 - 5 + 0) / 1 + 1
+output_shape_2  = o_13 // 2
+# print(output_shape_1, output_shape_2)
+
+
 X_test = torch.from_numpy(X_test.astype(np.float32))
-
-#y_train = torch.from_numpy(y_train)
 y_test = torch.from_numpy(y_test)
-
-#y_train = torch.tensor(y_train, dtype=torch.long)
 y_test = torch.tensor(y_test, dtype=torch.long)
-
-#reshape y tensors
-# y_train = y_train.view(y_train.shape[0], 1)
-# y_test = y_test.view(y_test.shape[0], 1)
-
-#print(X_train.shape)
-#print(y_train.shape)
 
 
 
@@ -53,7 +49,10 @@ class TrainSet(Dataset):
 
     def __init__(self, transform=None):
         # data loading
-        X_train, y_train = load_kaggle_set.process_image_folder(kaggle_folder_address, kaggle_csv_address)
+        with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_train_x', 'rb') as f:
+            X_train = pickle.load(f)
+        with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_train_y', 'rb') as f:
+            y_train = pickle.load(f)
 
         self.x = torch.from_numpy(X_train.astype(np.float32))
         y_train = torch.from_numpy(y_train)
@@ -68,12 +67,8 @@ class TrainSet(Dataset):
         #len(dataset)
         return self.n_samples
 
-
-
 dataset = TrainSet()
 train_loader = DataLoader(dataset=dataset, batch_size=4, shuffle=True, num_workers=0)
-
-
 
 
 
@@ -84,18 +79,17 @@ train_loader = DataLoader(dataset=dataset, batch_size=4, shuffle=True, num_worke
     ===================================
 '''
 
-
 class CNN(nn.Module):
 
     def __init__(self):
         super().__init__()
 
-        self.conv1 = nn.Conv2d(1, 6, 5)     # will just one input channel work???
+        self.conv1 = nn.Conv2d(1, 6, 5)     # 1 input channel
         self.pool = nn.MaxPool2d(2, 2)
         self.conv2 = nn.Conv2d(6, 16, 5)
-        self.fc1 = nn.Linear(16 * 74 * 74, 120)
+        self.fc1 = nn.Linear(16 * int(output_shape_1) * int(output_shape_2), 120)
         self.fc2 = nn.Linear(120, 84)
-        self.fc3 = nn.Linear(84, num_classes) # have 4 classes in the dataset
+        self.fc3 = nn.Linear(84, num_classes)
 
     def forward(self, x):
 
@@ -117,8 +111,7 @@ class CNN(nn.Module):
 num_classes = 4
 CNN_model = CNN()
 
-
-learning_rate = 0.001
+learning_rate = 0.005
 num_epochs = 5
 
 loss_function = nn.CrossEntropyLoss()  # softmax is included
@@ -202,19 +195,3 @@ os.system('say "your program has finished" ')
 
 
 
-'''
-o1 = (308 - 5+ 0) / 1 + 1
-o2 = o1 // 2
-o3 = (o2 - 5 + 0) / 1 + 1
-o4 = o3 // 2
-
-print(o1, o2, o3, o4)
-
-
-o1 = (310 - 5+ 0) / 1 + 1
-o2 = o1 // 2
-o3 = (o2 - 5 + 0) / 1 + 1
-o4 = o3 // 2
-
-print(o1, o2, o3, o4)
-'''
