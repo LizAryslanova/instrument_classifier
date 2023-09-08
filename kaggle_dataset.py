@@ -9,6 +9,8 @@ from librosa.effects import trim
 import numpy as np
 import pandas as pd
 
+import pickle
+
 
 
 '''
@@ -142,10 +144,10 @@ def dim_of_spectrogram():
     ===============
 '''
 
-
 def process_folder(folder_address, csv_address, number_of_files):
     '''
-        Takes in the address of a folder, converts all .wav files into spectrograms (cuts the silence, takes the first 3 seconds). Saves the spectrograms in destination_address with the same names as original .wav (but in .png)
+        Takes in the address of a folder, converts all .wav files into spectrograms (cuts the silence, takes the first 3 seconds).
+        Returns STFT absolute values and labels as numpy arrays
     '''
 
     image_shape_a, image_shape_b, channels = dim_of_spectrogram()
@@ -156,7 +158,6 @@ def process_folder(folder_address, csv_address, number_of_files):
     y_long = np.zeros(shape=(number_of_files))
 
     # =====================
-
     number_of_labelled_files = 0
     for file in os.listdir(folder_address):
         if get_label(file, csv_address) != 'skip':      # checking if label exists for this file
@@ -168,7 +169,6 @@ def process_folder(folder_address, csv_address, number_of_files):
             y_long[number_of_labelled_files] = get_label(file, csv_address)
             number_of_labelled_files += 1
 
-
     # create new arrays considering the number_of_labelled_files
     X = np.zeros(shape=(number_of_labelled_files, image_shape_a, image_shape_b, channels),
                      dtype=np.float32)
@@ -178,27 +178,44 @@ def process_folder(folder_address, csv_address, number_of_files):
     X = X_long[:number_of_labelled_files]
     y = y_long[:number_of_labelled_files]
 
-
     return np.rollaxis(X, 3, 1), y
 
 
 
+'''
+    ============================
+    Running Kaggle dataset through process_folder
+    ============================
+'''
 
 
 
 train_x, train_y = process_folder(kaggle_train, kaggle_train_csv, number_of_files_train)
+test_x, test_y = process_folder(kaggle_test, kaggle_test_csv, number_of_files_test)
 
+
+with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_train_x', 'wb') as f:
+    pickle.dump(train_x , f)
+with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_train_y', 'wb') as f:
+    pickle.dump(train_y , f)
+with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_test_x', 'wb') as f:
+    pickle.dump(test_x , f)
+with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_test_y', 'wb') as f:
+    pickle.dump(test_y , f)
+
+
+
+
+'''
 print('Train x shape = ', train_x.shape)
 print('Train y shape = ', train_y.shape)
 
 for i in range(245):
     print('i: ',  train_y[(5*i):(5*i+5)])
 
-
-
-
-test_x, test_y = process_folder(kaggle_test, kaggle_test_csv, number_of_files_test)
 print('Test x shape = ', test_x.shape)
 print('Test y shape = ', test_y.shape)
+'''
 
 
+print('Im done')

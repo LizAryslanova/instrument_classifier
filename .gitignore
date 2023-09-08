@@ -1,3 +1,5 @@
 audio_files/*
 data/*
 __pycache__/*
+
+pickles/*
