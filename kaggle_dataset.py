@@ -56,28 +56,28 @@ def audio_to_numpy(folder_address, file):
         if (len(cut_signal) < cut_time):
             cut_signal = np.pad(cut_signal, pad_width=(0, cut_time - len(cut_signal)))
 
-
-        # NB! normalizing the loudness
-
-        # fig = plt.figure(figsize=[1, 1])
-        # ax = fig.add_subplot(111)
-        # ax.axes.get_xaxis().set_visible (False)
-        # ax. axes.get_yaxis().set_visible (False)
-        # ax.set_frame_on(False)
-        # filename = destination_address + file[:-4] + '.png'
-
         D = librosa.stft(cut_signal)
-        # S_db = librosa.amplitude_to_db(abs(D), ref=np.max)
+        D_abs = np.abs(D)
 
-        # img = librosa.display.specshow(S_db, x_axis='time', y_axis='log')
+        #print(D_abs.shape)
+        #print(D_abs[10,50])
 
-        print(D.shape)
-        print(D[10,50])
+        a, b = D.shape
+        channels = 1    # use 3 for RGB
+        multiplyer = 1   # use 255 for greyscale RGB
 
-        plt.savefig(img, dpi=400, bbox_inches='tight', pad_inches=0)
-        # plt.close('all')
+        img = np.zeros(shape=(a, b, channels))
+
+        #print(img[10,50,:])
+
+        for i in range(channels):
+            img[:,:,i] = multiplyer * D_abs
+
+        #print(img[10,50,:])
+        #print('img.shape= ', img.shape)
 
         return img
+
 
 
 def get_label(file, csv_address):
@@ -125,11 +125,14 @@ def dim_of_spectrogram():
 
     import random
     while done == False:
-        file = random.choice(os.listdir(folder_address)) #change dir name to whatever
+        file = '0_john-garner_bwv1002_mov1.wav'
+        #file = random.choice(os.listdir(folder_address)) #change dir name to whatever
         if (file[-4:] == '.wav'):
             N = audio_to_numpy(folder_address, file)
             done = True
     return N.shape
+
+
 
 
 
@@ -138,9 +141,6 @@ def dim_of_spectrogram():
     Processing the folder
     ===============
 '''
-
-
-
 
 
 def process_folder(folder_address, csv_address, number_of_files):
@@ -161,7 +161,8 @@ def process_folder(folder_address, csv_address, number_of_files):
     for file in os.listdir(folder_address):
         if get_label(file, csv_address) != 'skip':      # checking if label exists for this file
 
-            print ('Processing: ' + str(number_of_labelled_files) + '   Name: ' + file)
+            if ( number_of_labelled_files % 50 ) == 0:
+                print ('Processing: ' + str(number_of_labelled_files + 1) + '   Name: ' + file)
             # !!!!! create a numpy array od the correct shape and a second one with labels !!!!!!
             X_long[number_of_labelled_files] = audio_to_numpy(folder_address, file)
             y_long[number_of_labelled_files] = get_label(file, csv_address)
