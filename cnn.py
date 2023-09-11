@@ -112,7 +112,7 @@ num_classes = 4
 CNN_model = CNN()
 
 learning_rate = 0.005
-num_epochs = 5
+num_epochs = 4
 
 loss_function = nn.CrossEntropyLoss()  # softmax is included
 optimizer = optim.SGD(CNN_model.parameters(), lr = learning_rate)
@@ -124,7 +124,6 @@ optimizer = optim.SGD(CNN_model.parameters(), lr = learning_rate)
     Training loop
     ===================================
 '''
-
 
 n_total_steps = len(train_loader)
 
@@ -145,9 +144,9 @@ for epoch in range(num_epochs):
 
 
 '''
-    ==============================
+    ===================================
     Testing
-    ==============================
+    ===================================
 '''
 
 with torch.no_grad():
@@ -155,7 +154,6 @@ with torch.no_grad():
     n_samples = 0
     n_class_correct = [0 for i in range(num_classes)]
     n_class_samples = [0 for i in range(num_classes)]
-
 
 
     outputs = CNN_model(X_test)
@@ -166,7 +164,7 @@ with torch.no_grad():
 
     print('Predicted = ', predicted)
 
-    for i in range(80):   # 80 - number of files in the test set
+    for i in range(64):   # number of files in the test set
         label = y_test[i]
         pred = predicted[i]
         if (label == pred):
@@ -179,7 +177,6 @@ with torch.no_grad():
     for i in range(num_classes):
         acc = 100.0 * n_class_correct[i] / n_class_samples[i]
         print(f'Accuracy of {classes[i]}: {acc} %')
-
         print('n_class_correct = ', n_class_correct, ' n_class_samples = ', n_class_samples)
 
 

@@ -14,9 +14,9 @@ import pickle
 
 
 '''
-    =============================
+    ===================================
     Importing and Processing Kaggle dataset
-    =============================
+    ===================================
 '''
 
 
@@ -111,7 +111,7 @@ def get_label(file, csv_address):
 
     # Checking names of files to get the label
     if label != Sound_Guitar and label != Sound_Piano and label != Sound_Violin and label != Sound_Drum:
-        if 'violin' in file or 'VIOLIN' in file:
+        if 'violin' in file or 'VIOLIN' in file or 'Vn' in file or 'Violin' in file:
             label = Sound_Violin
         else:
             label = Skip # in case the file is not in scv
@@ -183,9 +183,9 @@ def dim_of_spectrogram():
 
 
 '''
-    ===============
+    ===================================
     Processing the folder
-    ===============
+    ===================================
 '''
 
 def process_folder(folder_address, csv_address, number_of_files):
@@ -227,9 +227,9 @@ def process_folder(folder_address, csv_address, number_of_files):
 
 
 '''
-    ============================
+    ===================================
     Running Kaggle dataset through process_folder
-    ============================
+    ===================================
 '''
 
 
