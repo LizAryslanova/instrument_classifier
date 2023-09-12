@@ -19,9 +19,9 @@ classes = ('guitar', 'piano', 'drum', 'violin')
 
 
 # Un-Pickle Test sets
-with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_test_x', 'rb') as f:
+with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_test_3x', 'rb') as f:
     X_test = pickle.load(f)
-with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_test_y', 'rb') as f:
+with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_test_3y', 'rb') as f:
     y_test = pickle.load(f)
 
 
@@ -49,9 +49,9 @@ class TrainSet(Dataset):
 
     def __init__(self, transform=None):
         # data loading
-        with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_train_x', 'rb') as f:
+        with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_train_3x', 'rb') as f:
             X_train = pickle.load(f)
-        with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_train_y', 'rb') as f:
+        with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_train_3y', 'rb') as f:
             y_train = pickle.load(f)
 
         self.x = torch.from_numpy(X_train.astype(np.float32))
@@ -84,7 +84,7 @@ class CNN(nn.Module):
     def __init__(self):
         super().__init__()
 
-        self.conv1 = nn.Conv2d(1, 6, 5)     # 1 input channel
+        self.conv1 = nn.Conv2d(3, 6, 5)     # 1 input channel
         self.pool = nn.MaxPool2d(2, 2)
         self.conv2 = nn.Conv2d(6, 16, 5)
         self.fc1 = nn.Linear(16 * int(output_shape_1) * int(output_shape_2), 120)

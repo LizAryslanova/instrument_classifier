@@ -11,6 +11,7 @@ import pandas as pd
 
 import pickle
 
+from sklearn.preprocessing import normalize
 
 
 '''
@@ -65,18 +66,17 @@ def audio_to_numpy(folder_address, file):
         #print(STFT_abs[10,50])
 
         a, b = STFT_result.shape
-        channels = 1    # use 3 for RGB
-        multiplyer = 1   # use 255 for greyscale RGB
+        channels = 3    # use 3 for RGB
+        multiplyer = 255   # use 255 for greyscale RGB
 
         # normalising arrays
-        #STFT_norm = np.linalg.norm(STFT_abs)
-        #STFT_normalised = STFT_abs / STFT_norm
+        STFT_normalised = normalize(STFT_abs)
 
         final_array = np.zeros(shape=(a, b, channels), dtype=np.float32)
 
         for i in range(channels):
             # img[:,:,i] = multiplyer * D_abs
-            final_array[:,:,i] = multiplyer * STFT_abs
+            final_array[:,:,i] = multiplyer * STFT_normalised
 
         return final_array
 
@@ -238,13 +238,13 @@ train_x, train_y = process_folder(kaggle_train, kaggle_train_csv, number_of_file
 test_x, test_y = process_folder(kaggle_test, kaggle_test_csv, number_of_files_test)
 
 
-with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_train_x', 'wb') as f:
+with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_train_3x', 'wb') as f:
     pickle.dump(train_x , f)
-with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_train_y', 'wb') as f:
+with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_train_3y', 'wb') as f:
     pickle.dump(train_y , f)
-with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_test_x', 'wb') as f:
+with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_test_3x', 'wb') as f:
     pickle.dump(test_x , f)
-with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_test_y', 'wb') as f:
+with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_test_3y', 'wb') as f:
     pickle.dump(test_y , f)
 
 
