@@ -107,7 +107,7 @@ num_classes = 4
 CNN_model = CNN()
 
 learning_rate = 0.00001
-num_epochs = 25
+num_epochs = 35
 
 loss_function = nn.CrossEntropyLoss()  # softmax is included
 optimizer = optim.SGD(CNN_model.parameters(), lr = learning_rate)
@@ -179,7 +179,7 @@ def test():
 
         print('Predicted = ', predicted)
 
-        for i in range(64):   # number of files in the test set
+        for i in range(74):   # number of files in the test set
             label = y_test[i]
             pred = predicted[i]
             if (label == pred):
