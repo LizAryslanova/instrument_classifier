@@ -38,21 +38,27 @@ def audio_to_numpy(folder_address, file):
             - trims the silence,
             - takes the first 3 seconds
             - padds for files shorter than 3 seconds
+            - normalises
             - stft
-            - returns a numpy array
+            - returns a numpy array of absolute values after stft
     '''
 
 
     if (file[-4:] == '.wav'):
 
         audio_file = folder_address + file
-        samples, sample_rate = librosa.load(audio_file)
+        samples, _ = librosa.load(audio_file)
         trimmed_signal, _ = librosa.effects.trim(samples, top_db=15)
+
+        # normalize data
+        max_peak = np.max(np.abs(trimmed_signal))
+        ratio = 1 / max_peak
+        normalised_signal = trimmed_signal * ratio
 
         sr = 22050 # sample rate, used to cut 3 seconds
         seconds_to_cut = 3
         cut_time = int(sr * seconds_to_cut)
-        cut_signal = trimmed_signal[0:cut_time]
+        cut_signal = normalised_signal[0:cut_time]
 
         # padding with 0 for things shorter that 3 seconds
         if (len(cut_signal) < cut_time):
@@ -68,9 +74,6 @@ def audio_to_numpy(folder_address, file):
         channels = 1    # use 3 for RGB
         multiplyer = 1   # use 255 for greyscale RGB
 
-        # normalising arrays
-        #STFT_norm = np.linalg.norm(STFT_abs)
-        #STFT_normalised = STFT_abs / STFT_norm
 
         final_array = np.zeros(shape=(a, b, channels), dtype=np.float32)
 
