@@ -18,7 +18,6 @@ import utils
 '''
 
 
-
 classes = ('guitar', 'piano', 'drum', 'violin')
 
 
@@ -27,9 +26,6 @@ with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_test_x', 'rb')
     X_test = pickle.load(f)
 with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_test_y', 'rb') as f:
     y_test = pickle.load(f)
-
-
-
 
 
 X_test = torch.from_numpy(X_test.astype(np.float32))
@@ -80,9 +76,7 @@ class CNN(nn.Module):
         self.conv1 = nn.Conv2d(1, 6, 5)     # 1 input channel
         self.pool = nn.MaxPool2d(2, 2)
         self.conv2 = nn.Conv2d(6, 16, 5)
-        #===============================
         self.fc1 = nn.Linear(16 * utils.dimensions_for_linear_layer(X_test.shape[2], X_test.shape[3]), 120)
-        #===============================
         self.fc2 = nn.Linear(120, 84)
         self.fc3 = nn.Linear(84, num_classes)
 
@@ -106,8 +100,8 @@ class CNN(nn.Module):
 num_classes = 4
 CNN_model = CNN()
 
-learning_rate = 0.00001
-num_epochs = 35
+learning_rate = 0.0001
+num_epochs = 15
 
 loss_function = nn.CrossEntropyLoss()  # softmax is included
 optimizer = optim.SGD(CNN_model.parameters(), lr = learning_rate)
