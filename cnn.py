@@ -100,8 +100,8 @@ class CNN(nn.Module):
 num_classes = 4
 CNN_model = CNN()
 
-learning_rate = 0.0001
-num_epochs = 15
+learning_rate = 0.000003
+num_epochs = 40
 
 loss_function = nn.CrossEntropyLoss()  # softmax is included
 optimizer = optim.SGD(CNN_model.parameters(), lr = learning_rate)

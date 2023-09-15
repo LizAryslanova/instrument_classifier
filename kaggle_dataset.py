@@ -50,19 +50,12 @@ def audio_to_numpy(folder_address, file):
         samples, _ = librosa.load(audio_file)
         trimmed_signal, _ = librosa.effects.trim(samples, top_db=15)
 
-        '''
-        # normalize data
-        max_peak = np.max(np.abs(trimmed_signal))
-        ratio = 1 / max_peak
-        normalised_signal = trimmed_signal * ratio
-        '''
-
         sr = 22050 # sample rate, used to cut 3 seconds
         seconds_to_cut = 3
         cut_time = int(sr * seconds_to_cut)
         cut_signal = trimmed_signal[0:cut_time]
 
-            # normalize data
+        # normalize data
         max_peak = np.max(np.abs(cut_signal))
         ratio = 1 / max_peak
         normalised_signal = cut_signal * ratio
