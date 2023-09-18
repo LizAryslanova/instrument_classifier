@@ -116,6 +116,8 @@ def get_label(file, csv_address):
     if label != Sound_Guitar and label != Sound_Piano and label != Sound_Violin and label != Sound_Drum:
         if 'violin' in file or 'VIOLIN' in file or 'Vn' in file or 'Violin' in file:
             label = Sound_Violin
+        elif 'guitar' in file:
+            label = Sound_Guitar
         else:
             label = Skip # in case the file is not in scv
 

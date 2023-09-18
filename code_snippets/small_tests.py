@@ -12,7 +12,12 @@ normalized_array = complex_array / norms
 
 
 print(complex_array)
-
-print('============')
-
 print(normalized_array)
+
+
+# ========================
+
+print('====================================')
+
+
+

@@ -4,12 +4,12 @@ import torch.nn.functional as F
 from torch.utils.data import Dataset, DataLoader
 import numpy as np
 import torch.optim as optim
-
 import matplotlib.pyplot as plt
-
 import pickle
 
 import utils
+
+
 
 '''
     ===================================
@@ -100,8 +100,8 @@ class CNN(nn.Module):
 num_classes = 4
 CNN_model = CNN()
 
-learning_rate = 0.000003
-num_epochs = 40
+learning_rate = 0.00001
+num_epochs = 2
 
 loss_function = nn.CrossEntropyLoss()  # softmax is included
 optimizer = optim.SGD(CNN_model.parameters(), lr = learning_rate)
@@ -145,8 +145,22 @@ for epoch in range(num_epochs):
 
 import os
 os.system('say "Cookie, I am plotting losses" ')
+
+
+
+
+
 # plotting losses
-plt.plot(training_loss, 'g', test_loss, 'r')
+plt.plot(training_loss, 'g', label = 'Training loss')
+plt.plot(test_loss, 'r', label = 'Test loss')
+
+plt.xlabel('Epoch Number')
+plt.ylabel('Loss')
+plt.title('Loss functions \n LR = str(learning_rate), epochs = str(num_epochs)')
+
+plt.title(f'Loss functions for {num_epochs} epochs \n Learnind rate = {learning_rate}, Accuracy = ')
+
+plt.legend()
 plt.show()
 
 
@@ -156,42 +170,11 @@ plt.show()
     ===================================
 '''
 
-def test():
-
-    with torch.no_grad():
-        n_correct = 0
-        n_samples = 0
-        n_class_correct = [0 for i in range(num_classes)]
-        n_class_samples = [0 for i in range(num_classes)]
 
 
-        outputs = CNN_model(X_test)
-        # max returns (value ,index)
-        _, predicted = torch.max(outputs, 1)
-        n_samples += y_test.size(0)
-        n_correct += (predicted == y_test).sum().item()
-
-        print('Predicted = ', predicted)
-
-        for i in range(74):   # number of files in the test set
-            label = y_test[i]
-            pred = predicted[i]
-            if (label == pred):
-                n_class_correct[label] += 1
-            n_class_samples[label] += 1
-
-        acc = 100.0 * n_correct / n_samples
-        print(f'Accuracy of the network: {acc} %')
-
-        for i in range(num_classes):
-            acc = 100.0 * n_class_correct[i] / n_class_samples[i]
-            print(f'Accuracy of {classes[i]}: {acc} %')
-            print('n_class_correct = ', n_class_correct, ' n_class_samples = ', n_class_samples)
-
-
-test()
+utils.test(CNN_model, X_test, y_test, classes)
 
 
 import os
-os.system('say "Cookie, your program has finished. Hurray!" ')
+os.system('say "Cookie, your program has finished." ')
 
