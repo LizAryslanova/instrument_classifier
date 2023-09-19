@@ -29,8 +29,8 @@ with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_test_y', 'rb')
 
 
 X_test = torch.from_numpy(X_test.astype(np.float32))
-y_test = torch.from_numpy(y_test)
-y_test = torch.tensor(y_test, dtype=torch.long)
+y_test = torch.from_numpy(y_test).type(torch.LongTensor)
+
 
 
 
@@ -44,8 +44,7 @@ class TrainSet(Dataset):
             y_train = pickle.load(f)
 
         self.x = torch.from_numpy(X_train.astype(np.float32))
-        y_train = torch.from_numpy(y_train)
-        self.y = torch.tensor(y_train, dtype=torch.long)
+        self.y = torch.from_numpy(y_train).type(torch.LongTensor)
         self.n_samples = X_train.shape[0]
         self.transform = transform
 
@@ -143,8 +142,17 @@ for epoch in range(num_epochs):
         test_loss.append(loss.item())
 
 
+
+# Saving the Model
+# torch.save(CNN_model, '/Users/cookie/dev/instrumant_classifier/unit_testing/cnn_for_tests.pt')
+
+
+
+
 import os
 os.system('say "Cookie, I am plotting losses" ')
+
+
 
 
 

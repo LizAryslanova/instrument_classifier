@@ -23,7 +23,6 @@ def dimensions_for_linear_layer(width, height):
     '''
 
     # add stride, padding and kernel as input parameters!!!!!!
-
     o_01 = (width - 5 + 0) / 1 + 1
     o_02 = o_01 // 2
     o_03 = (o_02 - 5 + 0) / 1 + 1
@@ -36,7 +35,6 @@ def dimensions_for_linear_layer(width, height):
     # print(output_shape_1, output_shape_2)
 
     return int(output_shape_1 * output_shape_2)
-
 
 
 
@@ -61,7 +59,7 @@ def test(CNN_model, X_test, y_test, classes):
         n_samples += y_test.size(0)
         n_correct += (predicted == y_test).sum().item()
 
-        print('Predicted = ', predicted)
+        #print('Predicted = ', predicted)
 
         for i in range(X_test.shape[0]):   # number of files in the test set
             label = y_test[i]
@@ -71,9 +69,18 @@ def test(CNN_model, X_test, y_test, classes):
             n_class_samples[label] += 1
 
         acc = 100.0 * n_correct / n_samples
-        print(f'Accuracy of the network: {acc} %')
+        # print(f'Accuracy of the network: {acc} %')
+
+        acc_classes = []
 
         for i in range(num_classes):
-            acc = 100.0 * n_class_correct[i] / n_class_samples[i]
-            print(f'Accuracy of {classes[i]}: {acc} %')
-            print('n_class_correct = ', n_class_correct, ' n_class_samples = ', n_class_samples)
+            acc_classes.append(100.0 * n_class_correct[i] / n_class_samples[i])
+            # print(f'Accuracy of {classes[i]}: {acc} %')
+            # print('n_class_correct = ', n_class_correct, ' n_class_samples = ', n_class_samples)
+
+        return predicted, acc, acc_classes, n_class_correct, n_class_samples
+
+
+
+
+

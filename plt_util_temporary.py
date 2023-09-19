@@ -11,7 +11,7 @@ accuracies = [87, 12, 43, 55, 66]
 
 
 
-def plot_image(y1, y2, num_epochs, learning_rate, classes, accuracies):
+def plot_image(training_loss, test_loss, num_epochs, learning_rate, classes, accuracies):
     '''
     Plots accuracies for all epochs. Imports all the necessary things.
     Takes as input:
@@ -49,8 +49,8 @@ def plot_image(y1, y2, num_epochs, learning_rate, classes, accuracies):
     gs = GridSpec(nrows=1, ncols=6)
 
     ax_graphs = fig.add_subplot(gs[0, 0:4])
-    ax_graphs.plot(y1, 'g', label='A')
-    ax_graphs.plot(y2, 'r', label='B')
+    ax_graphs.plot(training_loss, 'g', label='Training Loss')
+    ax_graphs.plot(test_loss, 'r', label='Test Loss')
     plt.xlabel('Epoch')
     plt.ylabel('Loss')
     plt.legend()

@@ -71,6 +71,8 @@ print(z)
 
 
 # NB! If items are stored on CPU (not GPU) they share memory location, so by modifying one you will modify them both
+
+
 # Converting from tensors to numpy.
 
 import numpy as np
