@@ -31,6 +31,7 @@ y_test = torch.from_numpy(y_test).type(torch.LongTensor)
 
 
 class TrainSet(Dataset):
+
     def __init__(self, transform=None):
         # data loading
         with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_train_x', 'rb') as f:
@@ -93,8 +94,8 @@ class CNN(nn.Module):
 num_classes = 4
 CNN_model = CNN()
 
-learning_rate = 0.00001
-num_epochs = 2
+learning_rate = 0.000003
+num_epochs = 25
 
 loss_function = nn.CrossEntropyLoss()  # softmax is included
 optimizer = optim.SGD(CNN_model.parameters(), lr = learning_rate)
@@ -154,8 +155,8 @@ torch.save(CNN_model, filename)
 '''
 
 import os
-os.system('say "Cookie, Im plotting the picture." ')
+os.system('say "Cookie, I am plotting the picture." ')
 
 y_predicted, accuracies, n_class_correct, n_class_samples = utils.test(CNN_model, X_test, y_test, classes)
-utils.plot_image(training_loss, test_loss, num_epochs, learning_rate, classes, accuracies, y_test, y_predicted, destination_address, show = True)
+utils.plot_image(training_loss, test_loss, num_epochs, learning_rate, classes, accuracies, y_test, y_predicted, filename, show = True)
 

@@ -138,7 +138,7 @@ def plot_confusion_matrix(y_true, y_pred, classes):
 
 
 # Plots and saves the final image with losses on epochs, accuracies and a confusion matrix
-def plot_image(training_loss, test_loss, num_epochs, learning_rate, classes, accuracies, y_true, y_predicted, destination_address, show = False):
+def plot_image(training_loss, test_loss, num_epochs, learning_rate, classes, accuracies, y_true, y_predicted, filename, show = False):
     '''
         ===================================
         Plots accuracies for all epochs, table with final accuracies of the model and individual instruments, a confusion matrix where Rows represent True labels and Columns represent - prebicted labels.
@@ -172,7 +172,7 @@ def plot_image(training_loss, test_loss, num_epochs, learning_rate, classes, acc
         cell_text.append([x for x in y_offset])
 
     fig = plt.figure(figsize=(12, 6), layout="constrained")
-    fig.suptitle(f'Loss functions for {num_epochs} epochs, learning rate = {learning_rate}', fontsize = 24)
+    fig.suptitle(f'Loss functions for {num_epochs} epochs, learning rate = {str(learning_rate)}', fontsize = 24)
 
     gs = GridSpec(nrows=2, ncols=12)
 
@@ -200,10 +200,7 @@ def plot_image(training_loss, test_loss, num_epochs, learning_rate, classes, acc
     the_table_2 = plot_confusion_matrix(y_true, y_predicted, classes)
 
     # Saving and naming the image
-    import time
-    timestr = time.strftime("%Y%m%d-%H%M%S")
-    name = 'lr_' + str(learning_rate) + '_epochs_' + str(num_epochs) + '_' + timestr
-    filename = destination_address + name + '.png'
+    filename = filename[:-4]  + '.png'
     plt.savefig(filename, dpi=400, bbox_inches='tight', pad_inches=0.1)
 
     if show == True:

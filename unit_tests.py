@@ -170,7 +170,7 @@ def utils_plot_image_test():
     print('Checking utils.plot_image')
 
     num_epochs = 18
-    learning_rate = 2.2
+    learning_rate = 0.00002
 
     y_true = [1,0,0,0,0,0,1,0,0]
     y_predicted = [1,0,2,0,3,2,1,0,1]
@@ -180,9 +180,8 @@ def utils_plot_image_test():
 
     classes = ('Guitar', 'Piano', 'Drum', 'Violin')
     accuracies = [87.3434234234, 12.4244444, 43.00004044, 55.444434, 66.4342345]
-
-    destination_address = '/Users/cookie/dev/instrumant_classifier/unit_testing/'
-    utils.plot_image(y_1, y_2, num_epochs, learning_rate, classes, accuracies, y_true, y_predicted, destination_address, show = False)
+    filename = '/Users/cookie/dev/instrumant_classifier/unit_testing/test.png'
+    utils.plot_image(y_1, y_2, num_epochs, learning_rate, classes, accuracies, y_true, y_predicted, filename, show = False)
 
     print('Check unit_testing folder')
     print(' ')
