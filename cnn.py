@@ -17,9 +17,7 @@ import utils
     ===================================
 '''
 
-
 classes = ('guitar', 'piano', 'drum', 'violin')
-
 
 # Un-Pickle Test sets
 with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_test_x', 'rb') as f:
@@ -27,15 +25,12 @@ with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_test_x', 'rb')
 with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_test_y', 'rb') as f:
     y_test = pickle.load(f)
 
-
 X_test = torch.from_numpy(X_test.astype(np.float32))
 y_test = torch.from_numpy(y_test).type(torch.LongTensor)
 
 
 
-
 class TrainSet(Dataset):
-
     def __init__(self, transform=None):
         # data loading
         with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_train_x', 'rb') as f:
@@ -57,7 +52,6 @@ class TrainSet(Dataset):
 
 dataset = TrainSet()
 train_loader = DataLoader(dataset=dataset, batch_size=4, shuffle=True, num_workers=0)
-
 
 
 
@@ -146,33 +140,11 @@ for epoch in range(num_epochs):
 
 
 # Saving the Model
-# torch.save(CNN_model, '/Users/cookie/dev/instrumant_classifier/unit_testing/cnn_for_tests.pt')
-
-
-
-
-#import os
-#os.system('say "Cookie, I am plotting losses" ')
-
-
-
-
-
-
-'''
-# plotting losses
-plt.plot(training_loss, 'g', label = 'Training loss')
-plt.plot(test_loss, 'r', label = 'Test loss')
-
-plt.xlabel('Epoch Number')
-plt.ylabel('Loss')
-plt.title('Loss functions \n LR = str(learning_rate), epochs = str(num_epochs)')
-
-plt.title(f'Loss functions for {num_epochs} epochs \n Learnind rate = {learning_rate}, Accuracy = ')
-
-plt.legend()
-plt.show()
-'''
+import time
+timestr = time.strftime("%Y%m%d-%H%M%S")
+name = 'lr_' + str(learning_rate) + '_epochs_' + str(num_epochs) + '_' + timestr
+filename = destination_address + name + '.pt'
+torch.save(CNN_model, filename)
 
 
 '''
@@ -185,11 +157,5 @@ import os
 os.system('say "Cookie, Im plotting the picture." ')
 
 y_predicted, accuracies, n_class_correct, n_class_samples = utils.test(CNN_model, X_test, y_test, classes)
-
 utils.plot_image(training_loss, test_loss, num_epochs, learning_rate, classes, accuracies, y_test, y_predicted, destination_address, show = True)
-
-
-
-import os
-os.system('say "Cookie, your program has finished." ')
 

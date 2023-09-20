@@ -10,18 +10,15 @@ import pickle
 
 
 
-
-
-
 # Calculate dimensions for the nn.Linear layer
 def dimensions_for_linear_layer(width, height):
     '''
-    Takes in dimensions of the input numpy array .shape[2] and .shape[3]
-        - calculates the dimentions for the nn.Linear input
-        - returns a product of hight and width output sizes
-
+        ===================================
+        Takes in dimensions of the input numpy array .shape[2] and .shape[3]
+            - calculates the dimentions for the nn.Linear input
+            - returns a product of hight and width output sizes
+        ===================================
     '''
-
     # add stride, padding and kernel as input parameters!!!!!!
     o_01 = (width - 5 + 0) / 1 + 1
     o_02 = o_01 // 2
@@ -33,16 +30,16 @@ def dimensions_for_linear_layer(width, height):
     o_13 = (o_12 - 5 + 0) / 1 + 1
     output_shape_2  = o_13 // 2
     # print(output_shape_1, output_shape_2)
-
     return int(output_shape_1 * output_shape_2)
 
 
-
-
+# Calculate predicred values on a test set, calculate accuracies
 def test(CNN_model, X_test, y_test, classes):
     '''
+        ===================================
         Runs the test sets through the model without changing the gradients.
         Returns: predicted, accuracies (the first value - accuracy of the entire model, others are for individual instruments), n_class_correct, n_class_samples
+        ===================================
     '''
 
     with torch.no_grad():
@@ -83,25 +80,28 @@ def test(CNN_model, X_test, y_test, classes):
         return predicted, accuracies, n_class_correct, n_class_samples
 
 
-
+# Creates a confusion matrix comparing test true labels with model predictions
 def confusion_matrix(y_true, y_pred):
     '''
+        ===================================
         Takes true and predicted values for labels (as tensors)
         Returns numpy array with a confusion matrix whose i-th row and j-th column entry indicates the number of samples with true label being i-th class and predicted label being j-th class.
+        ===================================
     '''
     from sklearn.metrics import confusion_matrix
     import sklearn
 
     metric = sklearn.metrics.confusion_matrix(y_true, y_pred, labels = [0, 1, 2, 3])
-
     return metric
 
 
+# Plots a confusion matrix
 def plot_confusion_matrix(y_true, y_pred, classes):
     '''
+        ===================================
         Takes true and predicted values for labels (as tensors), tuple of classes
         plots (but doesn't show) the confusion matrix where Rows represent True labels and Columns represent - prebicted labels
-
+        ===================================
     '''
     import numpy as np
     import matplotlib.pyplot as plt
@@ -137,22 +137,21 @@ def plot_confusion_matrix(y_true, y_pred, classes):
     plt.title('Confusion Matrix')
 
 
-
-
-
-
+# Plots and saves the final image with losses on epochs, accuracies and a confusion matrix
 def plot_image(training_loss, test_loss, num_epochs, learning_rate, classes, accuracies, y_true, y_predicted, destination_address, show = False):
     '''
-    Plots accuracies for all epochs, table with final accuracies of the model and individual instruments, a confusion matrix where Rows represent True labels and Columns represent - prebicted labels.
-    Imports all the necessary things.
+        ===================================
+        Plots accuracies for all epochs, table with final accuracies of the model and individual instruments, a confusion matrix where Rows represent True labels and Columns represent - prebicted labels.
+        Imports all the necessary things.
 
-    Takes as input:
-         - train losses (list of floats)
-         - test losses (list of floats)
-         - number of epochs (int)
-         - learning rate (float)
-         - all classes (tuple)
-         - all accuracies (list)
+        Takes as input:
+            - train losses (list of floats)
+            - test losses (list of floats)
+            - number of epochs (int)
+            - learning rate (float)
+            - all classes (tuple)
+            - all accuracies (list)
+        ===================================
     '''
     import matplotlib.pyplot as plt
     from matplotlib.gridspec import GridSpec
@@ -162,12 +161,10 @@ def plot_image(training_loss, test_loss, num_epochs, learning_rate, classes, acc
     row_Labels = accuracy + classes
 
     acc = []
-
     for item in accuracies:
-        acc.append(str(item) + ' %')
+        acc.append(str(round(item,1)) + ' %')
 
     columns = 1
-
     y_offset = np.zeros(columns)
     cell_text = []
     for row in range(len(acc)):
@@ -176,7 +173,6 @@ def plot_image(training_loss, test_loss, num_epochs, learning_rate, classes, acc
 
     fig = plt.figure(figsize=(12, 6), layout="constrained")
     fig.suptitle(f'Loss functions for {num_epochs} epochs, learning rate = {learning_rate}', fontsize = 24)
-
 
     gs = GridSpec(nrows=2, ncols=12)
 
@@ -203,7 +199,7 @@ def plot_image(training_loss, test_loss, num_epochs, learning_rate, classes, acc
     ax_table2 = fig.add_subplot(gs[-1, -3:-1])
     the_table_2 = plot_confusion_matrix(y_true, y_predicted, classes)
 
-
+    # Saving and naming the image
     import time
     timestr = time.strftime("%Y%m%d-%H%M%S")
     name = 'lr_' + str(learning_rate) + '_epochs_' + str(num_epochs) + '_' + timestr
@@ -213,4 +209,3 @@ def plot_image(training_loss, test_loss, num_epochs, learning_rate, classes, acc
     if show == True:
         plt.show()
     plt.close('all')
-

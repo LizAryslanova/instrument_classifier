@@ -267,4 +267,5 @@ print('Test y shape = ', test_y.shape)
 '''
 
 
-print('Im done')
+import os
+os.system('say "Cookie, I pickled the numpys." ')

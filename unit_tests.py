@@ -10,6 +10,7 @@ import pickle
 import utils
 
 
+
 '''
     ===================================
     CNN model. This is a copy-paste solution. there has to be a better option!!!!
@@ -47,19 +48,14 @@ with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_test_x', 'rb')
 with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_test_y', 'rb') as f:
     y_test = pickle.load(f)
 
-
 X_test = torch.from_numpy(X_test.astype(np.float32))
 y_test = torch.from_numpy(y_test).type(torch.LongTensor)
 
 model = torch.load('/Users/cookie/dev/instrumant_classifier/unit_testing/cnn_for_tests.pt')
 
-
-
-
-
+# ===========================================
 
 # utils.test
-
 def utils_test():
     '''
         Correct data input was done manually for the model that was saved to unit_testing folder.
@@ -106,10 +102,9 @@ def utils_test():
     print(' ')
 
 
-
+# ===========================================
 
 # utils_dimensions_for_linear_layer test
-
 def utils_dimensions_for_linear_layer():
     '''
         Checks if calculating dimensions for the linear layer works correctly against manually calculated results
@@ -134,16 +129,13 @@ def utils_dimensions_for_linear_layer():
     print(' ')
 
 
-
-
+# ===========================================
 
 # utils.confusion_matrix test
-
 def confusion_matrix_test():
     '''
         Checks if generating a confusion matrix works correctly
     '''
-
     y_pred = torch.tensor([3, 1, 2, 1, 1, 1, 3, 1, 1, 3, 1, 3, 3, 1, 1, 3, 3, 3, 2, 1, 3, 1, 2, 1,
         1, 1, 1, 1, 3, 1, 1, 2, 2, 1, 1, 3, 1, 1, 1, 1, 1, 3, 1, 1, 1, 3, 1, 2,
         1, 1, 1, 3, 2, 2, 1, 1, 3, 2, 1, 1, 2, 0, 3, 1, 1, 3, 2, 2, 1, 0, 1, 2,
@@ -166,8 +158,9 @@ def confusion_matrix_test():
     print(' ')
 
 
+# ===========================================
 
-
+# utils.plot_image test
 def utils_plot_image_test():
     '''
         Runs through utils.plot_image and saves the resulting image to unit_testing folder.
@@ -175,8 +168,6 @@ def utils_plot_image_test():
     '''
     print('===============================')
     print('Checking utils.plot_image')
-
-
 
     num_epochs = 18
     learning_rate = 2.2
@@ -188,7 +179,7 @@ def utils_plot_image_test():
     y_2 = [10,3,43,41,2,10,4,3]
 
     classes = ('Guitar', 'Piano', 'Drum', 'Violin')
-    accuracies = [87, 12, 43, 55, 66]
+    accuracies = [87.3434234234, 12.4244444, 43.00004044, 55.444434, 66.4342345]
 
     destination_address = '/Users/cookie/dev/instrumant_classifier/unit_testing/'
     utils.plot_image(y_1, y_2, num_epochs, learning_rate, classes, accuracies, y_true, y_predicted, destination_address, show = False)
@@ -198,10 +189,13 @@ def utils_plot_image_test():
 
 
 
+'''
+    =================================
+    Running all the tests
+    =================================
+'''
 
-
-
-confusion_matrix_test()
 utils_test()
 utils_dimensions_for_linear_layer()
+confusion_matrix_test()
 utils_plot_image_test()
