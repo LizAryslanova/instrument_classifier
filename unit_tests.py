@@ -57,9 +57,8 @@ model = torch.load('/Users/cookie/dev/instrumant_classifier/unit_testing/cnn_for
 
 
 
-'''
-    utils.test
-'''
+
+# utils.test
 
 def utils_test():
     '''
@@ -73,32 +72,28 @@ def utils_test():
         1, 1, 1, 3, 2, 2, 1, 1, 3, 2, 1, 1, 2, 0, 3, 1, 1, 3, 2, 2, 1, 0, 1, 2,
         3, 1])
     correct_predicted = correct_predicted.numpy()
-    correct_acc = 58.108108108108105
-    correct_acc_classes = [5.555555555555555, 83.33333333333333, 66.66666666666667, 75.0]
+
+    correct_accuracies = [58.108108108108105,5.555555555555555, 83.33333333333333, 66.66666666666667, 75.0]
     correct_n_class_correct = [1, 15, 12, 15]
     correct_n_class_samples = [18, 18, 18, 20]
 
     print('===============================')
     print('Checking utils.test')
 
-    predicted, acc, acc_classes, n_class_correct, n_class_samples = utils.test(model, X_test, y_test, classes)
+    predicted, accuracies, n_class_correct, n_class_samples = utils.test(model, X_test, y_test, classes)
     predicted = predicted.numpy()
 
-    if correct_predicted.all() == predicted.all() and correct_acc == acc and correct_acc_classes == acc_classes and correct_n_class_correct == n_class_correct and correct_n_class_samples == n_class_samples:
+    if correct_predicted.all() == predicted.all() and correct_accuracies == accuracies and correct_n_class_correct == n_class_correct and correct_n_class_samples == n_class_samples:
         print('utils.test is all good')
     else:
         if correct_predicted.all() != predicted.all():
             print('Predicted tensors dont match:')
             print('Correct = ', correct_predicted)
             print('utils.test = ', predicted)
-        if correct_acc != acc:
+        if correct_accuracies != accuracies:
             print('Predicted accuracy doesnt match:')
             print('Correct = ', correct_acc)
             print('utils.test = ', acc)
-        if correct_acc_classes == acc_classes:
-            print('Predicted instrument accuracies dont match:')
-            print('Correct = ', correct_acc_classes)
-            print('utils.test = ', acc_classes)
         if correct_n_class_correct == n_class_correct:
             print('Predicted number of guesses dont match:')
             print('Correct = ', correct_n_class_correct)
@@ -112,7 +107,13 @@ def utils_test():
 
 
 
+
+# utils_dimensions_for_linear_layer test
+
 def utils_dimensions_for_linear_layer():
+    '''
+        Checks if calculating dimensions for the linear layer works correctly against manually calculated results
+    '''
     print('===============================')
     print('Checking utils.dimensions_for_linear_layer')
 
@@ -136,7 +137,71 @@ def utils_dimensions_for_linear_layer():
 
 
 
+# utils.confusion_matrix test
+
+def confusion_matrix_test():
+    '''
+        Checks if generating a confusion matrix works correctly
+    '''
+
+    y_pred = torch.tensor([3, 1, 2, 1, 1, 1, 3, 1, 1, 3, 1, 3, 3, 1, 1, 3, 3, 3, 2, 1, 3, 1, 2, 1,
+        1, 1, 1, 1, 3, 1, 1, 2, 2, 1, 1, 3, 1, 1, 1, 1, 1, 3, 1, 1, 1, 3, 1, 2,
+        1, 1, 1, 3, 2, 2, 1, 1, 3, 2, 1, 1, 2, 0, 3, 1, 1, 3, 2, 2, 1, 0, 1, 2,
+        3, 1])
+
+    print('===============================')
+    print('Checking utils.confusion_matrix')
+
+    correct_confusion = np.array([[1, 16,  0,  1],[ 1, 15,  1,  1],[ 0,  5, 12,  1],[ 0,  5,  0, 15]])
+
+    confusion = utils.confusion_matrix(y_test, y_pred)
+
+    if correct_confusion.all() == confusion.all():
+        print('utils.confusion_matrix is all good')
+    else:
+        print('Confusion matrises dont match:')
+        print('Correct = ', correct_confusion)
+        print('utils.test = ', confusion)
+
+    print(' ')
 
 
+
+
+def utils_plot_image_test():
+    '''
+        Runs through utils.plot_image and saves the resulting image to unit_testing folder.
+        Currently need to check the image manually
+    '''
+    print('===============================')
+    print('Checking utils.plot_image')
+
+
+
+    num_epochs = 18
+    learning_rate = 2.2
+
+    y_true = [1,0,0,0,0,0,1,0,0]
+    y_predicted = [1,0,2,0,3,2,1,0,1]
+
+    y_1 = [3,13,23,4,2,1,34,33]
+    y_2 = [10,3,43,41,2,10,4,3]
+
+    classes = ('Guitar', 'Piano', 'Drum', 'Violin')
+    accuracies = [87, 12, 43, 55, 66]
+
+    destination_address = '/Users/cookie/dev/instrumant_classifier/unit_testing/'
+    utils.plot_image(y_1, y_2, num_epochs, learning_rate, classes, accuracies, y_true, y_predicted, destination_address, show = False)
+
+    print('Check unit_testing folder')
+    print(' ')
+
+
+
+
+
+
+confusion_matrix_test()
 utils_test()
 utils_dimensions_for_linear_layer()
+utils_plot_image_test()

@@ -105,6 +105,8 @@ num_epochs = 2
 loss_function = nn.CrossEntropyLoss()  # softmax is included
 optimizer = optim.SGD(CNN_model.parameters(), lr = learning_rate)
 
+destination_address = '/Users/cookie/dev/instrumant_classifier/model_results/'
+
 
 
 '''
@@ -149,15 +151,15 @@ for epoch in range(num_epochs):
 
 
 
-import os
-os.system('say "Cookie, I am plotting losses" ')
+#import os
+#os.system('say "Cookie, I am plotting losses" ')
 
 
 
 
 
 
-
+'''
 # plotting losses
 plt.plot(training_loss, 'g', label = 'Training loss')
 plt.plot(test_loss, 'r', label = 'Test loss')
@@ -170,6 +172,7 @@ plt.title(f'Loss functions for {num_epochs} epochs \n Learnind rate = {learning_
 
 plt.legend()
 plt.show()
+'''
 
 
 '''
@@ -178,9 +181,13 @@ plt.show()
     ===================================
 '''
 
+import os
+os.system('say "Cookie, Im plotting the picture." ')
 
+y_predicted, accuracies, n_class_correct, n_class_samples = utils.test(CNN_model, X_test, y_test, classes)
 
-utils.test(CNN_model, X_test, y_test, classes)
+utils.plot_image(training_loss, test_loss, num_epochs, learning_rate, classes, accuracies, y_test, y_predicted, destination_address, show = True)
+
 
 
 import os
