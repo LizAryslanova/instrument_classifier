@@ -80,7 +80,7 @@ def utils_test():
     predicted = predicted.numpy()
 
     if correct_predicted.all() == predicted.all() and correct_accuracies == accuracies and correct_n_class_correct == n_class_correct and correct_n_class_samples == n_class_samples:
-        print('utils.test is all good')
+        print('✓ utils.test is all good')
     else:
         if correct_predicted.all() != predicted.all():
             print('Predicted tensors dont match:')
@@ -113,7 +113,7 @@ def utils_dimensions_for_linear_layer():
     print('Checking utils.dimensions_for_linear_layer')
 
     if utils.dimensions_for_linear_layer(0, 0) == 9 and utils.dimensions_for_linear_layer(100, 80) == 374 and utils.dimensions_for_linear_layer(20, 80) == 34:
-        print('utils.dimensions_for_linear_layer is all good')
+        print('✓ utils.dimensions_for_linear_layer is all good')
 
     else:
         if utils.dimensions_for_linear_layer(0, 0) != 9:
@@ -149,7 +149,7 @@ def confusion_matrix_test():
     confusion = utils.confusion_matrix(y_test, y_pred)
 
     if correct_confusion.all() == confusion.all():
-        print('utils.confusion_matrix is all good')
+        print('✓ utils.confusion_matrix is all good')
     else:
         print('Confusion matrises dont match:')
         print('Correct = ', correct_confusion)
@@ -180,11 +180,82 @@ def utils_plot_image_test():
 
     classes = ('Guitar', 'Piano', 'Drum', 'Violin')
     accuracies = [87.3434234234, 12.4244444, 43.00004044, 55.444434, 66.4342345]
-    filename = '/Users/cookie/dev/instrumant_classifier/unit_testing/test.png'
+    filename = '/Users/cookie/dev/instrumant_classifier/unit_testing/test.pt'
     utils.plot_image(y_1, y_2, num_epochs, learning_rate, classes, accuracies, y_true, y_predicted, filename, show = False)
 
     print('Check unit_testing folder')
     print(' ')
+
+
+# ===========================================
+
+def utils_get_labels_from_nsynth_test():
+    print('===============================')
+    print('Checking utils.get_labels_from_nsynth')
+
+    correct_labels = ['bass_synthetic', 'mallet_acoustic', 'keyboard_electronic', 'organ_electronic', 'guitar_electronic', 'synth_lead_synthetic', 'brass_acoustic', 'flute_acoustic', 'guitar_acoustic', 'keyboard_acoustic', 'vocal_acoustic', 'guitar_synthetic', 'reed_acoustic', 'bass_electronic', 'mallet_electronic', 'string_acoustic', 'vocal_synthetic', 'brass_electronic', 'keyboard_synthetic', 'flute_synthetic', 'mallet_synthetic', 'reed_synthetic', 'bass_acoustic', 'string_electronic', 'organ_acoustic', 'vocal_electronic', 'reed_electronic', 'flute_electronic']
+
+    function_labels = utils.get_labels_from_nsynth()
+
+    if len(function_labels) == len(correct_labels):
+        print('✓ utils.get_labels_from_nsynth is all good')
+
+    else:
+        print('Correct output = ', correct_labels)
+        print(len(correct_labels))
+        print('Function output = ', function_labels)
+        print(len(function_labels))
+    print(' ')
+
+
+# ===========================================
+
+def utils_audio_to_numpy_test():
+    print('===============================')
+    print('Checking utils.audio_to_numpy')
+    correct_array = np.array([[10.500757], [14.129261] ,  [2.5759351], [23.461042] ])
+    function_array = utils.audio_to_numpy('/Users/cookie/dev/instrumant_classifier/unit_testing/', 'G53-71607-1111-229.wav')[0, 0:4]
+
+    if correct_array.all() == function_array.all():
+        print('✓ utils.audio_to_numpy is all good')
+    else:
+        print('Correct output = ', correct_array)
+        print('Function output = ', function_array)
+    print(' ')
+
+
+# ===========================================
+
+def utils_audio_to_spectrogram_test():
+    print('===============================')
+    print('Checking utils.audio_to_spectrogram')
+
+    folder_address = '/Users/cookie/dev/instrumant_classifier/unit_testing/'
+    file = 'G53-71607-1111-229.wav'
+    destination_address = '/Users/cookie/dev/instrumant_classifier/unit_testing/'
+    utils.audio_to_spectrogram(folder_address, file, destination_address)
+
+    print('Check unit_testing folder')
+    print('')
+
+# ===========================================
+
+def utils_dim_of_spectrogram_test():
+    print('===============================')
+    print('Checking utils.dim_of_spectrogram')
+
+    correct_dims = (1025, 130, 1)
+    function_dims = utils.dim_of_spectrogram()
+
+    if correct_dims == function_dims:
+        print('✓  utils.dim_of_spectrogram is all good')
+    else:
+        print('Correct oupput = ', correct_dims)
+        print('Function output = ', function_dims)
+    print(' ')
+
+
+
 
 
 
@@ -198,3 +269,7 @@ utils_test()
 utils_dimensions_for_linear_layer()
 confusion_matrix_test()
 utils_plot_image_test()
+utils_get_labels_from_nsynth_test()
+utils_audio_to_numpy_test()
+utils_audio_to_spectrogram_test()
+utils_dim_of_spectrogram_test()

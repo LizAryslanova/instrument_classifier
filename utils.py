@@ -200,9 +200,153 @@ def plot_image(training_loss, test_loss, num_epochs, learning_rate, classes, acc
     the_table_2 = plot_confusion_matrix(y_true, y_predicted, classes)
 
     # Saving and naming the image
-    filename = filename[:-4]  + '.png'
+    filename = filename[:-3]  + '.png'
     plt.savefig(filename, dpi=400, bbox_inches='tight', pad_inches=0.1)
 
     if show == True:
         plt.show()
     plt.close('all')
+
+
+
+
+def get_labels_from_nsynth():
+    '''
+        ===================================
+        Returns a list of all labels from nsynth sataset
+        ===================================
+    '''
+    import os
+    nsynth_labels = []
+    big_folder = '/Users/cookie/dev/instrumant_classifier/audio_files/nsynth/Training_audios/'
+
+    for i in range(31):
+        folder_address = big_folder + str(i+1) + '/'
+        for file in os.listdir(folder_address):
+            if file[-4:] == '.wav':
+                label = file[:-16]
+                if label not in nsynth_labels:
+                    nsynth_labels.append(label)
+    return nsynth_labels
+
+
+
+
+def audio_to_numpy(folder_address, file):
+    '''
+        ===================================
+        Takes in the *file* from the *folder_address*, checks if the file is a .wav and if True:
+            - trims the silence,
+            - takes the first 3 seconds
+            - padds for files shorter than 3 seconds
+            - normalises
+            - stft
+            - returns a numpy array of absolute values after stft
+        ===================================
+    '''
+
+    import librosa
+    import librosa.display
+    from librosa.effects import trim
+    import numpy as np
+
+    if (file[-4:] == '.wav'):
+        audio_file = folder_address + file
+        samples, _ = librosa.load(audio_file)
+        trimmed_signal, _ = librosa.effects.trim(samples, top_db=15)
+
+        sr = 22050 # sample rate, used to cut 3 seconds
+        seconds_to_cut = 3
+        cut_time = int(sr * seconds_to_cut)
+        cut_signal = trimmed_signal[0:cut_time]
+
+        # normalize data
+        max_peak = np.max(np.abs(cut_signal))
+        ratio = 1 / max_peak
+        normalised_signal = cut_signal * ratio
+
+        # padding with 0 for things shorter that 3 seconds
+        if (len(normalised_signal) < cut_time):
+            normalised_signal = np.pad(normalised_signal, pad_width=(0, cut_time - len(normalised_signal)))
+
+        STFT_result = librosa.stft(normalised_signal)
+        STFT_abs = np.abs(STFT_result)
+
+        #print(STFT_abs.shape)
+        #print(STFT_abs[10,50])
+
+        a, b = STFT_result.shape
+        channels = 1    # use 3 for RGB
+        multiplyer = 1   # use 255 for greyscale RGB
+
+
+        final_array = np.zeros(shape=(a, b, channels), dtype=np.float32)
+
+        for i in range(channels):
+            # img[:,:,i] = multiplyer * D_abs
+            final_array[:,:,i] = multiplyer * STFT_abs
+
+        return final_array
+
+
+
+def audio_to_spectrogram(folder_address, file, destination_address):
+    '''
+        ===================================
+        Takes in the *file* from the *folder_address*, checks if the file is a .wav and if True:
+            - trims the silence,
+            - takes the first 3 seconds
+            - adds 0 padding if the file is shorter
+            - creates a spectrogram image
+            - saves image destination_address with the same name as the original file (.png)
+        ===================================
+    '''
+    import matplotlib.pyplot as plt
+    import librosa
+    import librosa.display
+    from librosa.effects import trim
+    import numpy as np
+
+    if (file[-4:] == '.wav'):
+
+        audio_file = folder_address + file
+        samples, sample_rate = librosa.load(audio_file)
+        trimed_signal, _ = librosa.effects.trim(samples, top_db=15)
+
+
+        sr = 22050 # sample rate, used to cut 3 seconds
+        seconds_to_cut = 3
+        cut_time = int(sr * seconds_to_cut)
+        cut_signal = trimed_signal[0:cut_time]
+
+        # padding with 0 for things shorter that 3 seconds
+        if (len(cut_signal) < cut_time):
+            cut_signal = np.pad(cut_signal, pad_width=(0, cut_time - len(cut_signal)))
+
+        # NB! normalizing the loudness
+
+        fig = plt.figure(figsize=[1, 1])
+        ax = fig.add_subplot(111)
+        ax.axes.get_xaxis().set_visible (False)
+        ax. axes.get_yaxis().set_visible (False)
+        ax.set_frame_on(False)
+        filename = destination_address + file[:-4] + '.png'
+
+        D = librosa.stft(cut_signal)
+        S_db = librosa.amplitude_to_db(abs(D), ref=np.max)
+        librosa.display.specshow(S_db, x_axis='time', y_axis='log')
+
+        plt.savefig(filename, dpi=400, bbox_inches='tight', pad_inches=0)
+        plt.close('all')
+
+
+
+# Shape of the spectrogram
+def dim_of_spectrogram():
+    folder_address = '/Users/cookie/dev/instrumant_classifier/unit_testing/'
+    file = 'G53-71607-1111-229.wav'
+    N = audio_to_numpy(folder_address, file)
+    return N.shape
+
+
+

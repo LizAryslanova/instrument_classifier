@@ -94,8 +94,8 @@ class CNN(nn.Module):
 num_classes = 4
 CNN_model = CNN()
 
-learning_rate = 0.000003
-num_epochs = 25
+learning_rate = 0.0000015
+num_epochs = 50
 
 loss_function = nn.CrossEntropyLoss()  # softmax is included
 optimizer = optim.SGD(CNN_model.parameters(), lr = learning_rate)
@@ -126,15 +126,14 @@ for epoch in range(num_epochs):
         loss.backward()
         optimizer.step()                 # updates
 
-        if (i+1) % 50 == 0:
+        if (i+1) % 100 == 0:
             print (f'Epoch [{epoch+1}/{num_epochs}], Step [{i+1}/{n_total_steps}], Loss: {loss.item():.4f}')
 
     training_loss.append(loss.item())
 
-    # Calculating the test loss
+    # Calculating test loss
     with torch.no_grad():
         outputs = CNN_model(X_test)
-
         loss = loss_function(outputs, y_test)
         test_loss.append(loss.item())
 
