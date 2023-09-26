@@ -10,11 +10,6 @@ import pickle
 import utils
 
 
-from torch.utils.tensorboard import SummaryWriter
-writer = SummaryWriter('logs/')
-
-import sys
-
 
 '''
     ===================================
@@ -39,9 +34,9 @@ class TrainSet(Dataset):
 
     def __init__(self, transform=None):
         # data loading
-        with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_train_x', 'rb') as f:
+        with open('/Users/cookie/dev/instrumant_classifier/pickles/nsynth_transfer_x', 'rb') as f:
             X_train = pickle.load(f)
-        with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_train_y', 'rb') as f:
+        with open('/Users/cookie/dev/instrumant_classifier/pickles/nsynth_transfer_y', 'rb') as f:
             y_train = pickle.load(f)
 
         self.x = torch.from_numpy(X_train.astype(np.float32))
@@ -97,10 +92,10 @@ class CNN(nn.Module):
 '''
 
 num_classes = 4
-CNN_model = CNN()
+CNN_model = torch.load('/Users/cookie/dev/instrumant_classifier/model_results/lr_1.5e-06_epochs_50_20230921-232418.pt')
 
-learning_rate = 0.0000015
-num_epochs = 50
+learning_rate = 0.0000001
+num_epochs = 7
 
 loss_function = nn.CrossEntropyLoss()  # softmax is included
 optimizer = optim.SGD(CNN_model.parameters(), lr = learning_rate)
@@ -108,12 +103,6 @@ optimizer = optim.SGD(CNN_model.parameters(), lr = learning_rate)
 destination_address = '/Users/cookie/dev/instrumant_classifier/model_results/'
 
 
-
-
-
-writer.add_graph(CNN_model, X_test)
-writer.close()
-sys.exit()
 
 '''
     ===================================

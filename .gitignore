@@ -4,3 +4,4 @@ __pycache__/*
 unit_testing/*
 pickles/*
 model_results/*
+logs/*
