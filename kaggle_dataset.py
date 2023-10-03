@@ -19,8 +19,6 @@ import pickle
     ===================================
 '''
 
-
-
 kaggle_train = '/Users/cookie/dev/instrumant_classifier/audio_files/from_kaggle/Train_submission/Train_submission/'
 kaggle_test = '/Users/cookie/dev/instrumant_classifier/audio_files/from_kaggle/Test_submission/Test_submission/'
 
@@ -70,7 +68,6 @@ def get_label(file, csv_address):
             label = Skip # in case the file is not in scv
 
     return label
-
 
 
 
@@ -124,8 +121,6 @@ def process_folder(folder_address, csv_address, number_of_files):
     ===================================
 '''
 
-
-
 train_x, train_y = process_folder(kaggle_train, kaggle_train_csv, number_of_files_train)
 test_x, test_y = process_folder(kaggle_test, kaggle_test_csv, number_of_files_test)
 
@@ -152,7 +147,6 @@ for i in range(245):
 print('Test x shape = ', test_x.shape)
 print('Test y shape = ', test_y.shape)
 '''
-
 
 import os
 os.system('say "Cookie, I pickled the numpys." ')

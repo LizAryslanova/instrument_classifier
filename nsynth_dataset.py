@@ -55,7 +55,6 @@ vocals: 'vocal_electronic', 'vocal_synthetic', 'vocal_acoustic'
 '''
 
 
-
 def move_600_guitar_and_piano_for_transfer_learning():
     '''
     Moves 600 of each (guitar and piano labelled files) to a separate folder to be later processed for transfer learning
@@ -90,7 +89,6 @@ def move_600_guitar_and_piano_for_transfer_learning():
 
 
 
-
 # works ringt now for the folder with guitars and pianos (acoustic)
 def nsynth_label(file):
     Sound_Guitar = 0
@@ -106,9 +104,6 @@ def nsynth_label(file):
     else:
         label = 'skip'
     return label
-
-
-
 
 
 

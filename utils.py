@@ -9,6 +9,28 @@ import torch.optim as optim
 import pickle
 
 
+def output_dimensions(width, heigth, padding, kernel, stride):
+    '''
+        ===================================
+        Takes in dimensions of the input numpy array .shape[2] and .shape[3], padding, kernel and stride
+            - calculates the dimentions of the output after a filter
+            - returns hight and width output sizes
+        ===================================
+    '''
+    output_width = int( ( width + 2 * padding - kernel ) / stride ) + 1
+    output_heigth = int( ( heigth + 2 * padding - kernel ) / stride ) + 1
+
+    return output_width, output_heigth
+
+
+
+
+
+
+
+
+
+
 
 # Calculate dimensions for the nn.Linear layer
 def dimensions_for_linear_layer(width, height):
@@ -347,6 +369,3 @@ def dim_of_spectrogram():
     file = 'G53-71607-1111-229.wav'
     N = audio_to_numpy(folder_address, file)
     return N.shape
-
-
-

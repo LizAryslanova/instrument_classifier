@@ -5,3 +5,4 @@ unit_testing/*
 pickles/*
 model_results/*
 logs/*
+runs/*

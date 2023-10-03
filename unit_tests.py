@@ -257,6 +257,35 @@ def utils_dim_of_spectrogram_test():
 
 
 
+def test_utils_output_dimensions():
+    print('===============================')
+    print('Checking utils.output_dimensions')
+
+    layer1 = 6
+    padding1 = 1
+    stride1 = 1
+    kernel1 = 3
+    correct_output1 = 6
+    function_output1, _ = utils.output_dimensions(layer1, layer1, padding1, kernel1, stride1)
+
+    layer2 = 7
+    padding2 = 0
+    stride2 = 2
+    kernel2 = 3
+    correct_output2 = 3
+    function_output2, _ = utils.output_dimensions(layer2, layer2, padding2, kernel2, stride2)
+
+    if correct_output1 == function_output1 and correct_output2 == function_output2:
+        print('✓  utils.output_dimension is all good')
+    else:
+        print('Correct output 1 = ', correct_output1)
+        print('Function output 1 = ', function_output1)
+        print('Correct output 2 = ', correct_output2)
+        print('Function output 2 = ', function_output2)
+
+
+
+
 
 
 '''
@@ -264,7 +293,7 @@ def utils_dim_of_spectrogram_test():
     Running all the tests
     =================================
 '''
-
+test_utils_output_dimensions()
 utils_test()
 utils_dimensions_for_linear_layer()
 confusion_matrix_test()

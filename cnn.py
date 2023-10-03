@@ -63,7 +63,7 @@ train_loader = DataLoader(dataset=dataset, batch_size=4, shuffle=True, num_worke
 
 '''
     ===================================
-    CNN model
+    CNN model - move him !!!!
     ===================================
 '''
 
@@ -99,8 +99,8 @@ class CNN(nn.Module):
 num_classes = 4
 CNN_model = CNN()
 
-learning_rate = 0.0000015
-num_epochs = 50
+learning_rate = 0.00003
+num_epochs = 5
 
 loss_function = nn.CrossEntropyLoss()  # softmax is included
 optimizer = optim.SGD(CNN_model.parameters(), lr = learning_rate)
@@ -109,11 +109,9 @@ destination_address = '/Users/cookie/dev/instrumant_classifier/model_results/'
 
 
 
-
-
 writer.add_graph(CNN_model, X_test)
-writer.close()
-sys.exit()
+# sys.exit()
+
 
 '''
     ===================================
@@ -124,6 +122,9 @@ sys.exit()
 n_total_steps = len(train_loader)
 training_loss = []
 test_loss = []
+
+running_loss = 0.0
+running_correct = 0
 
 for epoch in range(num_epochs):
 
@@ -137,10 +138,23 @@ for epoch in range(num_epochs):
         loss.backward()
         optimizer.step()                 # updates
 
+        running_loss += loss.item()
+        '''
+        outputs = CNN_model(X_test)
+        _, predict = torch.max(outputs, 1)
+        running_correct += (predict == labels).sum().item()
+        '''
+
         if (i+1) % 100 == 0:
             print (f'Epoch [{epoch+1}/{num_epochs}], Step [{i+1}/{n_total_steps}], Loss: {loss.item():.4f}')
+            writer.add_scalar('training loss', running_loss/100, epoch * n_total_steps + i)
+            #writer.add_scalar('accuracy', running_correct/100, epoch * n_total_steps + i)
 
-    training_loss.append(loss.item())
+            running_loss = 0.0
+            running_correct = 0
+
+    training_loss.append(loss.item())   # looks at only last batch / fix it!!!
+    # average losses for all batches in each epoch
 
     # Calculating test loss
     with torch.no_grad():
@@ -149,6 +163,7 @@ for epoch in range(num_epochs):
         test_loss.append(loss.item())
 
 
+writer.close()
 
 # Saving the Model
 import time
