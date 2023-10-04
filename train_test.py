@@ -72,8 +72,8 @@ train_loader = DataLoader(dataset=dataset, batch_size=4, shuffle=True, num_worke
 num_classes = 4
 CNN_model = CNN()
 
-learning_rate = 0.00003
-num_epochs = 5
+learning_rate = 0.000003
+num_epochs = 50
 
 loss_function = nn.CrossEntropyLoss()  # softmax is included
 optimizer = optim.SGD(CNN_model.parameters(), lr = learning_rate)
@@ -95,6 +95,7 @@ writer.add_graph(CNN_model, X_test)
 n_total_steps = len(train_loader)
 training_loss = []
 test_loss = []
+epoch_loss = []
 
 running_loss = 0.0
 running_correct = 0
@@ -112,6 +113,7 @@ for epoch in range(num_epochs):
         optimizer.step()                 # updates
 
         running_loss += loss.item()
+        epoch_loss.append(loss.item())
         '''
         outputs = CNN_model(X_test)
         _, predict = torch.max(outputs, 1)
@@ -126,7 +128,7 @@ for epoch in range(num_epochs):
             running_loss = 0.0
             running_correct = 0
 
-    training_loss.append(loss.item())   # looks at only last batch / fix it!!!
+    training_loss.append(sum(epoch_loss) / len(epoch_loss))   # looks at only last batch / fix it!!!
     # average losses for all batches in each epoch
 
     # Calculating test loss
