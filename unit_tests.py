@@ -85,18 +85,18 @@ def utils_dimensions_for_linear_layer():
     print('===============================')
     print('Checking utils.dimensions_for_linear_layer')
 
-    if utils.dimensions_for_linear_layer(0, 0) == 9 and utils.dimensions_for_linear_layer(100, 80) == 374 and utils.dimensions_for_linear_layer(20, 80) == 34:
+    if utils.dimensions_for_linear_layer(0, 0) == 0 and utils.dimensions_for_linear_layer(100, 80) == 8000 and utils.dimensions_for_linear_layer(20, 80) == 1600:
         print('✓ utils.dimensions_for_linear_layer is all good')
 
     else:
-        if utils.dimensions_for_linear_layer(0, 0) != 9:
-            print('Correct answer to (0,0) input = 9')
+        if utils.dimensions_for_linear_layer(0, 0) != 0:
+            print('Correct answer to (0,0) input = 0')
             print('Function output = ', utils.dimensions_for_linear_layer(0, 0))
-        if utils.dimensions_for_linear_layer(100, 80) != 374:
-            print('Correct answer to (100,80) input = 374')
+        if utils.dimensions_for_linear_layer(100, 80) != 8000:
+            print('Correct answer to (100,80) input = 8000')
             print('Function output = ', utils.dimensions_for_linear_layer(100, 80))
-        if utils.dimensions_for_linear_layer(20, 80) != 34:
-            print('Correct answer to (20,80) input = 34')
+        if utils.dimensions_for_linear_layer(20, 80) != 1600:
+            print('Correct answer to (20,80) input = 1600')
             print('Function output = ', utils.dimensions_for_linear_layer(20, 80))
 
     print(' ')

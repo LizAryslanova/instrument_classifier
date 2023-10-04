@@ -14,7 +14,7 @@ import pickle
 
 
 
-def output_dimensions(width, heigth, padding, kernel, stride):
+def output_dimensions(width, height, padding, kernel, stride):
     '''
         ===================================
         Takes in dimensions of the input numpy array .shape[2] and .shape[3], padding, kernel and stride
@@ -23,9 +23,9 @@ def output_dimensions(width, heigth, padding, kernel, stride):
         ===================================
     '''
     output_width = int( ( width + 2 * padding - kernel ) / stride ) + 1
-    output_heigth = int( ( heigth + 2 * padding - kernel ) / stride ) + 1
+    output_height = int( ( height + 2 * padding - kernel ) / stride ) + 1
 
-    return output_width, output_heigth
+    return output_width, output_height
 
 
 
@@ -33,23 +33,13 @@ def output_dimensions(width, heigth, padding, kernel, stride):
 def dimensions_for_linear_layer(width, height):
     '''
         ===================================
-        Takes in dimensions of the input numpy array .shape[2] and .shape[3]
+        Takes in dimensions of the input numpy array (.shape[2] and .shape[3])
             - calculates the dimentions for the nn.Linear input
             - returns a product of hight and width output sizes
         ===================================
     '''
-    # add stride, padding and kernel as input parameters!!!!!!
-    o_01 = (width - 5 + 0) / 1 + 1
-    o_02 = o_01 // 2
-    o_03 = (o_02 - 5 + 0) / 1 + 1
-    output_shape_1 = o_03 // 2
 
-    o_11 = (height - 5 + 0) / 1 + 1
-    o_12 = o_11 // 2
-    o_13 = (o_12 - 5 + 0) / 1 + 1
-    output_shape_2  = o_13 // 2
-    # print(output_shape_1, output_shape_2)
-    return int(output_shape_1 * output_shape_2)
+    return int(width * height)
 
 
 # Calculate predicred values on a test set, calculate accuracies
