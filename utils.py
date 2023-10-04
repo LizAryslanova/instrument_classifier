@@ -9,6 +9,11 @@ import torch.optim as optim
 import pickle
 
 
+
+
+
+
+
 def output_dimensions(width, heigth, padding, kernel, stride):
     '''
         ===================================
@@ -21,14 +26,6 @@ def output_dimensions(width, heigth, padding, kernel, stride):
     output_heigth = int( ( heigth + 2 * padding - kernel ) / stride ) + 1
 
     return output_width, output_heigth
-
-
-
-
-
-
-
-
 
 
 
