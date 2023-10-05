@@ -261,7 +261,7 @@ def audio_to_numpy(folder_address, file):
 
     if (file[-4:] == '.wav'):
         audio_file = folder_address + file
-        samples, _ = librosa.load(audio_file)
+        samples, sample_rate = librosa.load(audio_file)
         trimmed_signal, _ = librosa.effects.trim(samples, top_db=15)
 
         sr = 22050 # sample rate, used to cut 3 seconds
@@ -281,10 +281,17 @@ def audio_to_numpy(folder_address, file):
         STFT_result = librosa.stft(normalised_signal)
         STFT_abs = np.abs(STFT_result)
 
+
+        # MEL Spectrogram
+        sgram_mag, _ = librosa.magphase(STFT_result)
+        mel_scale_sgram = librosa.feature.melspectrogram(S=sgram_mag, sr=sample_rate)
+        mel_sgram = librosa.amplitude_to_db(mel_scale_sgram, ref=np.min)
+
         #print(STFT_abs.shape)
         #print(STFT_abs[10,50])
 
-        a, b = STFT_result.shape
+        #a, b = STFT_result.shape
+        a, b = mel_sgram.shape
         channels = 1    # use 3 for RGB
         multiplyer = 1   # use 255 for greyscale RGB
 
@@ -293,7 +300,8 @@ def audio_to_numpy(folder_address, file):
 
         for i in range(channels):
             # img[:,:,i] = multiplyer * D_abs
-            final_array[:,:,i] = multiplyer * STFT_abs
+            # final_array[:,:,i] = multiplyer * STFT_abs
+            final_array[:,:,i] = multiplyer * mel_sgram
 
         return final_array
 

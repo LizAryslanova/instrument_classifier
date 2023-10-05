@@ -10,6 +10,8 @@ import pickle
 import utils
 from cnn import CNN
 
+from torch.optim import lr_scheduler
+
 
 from torch.utils.tensorboard import SummaryWriter
 writer = SummaryWriter('logs/')
@@ -19,16 +21,16 @@ import sys
 
 '''
     ===================================
-    Prearing the dataset
+    Preparing the dataset
     ===================================
 '''
 
 classes = ('guitar', 'piano', 'drum', 'violin')
 
 # Un-Pickle Test sets
-with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_test_x', 'rb') as f:
+with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_test_mel_x', 'rb') as f:
     X_test = pickle.load(f)
-with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_test_y', 'rb') as f:
+with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_test_mel_y', 'rb') as f:
     y_test = pickle.load(f)
 
 X_test = torch.from_numpy(X_test.astype(np.float32))
@@ -40,9 +42,9 @@ class TrainSet(Dataset):
 
     def __init__(self, transform=None):
         # data loading
-        with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_train_x', 'rb') as f:
+        with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_train_mel_x', 'rb') as f:
             X_train = pickle.load(f)
-        with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_train_y', 'rb') as f:
+        with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_train_mel_y', 'rb') as f:
             y_train = pickle.load(f)
 
         self.x = torch.from_numpy(X_train.astype(np.float32))
@@ -72,8 +74,8 @@ train_loader = DataLoader(dataset=dataset, batch_size=4, shuffle=True, num_worke
 num_classes = 4
 CNN_model = CNN()
 
-learning_rate = 0.000003
-num_epochs = 50
+learning_rate = 0.00001
+num_epochs = 40
 
 loss_function = nn.CrossEntropyLoss()  # softmax is included
 optimizer = optim.SGD(CNN_model.parameters(), lr = learning_rate)
@@ -99,6 +101,8 @@ epoch_loss = []
 
 running_loss = 0.0
 running_correct = 0
+
+scheduler = lr_scheduler.StepLR(optimizer, step_size=2, gamma=0.5)
 
 for epoch in range(num_epochs):
 
@@ -128,14 +132,17 @@ for epoch in range(num_epochs):
             running_loss = 0.0
             running_correct = 0
 
-    training_loss.append(sum(epoch_loss) / len(epoch_loss))   # looks at only last batch / fix it!!!
-    # average losses for all batches in each epoch
+    training_loss.append(sum(epoch_loss) / len(epoch_loss))
+    epoch_loss = []
+
 
     # Calculating test loss
     with torch.no_grad():
         outputs = CNN_model(X_test)
         loss = loss_function(outputs, y_test)
         test_loss.append(loss.item())
+
+    scheduler.step()
 
 
 writer.close()

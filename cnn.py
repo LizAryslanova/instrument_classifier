@@ -14,7 +14,7 @@ import pickle
 
 
 # Un-Pickle Test sets
-with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_test_x', 'rb') as f:
+with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_test_mel_x', 'rb') as f:
     X_test = pickle.load(f)
 X_test = torch.from_numpy(X_test.astype(np.float32))
 
@@ -32,7 +32,7 @@ class CNN(nn.Module):
     def __init__(self):
         super().__init__()
 
-        kernel_1 = 3
+        kernel_1 = 5
         stride_1 = 1
         padding_1 = 0
 
@@ -41,7 +41,7 @@ class CNN(nn.Module):
 
         #===========================
 
-        kernel_2 = 2
+        kernel_2 = 3
         stride_2 = 2
         padding_2 = 0
 
@@ -50,7 +50,7 @@ class CNN(nn.Module):
 
         #===========================
 
-        kernel_3 = 5
+        kernel_3 = 7
         stride_3 = 2
         padding_3 = 0
 
