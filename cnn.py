@@ -58,10 +58,20 @@ class CNN(nn.Module):
         height_3, width_3 = utils.output_dimensions(height_2, width_2, padding_3, kernel_3, stride_3)
         height_4, width_4 = utils.output_dimensions(height_3, width_3, padding_2, kernel_2, stride_2)
 
+        #===========================
+
+        kernel_4 = 7
+        stride_4 = 2
+        padding_4 = 0
+
+        self.conv3 = nn.Conv2d(16, 20, kernel_4, stride_4, padding_4)
+        height_5, width_5 = utils.output_dimensions(height_4, width_4, padding_4, kernel_4, stride_4)
+        height_6, width_6 = utils.output_dimensions(height_5, width_5, padding_2, kernel_2, stride_2)
+
 
         #===========================
 
-        self.fc1 = nn.Linear(16 * utils.dimensions_for_linear_layer(height_4, width_4), 120)
+        self.fc1 = nn.Linear(20 * utils.dimensions_for_linear_layer(height_6, width_6), 120)
         self.fc2 = nn.Linear(120, 84)
         self.fc3 = nn.Linear(84, num_classes)
 
@@ -70,6 +80,7 @@ class CNN(nn.Module):
 
         x = self.pool(F.relu(self.conv1(x)))
         x = self.pool(F.relu(self.conv2(x)))
+        x = self.pool(F.relu(self.conv3(x)))
         x = torch.flatten(x, 1)
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))

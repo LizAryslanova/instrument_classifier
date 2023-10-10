@@ -75,7 +75,7 @@ num_classes = 4
 CNN_model = CNN()
 
 learning_rate = 0.00001
-num_epochs = 40
+num_epochs = 20
 
 loss_function = nn.CrossEntropyLoss()  # softmax is included
 optimizer = optim.SGD(CNN_model.parameters(), lr = learning_rate)
@@ -102,7 +102,7 @@ epoch_loss = []
 running_loss = 0.0
 running_correct = 0
 
-scheduler = lr_scheduler.StepLR(optimizer, step_size=2, gamma=0.5)
+scheduler = lr_scheduler.StepLR(optimizer, step_size=8, gamma=0.1)
 
 for epoch in range(num_epochs):
 
