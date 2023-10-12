@@ -125,13 +125,13 @@ train_x, train_y = process_folder(kaggle_train, kaggle_train_csv, number_of_file
 test_x, test_y = process_folder(kaggle_test, kaggle_test_csv, number_of_files_test)
 
 
-with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_train_mel_x', 'wb') as f:
+with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_train_mel_6000_x', 'wb') as f:
     pickle.dump(train_x , f)
-with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_train_mel_y', 'wb') as f:
+with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_train_mel_6000_y', 'wb') as f:
     pickle.dump(train_y , f)
-with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_test_mel_x', 'wb') as f:
+with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_test_mel_6000_x', 'wb') as f:
     pickle.dump(test_x , f)
-with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_test_mel_y', 'wb') as f:
+with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_test_mel_6000_y', 'wb') as f:
     pickle.dump(test_y , f)
 
 

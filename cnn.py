@@ -64,15 +64,15 @@ class CNN(nn.Module):
         stride_4 = 2
         padding_4 = 0
 
-        self.conv3 = nn.Conv2d(16, 20, kernel_4, stride_4, padding_4)
+        self.conv3 = nn.Conv2d(16, 40, kernel_4, stride_4, padding_4)
         height_5, width_5 = utils.output_dimensions(height_4, width_4, padding_4, kernel_4, stride_4)
         height_6, width_6 = utils.output_dimensions(height_5, width_5, padding_2, kernel_2, stride_2)
 
 
         #===========================
 
-        self.fc1 = nn.Linear(20 * utils.dimensions_for_linear_layer(height_6, width_6), 120)
-        self.fc2 = nn.Linear(120, 84)
+        self.fc1 = nn.Linear(40 * utils.dimensions_for_linear_layer(height_6, width_6), 200)
+        self.fc2 = nn.Linear(200, 84)
         self.fc3 = nn.Linear(84, num_classes)
 
 

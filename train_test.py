@@ -28,9 +28,9 @@ import sys
 classes = ('guitar', 'piano', 'drum', 'violin')
 
 # Un-Pickle Test sets
-with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_test_mel_x', 'rb') as f:
+with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_test_mel_6000_x', 'rb') as f:
     X_test = pickle.load(f)
-with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_test_mel_y', 'rb') as f:
+with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_test_mel_6000_y', 'rb') as f:
     y_test = pickle.load(f)
 
 X_test = torch.from_numpy(X_test.astype(np.float32))
@@ -42,9 +42,9 @@ class TrainSet(Dataset):
 
     def __init__(self, transform=None):
         # data loading
-        with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_train_mel_x', 'rb') as f:
+        with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_train_mel_6000_x', 'rb') as f:
             X_train = pickle.load(f)
-        with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_train_mel_y', 'rb') as f:
+        with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_train_mel_6000_y', 'rb') as f:
             y_train = pickle.load(f)
 
         self.x = torch.from_numpy(X_train.astype(np.float32))
@@ -75,7 +75,7 @@ num_classes = 4
 CNN_model = CNN()
 
 learning_rate = 0.00001
-num_epochs = 20
+num_epochs = 40
 
 loss_function = nn.CrossEntropyLoss()  # softmax is included
 optimizer = optim.SGD(CNN_model.parameters(), lr = learning_rate)
@@ -102,7 +102,7 @@ epoch_loss = []
 running_loss = 0.0
 running_correct = 0
 
-scheduler = lr_scheduler.StepLR(optimizer, step_size=8, gamma=0.1)
+scheduler = lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.8)
 
 for epoch in range(num_epochs):
 

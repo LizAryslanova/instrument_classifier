@@ -284,7 +284,7 @@ def audio_to_numpy(folder_address, file):
 
         # MEL Spectrogram
         sgram_mag, _ = librosa.magphase(STFT_result)
-        mel_scale_sgram = librosa.feature.melspectrogram(S=sgram_mag, sr=sample_rate)
+        mel_scale_sgram = librosa.feature.melspectrogram(S=sgram_mag, sr=sample_rate, n_mels=512, fmax = 6000)
         mel_sgram = librosa.amplitude_to_db(mel_scale_sgram, ref=np.min)
 
         #print(STFT_abs.shape)
@@ -304,6 +304,66 @@ def audio_to_numpy(folder_address, file):
             final_array[:,:,i] = multiplyer * mel_sgram
 
         return final_array
+
+
+
+def audio_to_mel_spectrogram(folder_address, file, destination_address):
+    '''
+        ===================================
+        Takes in the *file* from the *folder_address*, checks if the file is a .wav and if True:
+            - trims the silence,
+            - takes the first 3 seconds
+            - adds 0 padding if the file is shorter
+            - creates a spectrogram image
+            - saves image destination_address with the same name as the original file (.png)
+        ===================================
+    '''
+    import matplotlib.pyplot as plt
+    import librosa
+    import librosa.display
+    from librosa.effects import trim
+    import numpy as np
+
+    if (file[-4:] == '.wav'):
+
+        audio_file = folder_address + file
+        samples, sample_rate = librosa.load(audio_file)
+        trimed_signal, _ = librosa.effects.trim(samples, top_db=15)
+
+
+        sr = 22050 # sample rate, used to cut 3 seconds
+        seconds_to_cut = 3
+        cut_time = int(sr * seconds_to_cut)
+        cut_signal = trimed_signal[0:cut_time]
+
+        # normalize data
+        max_peak = np.max(np.abs(cut_signal))
+        ratio = 1 / max_peak
+        normalised_signal = cut_signal * ratio
+
+        # padding with 0 for things shorter that 3 seconds
+        if (len(normalised_signal) < cut_time):
+            cut_signal = np.pad(normalised_signal, pad_width=(0, cut_time - len(cut_signal)))
+
+
+        fig = plt.figure(figsize=[1, 1])
+        ax = fig.add_subplot(111)
+        ax.axes.get_xaxis().set_visible (False)
+        ax. axes.get_yaxis().set_visible (False)
+        ax.set_frame_on(False)
+        filename = destination_address + file[:-4] + '_mel'+ '.png'
+
+        STFT_result = librosa.stft(cut_signal, n_fft = 2048)
+
+        # MEL Spectrogram
+        sgram_mag, _ = librosa.magphase(STFT_result)
+        mel_scale_sgram = librosa.feature.melspectrogram(S=sgram_mag, sr=sample_rate, n_mels=512, fmax = 6000)
+        mel_sgram = librosa.amplitude_to_db(mel_scale_sgram, ref=np.min)
+
+        librosa.display.specshow(mel_sgram, x_axis='time', y_axis='off')
+
+        plt.savefig(filename, dpi=400, bbox_inches='tight', pad_inches=0)
+        plt.close('all')
 
 
 
@@ -336,11 +396,17 @@ def audio_to_spectrogram(folder_address, file, destination_address):
         cut_time = int(sr * seconds_to_cut)
         cut_signal = trimed_signal[0:cut_time]
 
-        # padding with 0 for things shorter that 3 seconds
-        if (len(cut_signal) < cut_time):
-            cut_signal = np.pad(cut_signal, pad_width=(0, cut_time - len(cut_signal)))
 
-        # NB! normalizing the loudness
+        # normalize data
+        max_peak = np.max(np.abs(cut_signal))
+        ratio = 1 / max_peak
+        normalised_signal = cut_signal * ratio
+
+
+        # padding with 0 for things shorter that 3 seconds
+        if (len(normalised_signal) < cut_time):
+            cut_signal = np.pad(normalised_signal, pad_width=(0, cut_time - len(cut_signal)))
+
 
         fig = plt.figure(figsize=[1, 1])
         ax = fig.add_subplot(111)
@@ -351,10 +417,11 @@ def audio_to_spectrogram(folder_address, file, destination_address):
 
         D = librosa.stft(cut_signal)
         S_db = librosa.amplitude_to_db(abs(D), ref=np.max)
-        librosa.display.specshow(S_db, x_axis='time', y_axis='log')
+        librosa.display.specshow(S_db, x_axis='time', y_axis='off')
 
         plt.savefig(filename, dpi=400, bbox_inches='tight', pad_inches=0)
         plt.close('all')
+
 
 
 
