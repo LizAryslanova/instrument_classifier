@@ -77,7 +77,7 @@ def get_label(file, csv_address):
     ===================================
 '''
 
-def process_folder(folder_address, csv_address, number_of_files):
+def process_folder(folder_address, csv_address, number_of_files, fmax, training = True):
     '''
         Takes in the address of a folder, converts all .wav files into spectrograms (cuts the silence, takes the first 3 seconds).
         Returns STFT absolute values and labels as numpy arrays
@@ -86,21 +86,54 @@ def process_folder(folder_address, csv_address, number_of_files):
     image_shape_a, image_shape_b, channels = utils.dim_of_spectrogram()
 
     # create empty X and y arrays
-    X_long = np.zeros(shape=(number_of_files, image_shape_a, image_shape_b, channels),
+    X_long = np.zeros(shape=(2* number_of_files, image_shape_a, image_shape_b, channels),
                       dtype=np.float32)
-    y_long = np.zeros(shape=(number_of_files))
+    y_long = np.zeros(shape=(2 * number_of_files))
 
     # =====================
+
     number_of_labelled_files = 0
+
     for file in os.listdir(folder_address):
         if get_label(file, csv_address) != 'skip':      # checking if label exists for this file
 
             if ( number_of_labelled_files % 50 ) == 0:
                 print ('Processing: ' + str(number_of_labelled_files + 1) + '   Name: ' + file)
             # !!!!! create a numpy array od the correct shape and a second one with labels !!!!!!
-            X_long[number_of_labelled_files] = utils.audio_to_numpy(folder_address, file)
+            samples, sample_rate = utils.audio_to_samples(folder_address, file)
+            X_long[number_of_labelled_files] = utils.audio_to_numpy(samples, sample_rate, fmax)
             y_long[number_of_labelled_files] = get_label(file, csv_address)
             number_of_labelled_files += 1
+
+
+
+
+    # Looking at the length of the files. For ones that are longer than 5 seconds - cut/trim another piece to add to the training set
+
+    if training == True:
+        print('Starting a second run')
+
+        for file in os.listdir(folder_address):
+            if get_label(file, csv_address) != 'skip':      # checking if label exists for this file
+
+                samples, sample_rate = utils.audio_to_samples(folder_address, file)
+                seconds_to_cut = 5
+
+                # check if its long enough
+                if len(samples) > (seconds_to_cut + 5) * sample_rate:
+
+                    samples, sample_rate = utils.cut_audio_to_samples(samples, sample_rate, seconds_to_cut)
+
+                    if ( number_of_labelled_files % 50 ) == 0:
+                        print ('Processing: ' + str(number_of_labelled_files + 1) + '   Name: ' + file)
+
+                   # create a numpy array od the correct shape and a second one with labels
+                    X_long[number_of_labelled_files] = utils.audio_to_numpy(samples, sample_rate, fmax)
+
+                    y_long[number_of_labelled_files] = get_label(file, csv_address)
+                    number_of_labelled_files += 1
+
+
 
     # create new arrays considering the number_of_labelled_files
     X = np.zeros(shape=(number_of_labelled_files, image_shape_a, image_shape_b, channels),
@@ -110,6 +143,8 @@ def process_folder(folder_address, csv_address, number_of_files):
     # copy only files that were labelled
     X = X_long[:number_of_labelled_files]
     y = y_long[:number_of_labelled_files]
+
+    print('Number of labelled files = ', number_of_labelled_files)
 
     return np.rollaxis(X, 3, 1), y
 
@@ -121,17 +156,20 @@ def process_folder(folder_address, csv_address, number_of_files):
     ===================================
 '''
 
-train_x, train_y = process_folder(kaggle_train, kaggle_train_csv, number_of_files_train)
-test_x, test_y = process_folder(kaggle_test, kaggle_test_csv, number_of_files_test)
+fmax = 8000
+notes = '_split_test_'
+
+train_x, train_y = process_folder(kaggle_train, kaggle_train_csv, number_of_files_train, fmax)
+test_x, test_y = process_folder(kaggle_test, kaggle_test_csv, number_of_files_test, fmax, training=True)
 
 
-with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_train_mel_6000_x', 'wb') as f:
+with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_train_mel_' + str(fmax) + notes +'_x', 'wb') as f:
     pickle.dump(train_x , f)
-with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_train_mel_6000_y', 'wb') as f:
+with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_train_mel_' + str(fmax) + notes +'_y', 'wb') as f:
     pickle.dump(train_y , f)
-with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_test_mel_6000_x', 'wb') as f:
+with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_test_mel_' + str(fmax) + notes +'_x', 'wb') as f:
     pickle.dump(test_x , f)
-with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_test_mel_6000_y', 'wb') as f:
+with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_test_mel_' + str(fmax) + notes +'_y', 'wb') as f:
     pickle.dump(test_y , f)
 
 

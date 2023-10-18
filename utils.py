@@ -241,10 +241,49 @@ def get_labels_from_nsynth():
 
 
 
-def audio_to_numpy(folder_address, file):
+
+def audio_to_samples(folder_address, file):
     '''
         ===================================
         Takes in the *file* from the *folder_address*, checks if the file is a .wav and if True:
+        Loads through librosa and returns samples and sample rate
+
+        ===================================
+    '''
+    import librosa
+    import librosa.display
+    from librosa.effects import trim
+    import numpy as np
+
+    if (file[-4:] == '.wav'):
+        audio_file = folder_address + file
+        samples, sample_rate = librosa.load(audio_file)
+
+    return samples, sample_rate
+
+
+
+
+def cut_audio_to_samples(samples, sample_rate, seconds_to_cut):
+    '''
+        ===================================
+        Takes in the samples and sample rate (from audio_to_samples function)
+        Return sampkle arrays that cuts the first seconds_to_cut
+        ===================================
+    '''
+
+    cut_time = int(sample_rate * seconds_to_cut)
+    cut_signal = samples[cut_time:]
+
+    return cut_signal, sample_rate
+
+
+
+
+def audio_to_numpy(samples, sample_rate, fmax):
+    '''
+        ===================================
+        Takes in the samples and sample rate (from audio_to_samples function)
             - trims the silence,
             - takes the first 3 seconds
             - padds for files shorter than 3 seconds
@@ -259,51 +298,52 @@ def audio_to_numpy(folder_address, file):
     from librosa.effects import trim
     import numpy as np
 
-    if (file[-4:] == '.wav'):
-        audio_file = folder_address + file
-        samples, sample_rate = librosa.load(audio_file)
-        trimmed_signal, _ = librosa.effects.trim(samples, top_db=15)
 
-        sr = 22050 # sample rate, used to cut 3 seconds
-        seconds_to_cut = 3
-        cut_time = int(sr * seconds_to_cut)
-        cut_signal = trimmed_signal[0:cut_time]
+    trimmed_signal, _ = librosa.effects.trim(samples, top_db=15)
 
-        # normalize data
-        max_peak = np.max(np.abs(cut_signal))
-        ratio = 1 / max_peak
-        normalised_signal = cut_signal * ratio
+    sr = 22050 # sample rate, used to cut 3 seconds
+    seconds_to_cut = 3
+    cut_time = int(sr * seconds_to_cut)
+    cut_signal = trimmed_signal[0:cut_time]
 
-        # padding with 0 for things shorter that 3 seconds
-        if (len(normalised_signal) < cut_time):
-            normalised_signal = np.pad(normalised_signal, pad_width=(0, cut_time - len(normalised_signal)))
+    # normalize data
+    max_peak = np.max(np.abs(cut_signal))
+    ratio = 1 / max_peak
+    normalised_signal = cut_signal * ratio
 
-        STFT_result = librosa.stft(normalised_signal)
-        STFT_abs = np.abs(STFT_result)
+    # padding with 0 for things shorter that 3 seconds
+    if (len(normalised_signal) < cut_time):
+        normalised_signal = np.pad(normalised_signal, pad_width=(0, cut_time - len(normalised_signal)))
+
+    STFT_result = librosa.stft(normalised_signal)
+    STFT_abs = np.abs(STFT_result)
 
 
-        # MEL Spectrogram
-        sgram_mag, _ = librosa.magphase(STFT_result)
-        mel_scale_sgram = librosa.feature.melspectrogram(S=sgram_mag, sr=sample_rate, n_mels=512, fmax = 6000)
-        mel_sgram = librosa.amplitude_to_db(mel_scale_sgram, ref=np.min)
+    # MEL Spectrogram
+    sgram_mag, _ = librosa.magphase(STFT_result)
+    mel_scale_sgram = librosa.feature.melspectrogram(S=sgram_mag, sr=sample_rate, n_mels=512, fmax = fmax)
+    mel_sgram = librosa.amplitude_to_db(mel_scale_sgram, ref=np.min)
 
-        #print(STFT_abs.shape)
-        #print(STFT_abs[10,50])
+    #print(STFT_abs.shape)
+    #print(STFT_abs[10,50])
 
-        #a, b = STFT_result.shape
-        a, b = mel_sgram.shape
-        channels = 1    # use 3 for RGB
-        multiplyer = 1   # use 255 for greyscale RGB
+    #a, b = STFT_result.shape
+    a, b = mel_sgram.shape
+    channels = 1    # use 3 for RGB
+    multiplyer = 1   # use 255 for greyscale RGB
 
 
-        final_array = np.zeros(shape=(a, b, channels), dtype=np.float32)
+    final_array = np.zeros(shape=(a, b, channels), dtype=np.float32)
 
-        for i in range(channels):
-            # img[:,:,i] = multiplyer * D_abs
-            # final_array[:,:,i] = multiplyer * STFT_abs
-            final_array[:,:,i] = multiplyer * mel_sgram
+    for i in range(channels):
+        # img[:,:,i] = multiplyer * D_abs
+        # final_array[:,:,i] = multiplyer * STFT_abs
+        final_array[:,:,i] = multiplyer * mel_sgram
 
-        return final_array
+    return final_array
+
+
+
 
 
 
@@ -429,5 +469,8 @@ def audio_to_spectrogram(folder_address, file, destination_address):
 def dim_of_spectrogram():
     folder_address = '/Users/cookie/dev/instrumant_classifier/unit_testing/'
     file = 'G53-71607-1111-229.wav'
-    N = audio_to_numpy(folder_address, file)
+    samples, sample_rate = audio_to_samples(folder_address, file)
+    fmax = 8000
+
+    N = audio_to_numpy(samples, sample_rate, fmax)
     return N.shape
