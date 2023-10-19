@@ -12,14 +12,11 @@ import pandas as pd
 import utils
 
 
-
-
 kaggle_train = '/Users/cookie/dev/instrumant_classifier/audio_files/from_kaggle/Train_submission/Train_submission/'
 kaggle_test = '/Users/cookie/dev/instrumant_classifier/audio_files/from_kaggle/Test_submission/Test_submission/'
 
 kaggle_train_csv = '/Users/cookie/dev/instrumant_classifier/audio_files/from_kaggle/Metadata_Train.csv'
 kaggle_test_csv = '/Users/cookie/dev/instrumant_classifier/audio_files/from_kaggle/Metadata_Test.csv'
-
 
 
 def get_label(file, csv_address):
@@ -51,8 +48,12 @@ def get_label(file, csv_address):
 
     # Checking names of files to get the label
     if label != Sound_Guitar and label != Sound_Piano and label != Sound_Violin and label != Sound_Drum:
-        if 'violin' in file or 'VIOLIN' in file:
+        if 'violin' in file or 'VIOLIN' in file or 'Vn' in file or 'Violin' in file:
             label = Sound_Violin
+        elif 'guitar' in file:
+            label = Sound_Guitar
+        elif 'piano' in file:
+            label = Sound_Piano
         else:
             label = Skip # in case the file is not in scv
 
@@ -62,45 +63,45 @@ def get_label(file, csv_address):
 
 
 
-
-
-
-
-
 import os
-
-# source = '/Users/cookie/dev/instrumant_classifier/audio_files/from_kaggle/Test_submission/Test_submission/'
- # destination = '/Users/cookie/dev/instrumant_classifier/audio_files/from_kaggle/sorted_folder/'
-
-
 
 source = kaggle_train
 destination = kaggle_test
+
+
+
+
+
 
 allfiles = os.listdir(source)
 
 # iterate on all files to move them to destination folder
 
+guitar_n = 0
+violin_n = 0
+piano_n = 0
+drums_n = 0
+n = 20
+
 for f in allfiles:
-
-
-
-
-
-
-
     instrument = 'skip'
 
-    if get_label(f, kaggle_test_csv) == 0:
+    if get_label(f, kaggle_train_csv) == 0 and guitar_n < n:
         instrument = 'guitar'
-    elif get_label(f, kaggle_test_csv) == 1:
+        guitar_n += 1
+    elif get_label(f, kaggle_test_csv) == 1 and piano_n < n:
         instrument = 'piano'
-    elif get_label(f, kaggle_test_csv) == 2:
+        piano_n +=1
+    elif get_label(f, kaggle_train_csv) == 2 and drums_n < n:
         instrument = 'drums'
-    elif get_label(f, kaggle_test_csv) == 3:
+        drums_n += 1
+    elif get_label(f, kaggle_test_csv) == 3 and violin_n < n:
         instrument = 'violin'
+        violin_n += 1
 
-    src_path = os.path.join(source, f)
-    dst_path = os.path.join(destination + instrument, f)
-    os.rename(src_path, dst_path)
+
+    if instrument != 'skip':
+        src_path = os.path.join(source, f)
+        dst_path = os.path.join(destination, instrument + '_____' + f)
+        os.rename(src_path, dst_path)
 

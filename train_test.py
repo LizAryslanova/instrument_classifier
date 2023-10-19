@@ -76,8 +76,8 @@ train_loader = DataLoader(dataset=dataset, batch_size=4, shuffle=True, num_worke
 num_classes = 4
 CNN_model = CNN()
 
-learning_rate = 0.000004
-num_epochs = 50
+learning_rate = 0.000008
+num_epochs = 20
 
 loss_function = nn.CrossEntropyLoss()  # softmax is included
 optimizer = optim.SGD(CNN_model.parameters(), lr = learning_rate)

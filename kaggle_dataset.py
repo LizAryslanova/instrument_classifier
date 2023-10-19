@@ -27,7 +27,7 @@ kaggle_test_csv = '/Users/cookie/dev/instrumant_classifier/audio_files/from_kagg
 
 
 number_of_files_train = 2630
-number_of_files_test = 80
+number_of_files_test = 500
 
 
 
@@ -64,6 +64,10 @@ def get_label(file, csv_address):
             label = Sound_Violin
         elif 'guitar' in file:
             label = Sound_Guitar
+        elif 'piano' in file:
+            label = Sound_Piano
+        elif 'drums' in file:
+            label = Sound_Drum
         else:
             label = Skip # in case the file is not in scv
 
@@ -160,7 +164,7 @@ fmax = 8000
 notes = '_split_test_'
 
 train_x, train_y = process_folder(kaggle_train, kaggle_train_csv, number_of_files_train, fmax)
-test_x, test_y = process_folder(kaggle_test, kaggle_test_csv, number_of_files_test, fmax, training=True)
+test_x, test_y = process_folder(kaggle_test, kaggle_test_csv, number_of_files_test, fmax, training=False)
 
 
 with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_train_mel_' + str(fmax) + notes +'_x', 'wb') as f:
