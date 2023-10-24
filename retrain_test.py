@@ -10,6 +10,9 @@ import pickle
 import utils
 from cnn import CNN
 
+import os
+current_dir = os.path.abspath(os.getcwd())
+
 
 
 '''
@@ -21,9 +24,9 @@ from cnn import CNN
 classes = ('guitar', 'piano', 'drum', 'violin')
 
 # Un-Pickle Test sets
-with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_test_x', 'rb') as f:
+with open(current_dir + '/pickles/kaggle_test_x', 'rb') as f:
     X_test = pickle.load(f)
-with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_test_y', 'rb') as f:
+with open(current_dir + '/pickles/kaggle_test_y', 'rb') as f:
     y_test = pickle.load(f)
 
 X_test = torch.from_numpy(X_test.astype(np.float32))
@@ -35,9 +38,9 @@ class TrainSet(Dataset):
 
     def __init__(self, transform=None):
         # data loading
-        with open('/Users/cookie/dev/instrumant_classifier/pickles/nsynth_transfer_x', 'rb') as f:
+        with open(current_dir + '/pickles/nsynth_transfer_x', 'rb') as f:
             X_train = pickle.load(f)
-        with open('/Users/cookie/dev/instrumant_classifier/pickles/nsynth_transfer_y', 'rb') as f:
+        with open(current_dir + '/pickles/nsynth_transfer_y', 'rb') as f:
             y_train = pickle.load(f)
 
         self.x = torch.from_numpy(X_train.astype(np.float32))
@@ -63,7 +66,7 @@ train_loader = DataLoader(dataset=dataset, batch_size=4, shuffle=True, num_worke
 '''
 
 num_classes = 4
-CNN_model = torch.load('/Users/cookie/dev/instrumant_classifier/model_results/lr_1.5e-06_epochs_50_20230921-232418.pt')
+CNN_model = torch.load(current_dir + '/model_results/lr_1.5e-06_epochs_50_20230921-232418.pt')
 
 learning_rate = 0.0000001
 num_epochs = 7
@@ -71,7 +74,7 @@ num_epochs = 7
 loss_function = nn.CrossEntropyLoss()  # softmax is included
 optimizer = optim.SGD(CNN_model.parameters(), lr = learning_rate)
 
-destination_address = '/Users/cookie/dev/instrumant_classifier/model_results/'
+destination_address = current_dir + '/model_results/'
 
 
 

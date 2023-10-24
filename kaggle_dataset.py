@@ -12,6 +12,9 @@ import pandas as pd
 import pickle
 import utils
 
+current_dir = os.path.abspath(os.getcwd())
+
+
 
 '''
     ===================================
@@ -19,11 +22,11 @@ import utils
     ===================================
 '''
 
-kaggle_train = '/Users/cookie/dev/instrumant_classifier/audio_files/from_kaggle/Train_submission/Train_submission/'
-kaggle_test = '/Users/cookie/dev/instrumant_classifier/audio_files/from_kaggle/Test_submission/Test_submission/'
+kaggle_train = current_dir + '/audio_files/from_kaggle/Train_submission/Train_submission/'
+kaggle_test = current_dir + '/audio_files/from_kaggle/Test_submission/Test_submission/'
 
-kaggle_train_csv = '/Users/cookie/dev/instrumant_classifier/audio_files/from_kaggle/Metadata_Train.csv'
-kaggle_test_csv = '/Users/cookie/dev/instrumant_classifier/audio_files/from_kaggle/Metadata_Test.csv'
+kaggle_train_csv = current_dir + '/audio_files/from_kaggle/Metadata_Train.csv'
+kaggle_test_csv = current_dir + '/audio_files/from_kaggle/Metadata_Test.csv'
 
 
 number_of_files_train = 2630
@@ -167,13 +170,13 @@ train_x, train_y = process_folder(kaggle_train, kaggle_train_csv, number_of_file
 test_x, test_y = process_folder(kaggle_test, kaggle_test_csv, number_of_files_test, fmax, training=False)
 
 
-with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_train_mel_' + str(fmax) + notes +'_x', 'wb') as f:
+with open(current_dir + '/pickles/kaggle_train_mel_' + str(fmax) + notes +'_x', 'wb') as f:
     pickle.dump(train_x , f)
-with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_train_mel_' + str(fmax) + notes +'_y', 'wb') as f:
+with open(current_dir + '/pickles/kaggle_train_mel_' + str(fmax) + notes +'_y', 'wb') as f:
     pickle.dump(train_y , f)
-with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_test_mel_' + str(fmax) + notes +'_x', 'wb') as f:
+with open(current_dir + '/pickles/kaggle_test_mel_' + str(fmax) + notes +'_x', 'wb') as f:
     pickle.dump(test_x , f)
-with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_test_mel_' + str(fmax) + notes +'_y', 'wb') as f:
+with open(current_dir + '/pickles/kaggle_test_mel_' + str(fmax) + notes +'_y', 'wb') as f:
     pickle.dump(test_y , f)
 
 

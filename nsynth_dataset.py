@@ -8,6 +8,9 @@ import numpy as np
 import utils
 import pickle
 
+current_dir = os.path.abspath(os.getcwd())
+
+
 
 nsynth_labels = ['bass_synthetic',
                 'mallet_acoustic',
@@ -63,8 +66,8 @@ def move_600_guitar_and_piano_for_transfer_learning():
     import os
     count_gutar = 0
     count_piano = 0
-    big_folder = '/Users/cookie/dev/instrumant_classifier/audio_files/nsynth/Training_audios/'
-    destination_address = '/Users/cookie/dev/instrumant_classifier/audio_files/nsynth/For_transfer_guitar_piano/'
+    big_folder = current_dir + '/audio_files/nsynth/Training_audios/'
+    destination_address = current_dir + '/audio_files/nsynth/For_transfer_guitar_piano/'
 
     for i in range(31):
         folder_address = big_folder + str(i+1) + '/'
@@ -134,7 +137,8 @@ def process_folder(folder_address, number_of_files):
             if ( number_of_labelled_files % 50 ) == 0:
                 print ('Processing: ' + str(number_of_labelled_files + 1) + '   Name: ' + file)
             # !!!!! create a numpy array od the correct shape and a second one with labels !!!!!!
-            X_long[number_of_labelled_files] = utils.audio_to_numpy(folder_address, file)
+            samples, sr = utils.audio_to_samples(folder_address, file)
+            X_long[number_of_labelled_files] = utils.audio_to_numpy(samples, sr, 8000)
             y_long[number_of_labelled_files] = nsynth_label(file)
             number_of_labelled_files += 1
 
@@ -151,7 +155,7 @@ def process_folder(folder_address, number_of_files):
 
 
 
-folder_address = '/Users/cookie/dev/instrumant_classifier/audio_files/nsynth/For_transfer_guitar_piano/'
+folder_address = current_dir + '/audio_files/nsynth/For_transfer_guitar_piano/'
 number_of_files = 1300
 
 
@@ -161,7 +165,7 @@ transfer_X, transfer_y = process_folder(folder_address, number_of_files)
 
 print(transfer_X.shape)
 
-with open('/Users/cookie/dev/instrumant_classifier/pickles/nsynth_transfer_x', 'wb') as f:
+with open(current_dir + '/pickles/nsynth_transfer_x', 'wb') as f:
     pickle.dump(transfer_X , f)
-with open('/Users/cookie/dev/instrumant_classifier/pickles/nsynth_transfer_y', 'wb') as f:
+with open(current_dir + '/pickles/nsynth_transfer_y', 'wb') as f:
     pickle.dump(transfer_y , f)

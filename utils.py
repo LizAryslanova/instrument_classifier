@@ -9,7 +9,8 @@ import torch.optim as optim
 import pickle
 
 
-
+import os
+current_dir = os.path.abspath(os.getcwd())
 
 
 
@@ -227,7 +228,7 @@ def get_labels_from_nsynth():
     '''
     import os
     nsynth_labels = []
-    big_folder = '/Users/cookie/dev/instrumant_classifier/audio_files/nsynth/Training_audios/'
+    big_folder = current_dir + '/audio_files/nsynth/Training_audios/'
 
     for i in range(31):
         folder_address = big_folder + str(i+1) + '/'
@@ -260,7 +261,6 @@ def audio_to_samples(folder_address, file):
         samples, sample_rate = librosa.load(audio_file)
 
     return samples, sample_rate
-
 
 
 
@@ -467,7 +467,7 @@ def audio_to_spectrogram(folder_address, file, destination_address):
 
 # Shape of the spectrogram
 def dim_of_spectrogram():
-    folder_address = '/Users/cookie/dev/instrumant_classifier/unit_testing/'
+    folder_address = current_dir + '/unit_testing/'
     file = 'G53-71607-1111-229.wav'
     samples, sample_rate = audio_to_samples(folder_address, file)
     fmax = 8000

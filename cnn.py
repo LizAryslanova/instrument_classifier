@@ -9,12 +9,14 @@ import matplotlib.pyplot as plt
 import utils
 import pickle
 
+import os
+current_dir = os.path.abspath(os.getcwd())
 
 
 
 
 # Un-Pickle Test sets
-with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_test_mel_x', 'rb') as f:
+with open(current_dir + '/pickles/kaggle_test_mel_x', 'rb') as f:
     X_test = pickle.load(f)
 X_test = torch.from_numpy(X_test.astype(np.float32))
 

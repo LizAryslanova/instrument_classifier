@@ -12,6 +12,9 @@ from cnn import CNN
 
 from torch.optim import lr_scheduler
 
+import os
+current_dir = os.path.abspath(os.getcwd())
+
 
 from torch.utils.tensorboard import SummaryWriter
 writer = SummaryWriter('logs/')
@@ -30,9 +33,9 @@ classes = ('guitar', 'piano', 'drum', 'violin')
 notes = '_split_test_'
 
 # Un-Pickle Test sets
-with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_test_mel_8000' + notes + '_x', 'rb') as f:
+with open(current_dir + '/pickles/kaggle_test_mel_8000' + notes + '_x', 'rb') as f:
     X_test = pickle.load(f)
-with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_test_mel_8000' + notes + '_y', 'rb') as f:
+with open(current_dir + '/pickles/kaggle_test_mel_8000' + notes + '_y', 'rb') as f:
     y_test = pickle.load(f)
 
 X_test = torch.from_numpy(X_test.astype(np.float32))
@@ -44,9 +47,9 @@ class TrainSet(Dataset):
 
     def __init__(self, transform=None):
         # data loading
-        with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_train_mel_8000' + notes + '_x', 'rb') as f:
+        with open(current_dir + '/pickles/kaggle_train_mel_8000' + notes + '_x', 'rb') as f:
             X_train = pickle.load(f)
-        with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_train_mel_8000' + notes + '_y', 'rb') as f:
+        with open(current_dir + '/pickles/kaggle_train_mel_8000' + notes + '_y', 'rb') as f:
             y_train = pickle.load(f)
 
         self.x = torch.from_numpy(X_train.astype(np.float32))
@@ -82,7 +85,7 @@ num_epochs = 20
 loss_function = nn.CrossEntropyLoss()  # softmax is included
 optimizer = optim.SGD(CNN_model.parameters(), lr = learning_rate)
 
-destination_address = '/Users/cookie/dev/instrumant_classifier/model_results/'
+destination_address = current_dir + '/model_results/'
 
 
 

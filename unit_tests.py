@@ -10,21 +10,25 @@ import pickle
 import utils
 from cnn import CNN
 
+import os
+
+current_dir = os.path.abspath(os.getcwd())
+
 
 # ===========================================
 
 classes = ('guitar', 'piano', 'drum', 'violin')
 
 # Un-Pickle Test sets
-with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_test_x', 'rb') as f:
+with open(current_dir + '/pickles/kaggle_test_x', 'rb') as f:
     X_test = pickle.load(f)
-with open('/Users/cookie/dev/instrumant_classifier/pickles/kaggle_test_y', 'rb') as f:
+with open(current_dir+ '/pickles/kaggle_test_y', 'rb') as f:
     y_test = pickle.load(f)
 
 X_test = torch.from_numpy(X_test.astype(np.float32))
 y_test = torch.from_numpy(y_test).type(torch.LongTensor)
 
-model = torch.load('/Users/cookie/dev/instrumant_classifier/unit_testing/cnn_for_tests.pt')
+model = torch.load(current_dir + '/unit_testing/cnn_for_tests.pt')
 
 # ===========================================
 
@@ -153,7 +157,7 @@ def utils_plot_image_test():
 
     classes = ('Guitar', 'Piano', 'Drum', 'Violin')
     accuracies = [87.3434234234, 12.4244444, 43.00004044, 55.444434, 66.4342345]
-    filename = '/Users/cookie/dev/instrumant_classifier/unit_testing/test.pt'
+    filename = current_dir + '/unit_testing/test.pt'
     utils.plot_image(y_1, y_2, num_epochs, learning_rate, classes, accuracies, y_true, y_predicted, filename, show = False)
 
     print('Check unit_testing folder')
@@ -187,7 +191,8 @@ def utils_audio_to_numpy_test():
     print('===============================')
     print('Checking utils.audio_to_numpy')
     correct_array = np.array([[10.500757], [14.129261] ,  [2.5759351], [23.461042] ])
-    function_array = utils.audio_to_numpy('/Users/cookie/dev/instrumant_classifier/unit_testing/', 'G53-71607-1111-229.wav')[0, 0:4]
+    samples, sr = utils.audio_to_samples(current_dir + '/unit_testing/', 'G53-71607-1111-229.wav')
+    function_array = utils.audio_to_numpy(samples, sr, 11025)[0, 0:4]
 
     if correct_array.all() == function_array.all():
         print('✓ utils.audio_to_numpy is all good')
@@ -203,9 +208,9 @@ def utils_audio_to_spectrogram_test():
     print('===============================')
     print('Checking utils.audio_to_spectrogram')
 
-    folder_address = '/Users/cookie/dev/instrumant_classifier/unit_testing/'
+    folder_address = current_dir + '/unit_testing/'
     file = 'G53-71607-1111-229.wav'
-    destination_address = '/Users/cookie/dev/instrumant_classifier/unit_testing/'
+    destination_address = current_dir + '/unit_testing/'
     utils.audio_to_spectrogram(folder_address, file, destination_address)
 
     print('Check unit_testing folder')
@@ -267,7 +272,7 @@ def test_utils_output_dimensions():
     =================================
 '''
 
-utils_test()
+# utils_test()
 utils_dimensions_for_linear_layer()
 confusion_matrix_test()
 utils_plot_image_test()

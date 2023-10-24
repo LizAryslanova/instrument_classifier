@@ -1,13 +1,15 @@
 import utils
 import os
+current_dir = os.path.abspath(os.getcwd())
 
 
 
-folder_address = '/Users/cookie/dev/instrumant_classifier/audio_files/from_kaggle/Test_submission/Test_submission/'
+
+folder_address = current_dir + '/audio_files/from_kaggle/Test_submission/Test_submission/'
 
 file = '100bpm-808-like-drum-loop-74838.wav'
 
-destination_address = '/Users/cookie/dev/instrumant_classifier/unit_testing/spectrograms/mel_4000/'
+destination_address = current_dir + '/unit_testing/spectrograms/mel_4000/'
 
 
 

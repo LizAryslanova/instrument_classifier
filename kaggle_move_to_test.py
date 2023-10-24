@@ -11,12 +11,15 @@ import pandas as pd
 
 import utils
 
+current_dir = os.path.abspath(os.getcwd())
 
-kaggle_train = '/Users/cookie/dev/instrumant_classifier/audio_files/from_kaggle/Train_submission/Train_submission/'
-kaggle_test = '/Users/cookie/dev/instrumant_classifier/audio_files/from_kaggle/Test_submission/Test_submission/'
 
-kaggle_train_csv = '/Users/cookie/dev/instrumant_classifier/audio_files/from_kaggle/Metadata_Train.csv'
-kaggle_test_csv = '/Users/cookie/dev/instrumant_classifier/audio_files/from_kaggle/Metadata_Test.csv'
+
+kaggle_train = current_dir + '/audio_files/from_kaggle/Train_submission/Train_submission/'
+kaggle_test = current_dir + '/audio_files/from_kaggle/Test_submission/Test_submission/'
+
+kaggle_train_csv = current_dir + '/audio_files/from_kaggle/Metadata_Train.csv'
+kaggle_test_csv = current_dir + '/audio_files/from_kaggle/Metadata_Test.csv'
 
 
 def get_label(file, csv_address):
