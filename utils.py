@@ -101,7 +101,7 @@ def confusion_matrix(y_true, y_pred):
     from sklearn.metrics import confusion_matrix
     import sklearn
 
-    metric = sklearn.metrics.confusion_matrix(y_true, y_pred, labels = [0, 1, 2, 3])
+    metric = sklearn.metrics.confusion_matrix(y_true.cpu(), y_pred.cpu(), labels = [0, 1, 2, 3])
     return metric
 
 

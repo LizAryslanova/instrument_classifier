@@ -21,6 +21,8 @@ writer = SummaryWriter('logs/')
 
 import sys
 
+device = torch.device('mps' if torch.backends.mps.is_available() else 'cpu')
+
 
 '''
     ===================================
@@ -77,10 +79,11 @@ train_loader = DataLoader(dataset=dataset, batch_size=4, shuffle=True, num_worke
 '''
 
 num_classes = 4
-CNN_model = CNN()
+CNN_model = CNN().to(device)
+
 
 learning_rate = 0.000008
-num_epochs = 20
+num_epochs = 10
 
 loss_function = nn.CrossEntropyLoss()  # softmax is included
 optimizer = optim.SGD(CNN_model.parameters(), lr = learning_rate)
@@ -89,7 +92,7 @@ destination_address = current_dir + '/model_results/'
 
 
 
-writer.add_graph(CNN_model, X_test)
+# writer.add_graph(CNN_model, X_test)
 # sys.exit()
 
 
@@ -112,7 +115,12 @@ scheduler = lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.8)
 for epoch in range(num_epochs):
 
     for i, (images, labels) in enumerate(train_loader):
+
+        images = images.to(device)
+        labels = labels.to(device)
+
         # forward pass and loss
+
         y_predicted = CNN_model(images)
 
         loss = loss_function(y_predicted, labels)
@@ -143,6 +151,9 @@ for epoch in range(num_epochs):
 
     # Calculating test loss
     with torch.no_grad():
+        X_test = X_test.to(device)
+        y_test = y_test.to(device)
+
         outputs = CNN_model(X_test)
         loss = loss_function(outputs, y_test)
         test_loss.append(loss.item())
@@ -170,5 +181,8 @@ import os
 os.system('say "Cookie, I am plotting the picture." ')
 
 y_predicted, accuracies, n_class_correct, n_class_samples = utils.test(CNN_model, X_test, y_test, classes)
+
+print('im here')
+
 utils.plot_image(training_loss, test_loss, num_epochs, learning_rate, classes, accuracies, y_test, y_predicted, filename, show = True)
 
