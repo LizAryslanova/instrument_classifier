@@ -20,9 +20,9 @@ current_dir = os.path.abspath(os.getcwd())
 classes = ('guitar', 'piano', 'drum', 'violin')
 
 # Un-Pickle Test sets
-with open(current_dir + '/pickles/kaggle_test_x', 'rb') as f:
+with open(current_dir + '/pickles/kaggle_test_mel_8000_no_split_test__x', 'rb') as f:
     X_test = pickle.load(f)
-with open(current_dir+ '/pickles/kaggle_test_y', 'rb') as f:
+with open(current_dir+ '/pickles/kaggle_test_mel_8000_no_split_test__y', 'rb') as f:
     y_test = pickle.load(f)
 
 X_test = torch.from_numpy(X_test.astype(np.float32))
@@ -274,8 +274,8 @@ def test_utils_output_dimensions():
 
 # utils_test()
 utils_dimensions_for_linear_layer()
-confusion_matrix_test()
-utils_plot_image_test()
+#confusion_matrix_test()
+#utils_plot_image_test()
 utils_get_labels_from_nsynth_test()
 utils_audio_to_numpy_test()
 utils_audio_to_spectrogram_test()

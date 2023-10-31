@@ -164,7 +164,7 @@ def process_folder(folder_address, csv_address, number_of_files, fmax, training 
 '''
 
 fmax = 8000
-notes = '_split_test_'
+notes = '_no_split_test_'
 
 train_x, train_y = process_folder(kaggle_train, kaggle_train_csv, number_of_files_train, fmax)
 test_x, test_y = process_folder(kaggle_test, kaggle_test_csv, number_of_files_test, fmax, training=False)

@@ -1,0 +1,34 @@
+
+model_parameters:
+  kernel_conv_1: 5
+  stride_conv_1: 1
+  padding_conv_1: 0
+
+  kernel_conv_2: 5
+  stride_conv_2: 1
+  padding_conv_2: 0
+
+  kernel_conv_3: 3
+  stride_conv_3: 1
+  padding_conv_3: 0
+
+  kernel_pool: 2
+  stride_pool: 2
+  padding_pool: 0
+
+
+
+train_loop:
+  # name and location of pickles
+
+
+  #classes: !!python/tuple ['guitar', 'piano', 'drum', 'violin']
+
+
+  num_classes: 4
+  learning_rate: 0.000008
+  num_epochs: 20
+
+  # For the scheduler:
+  step_size: 10
+  gamma: 0.8

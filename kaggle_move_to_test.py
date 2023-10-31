@@ -84,7 +84,7 @@ guitar_n = 0
 violin_n = 0
 piano_n = 0
 drums_n = 0
-n = 20
+n = 10
 
 for f in allfiles:
     instrument = 'skip'

@@ -15,6 +15,7 @@ from torch.optim import lr_scheduler
 import os
 current_dir = os.path.abspath(os.getcwd())
 
+import yaml
 
 from torch.utils.tensorboard import SummaryWriter
 writer = SummaryWriter('logs/')
@@ -32,7 +33,7 @@ device = torch.device('mps' if torch.backends.mps.is_available() else 'cpu')
 
 classes = ('guitar', 'piano', 'drum', 'violin')
 
-notes = '_split_test_'
+notes = '_no_split_test_'
 
 # Un-Pickle Test sets
 with open(current_dir + '/pickles/kaggle_test_mel_8000' + notes + '_x', 'rb') as f:
@@ -78,12 +79,16 @@ train_loader = DataLoader(dataset=dataset, batch_size=4, shuffle=True, num_worke
     ===================================
 '''
 
-num_classes = 4
-CNN_model = CNN().to(device)
+with open('model.yml', 'r') as file:
+    yaml_input = yaml.safe_load(file)
 
 
-learning_rate = 0.000008
-num_epochs = 10
+num_classes = yaml_input['train_loop']['num_classes']
+CNN_model = CNN(yaml_input['model_parameters']).to(device)
+
+
+learning_rate = yaml_input['train_loop']['learning_rate']
+num_epochs = yaml_input['train_loop']['num_epochs']
 
 loss_function = nn.CrossEntropyLoss()  # softmax is included
 optimizer = optim.SGD(CNN_model.parameters(), lr = learning_rate)
@@ -110,7 +115,7 @@ epoch_loss = []
 running_loss = 0.0
 running_correct = 0
 
-scheduler = lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.8)
+scheduler = lr_scheduler.StepLR(optimizer, step_size=yaml_input['train_loop']['step_size'], gamma=yaml_input['train_loop']['gamma'])
 
 for epoch in range(num_epochs):
 
@@ -125,7 +130,7 @@ for epoch in range(num_epochs):
 
         loss = loss_function(y_predicted, labels)
 
-        optimizer.zero_grad()     # zero gradients
+        optimizer.zero_grad()     # zero the gradients
         loss.backward()
         optimizer.step()                 # updates
 
@@ -181,8 +186,6 @@ import os
 os.system('say "Cookie, I am plotting the picture." ')
 
 y_predicted, accuracies, n_class_correct, n_class_samples = utils.test(CNN_model, X_test, y_test, classes)
-
-print('im here')
 
 utils.plot_image(training_loss, test_loss, num_epochs, learning_rate, classes, accuracies, y_test, y_predicted, filename, show = True)
 

@@ -16,7 +16,7 @@ current_dir = os.path.abspath(os.getcwd())
 
 
 # Un-Pickle Test sets
-with open(current_dir + '/pickles/kaggle_test_mel_x', 'rb') as f:
+with open(current_dir + '/pickles/kaggle_test_mel_8000_no_split_test__x', 'rb') as f:
     X_test = pickle.load(f)
 X_test = torch.from_numpy(X_test.astype(np.float32))
 
@@ -31,49 +31,49 @@ num_classes = 4
 
 class CNN(nn.Module):
 
-    def __init__(self):
+    def __init__(self, model):
         super().__init__()
 
-        kernel_1 = 5
-        stride_1 = 1
-        padding_1 = 0
+        kernel_conv_1 = model['kernel_conv_1']
+        stride_conv_1 = model['stride_conv_1']
+        padding_conv_1 = model['padding_conv_1']
 
-        self.conv1 = nn.Conv2d(1, 6, kernel_1, stride_1, padding_1)     # 1 input channel
-        height_1, width_1 = utils.output_dimensions(X_test.shape[2], X_test.shape[3], padding_1, kernel_1, stride_1)
-
-        #===========================
-
-        kernel_2 = 2
-        stride_2 = 2
-        padding_2 = 0
-
-        self.pool = nn.MaxPool2d(kernel_2, stride_2, padding_2)
-        height_2, width_2 = utils.output_dimensions(height_1, width_1, padding_2, kernel_2, stride_2)
+        self.conv1 = nn.Conv2d(1, 6, kernel_conv_1, stride_conv_1, padding_conv_1)     # 1 input channel
+        height_after_conv_1, width_after_conv_1 = utils.output_dimensions(X_test.shape[2], X_test.shape[3], padding_conv_1, kernel_conv_1, stride_conv_1)
 
         #===========================
 
-        kernel_3 = 5
-        stride_3 = 1
-        padding_3 = 0
+        kernel_pool = model['kernel_pool']
+        stride_pool = model['stride_pool']
+        padding_pool = model['padding_pool']
 
-        self.conv2 = nn.Conv2d(6, 16, kernel_3, stride_3, padding_3)
-        height_3, width_3 = utils.output_dimensions(height_2, width_2, padding_3, kernel_3, stride_3)
-        height_4, width_4 = utils.output_dimensions(height_3, width_3, padding_2, kernel_2, stride_2)
-
-        #===========================
-
-        kernel_4 = 3
-        stride_4 = 1
-        padding_4 = 0
-
-        self.conv3 = nn.Conv2d(16, 40, kernel_4, stride_4, padding_4)
-        height_5, width_5 = utils.output_dimensions(height_4, width_4, padding_4, kernel_4, stride_4)
-        height_6, width_6 = utils.output_dimensions(height_5, width_5, padding_2, kernel_2, stride_2)
-
+        self.pool = nn.MaxPool2d(kernel_pool, stride_pool, padding_pool)
+        height_after_pool_1, width_after_pool_1 = utils.output_dimensions(height_after_conv_1, width_after_conv_1, padding_pool, kernel_pool, stride_pool)
 
         #===========================
 
-        self.fc1 = nn.Linear(40 * utils.dimensions_for_linear_layer(height_6, width_6), 200)
+        kernel_conv_2 = model['kernel_conv_2']
+        stride_conv_2 = model['stride_conv_2']
+        padding_conv_2 = model['padding_conv_2']
+
+        self.conv2 = nn.Conv2d(6, 16, kernel_conv_2, stride_conv_2, padding_conv_2)
+        height_after_conv_2, width_after_conv_2 = utils.output_dimensions(height_after_pool_1, width_after_pool_1, padding_conv_2, kernel_conv_2, stride_conv_2)
+        height_after_pool_2, width_after_pool_2 = utils.output_dimensions(height_after_conv_2, width_after_conv_2, padding_pool, kernel_pool, stride_pool)
+
+        #===========================
+
+        kernel_conv_3 = model['kernel_conv_3']
+        stride_conv_3 = model['stride_conv_3']
+        padding_conv_3 = model['padding_conv_3']
+
+        self.conv3 = nn.Conv2d(16, 40, kernel_conv_3, stride_conv_3, padding_conv_3)
+        height_after_conv_3, width_after_conv_3 = utils.output_dimensions(height_after_pool_2, width_after_pool_2, padding_conv_3, kernel_conv_3, stride_conv_3)
+        height_after_pool_3, width_after_pool_3 = utils.output_dimensions(height_after_conv_3, width_after_conv_3, padding_pool, kernel_pool, stride_pool)
+
+
+        #===========================
+
+        self.fc1 = nn.Linear(40 * utils.dimensions_for_linear_layer(height_after_pool_3, width_after_pool_3), 200)
         self.fc2 = nn.Linear(200, 84)
         self.fc3 = nn.Linear(84, num_classes)
 
