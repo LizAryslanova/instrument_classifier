@@ -83,10 +83,10 @@ with open('model.yml', 'r') as file:
     yaml_input = yaml.safe_load(file)
 
 
+
+
 num_classes = yaml_input['train_loop']['num_classes']
 CNN_model = CNN(yaml_input['model_parameters']).to(device)
-
-
 learning_rate = yaml_input['train_loop']['learning_rate']
 num_epochs = yaml_input['train_loop']['num_epochs']
 
@@ -174,6 +174,10 @@ timestr = time.strftime("%Y%m%d-%H%M%S")
 name = 'lr_' + str(learning_rate) + '_epochs_' + str(num_epochs) + '_' + timestr
 filename = destination_address + name + '.pt'
 torch.save(CNN_model, filename)
+
+# saving the yaml with all the model parameters
+with open(destination_address + name + ".yml", 'w') as file:
+    documents = yaml.dump(yaml_input, file)
 
 
 '''
