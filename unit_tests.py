@@ -15,6 +15,11 @@ import os
 current_dir = os.path.abspath(os.getcwd())
 
 
+
+
+
+
+
 # ===========================================
 
 classes = ('guitar', 'piano', 'drum', 'violin')
@@ -260,8 +265,17 @@ def test_utils_output_dimensions():
         print('Function output 1 = ', function_output1)
         print('Correct output 2 = ', correct_output2)
         print('Function output 2 = ', function_output2)
+    print(' ')
 
 
+
+
+def test_utils_get_classes():
+    print('===============================')
+    print('Checking utils.get_classes')
+    classes = utils.get_classes()
+    print(classes)
+    print(' ')
 
 
 
@@ -281,3 +295,4 @@ utils_audio_to_numpy_test()
 utils_audio_to_spectrogram_test()
 utils_dim_of_spectrogram_test()
 test_utils_output_dimensions()
+test_utils_get_classes()

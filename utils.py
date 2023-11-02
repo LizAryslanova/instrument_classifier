@@ -474,3 +474,15 @@ def dim_of_spectrogram():
 
     N = audio_to_numpy(samples, sample_rate, fmax)
     return N.shape
+
+
+def get_classes():
+    import yaml
+    with open('model.yml', 'r') as file:
+        yaml_input = yaml.safe_load(file)
+
+    classes = ()
+    for i in range(yaml_input['train_loop']['num_classes']):
+        classes = classes + (yaml_input['train_loop']['classes']['c_'+str(i+1)], )
+    return classes
+

@@ -15,14 +15,16 @@ from torch.optim import lr_scheduler
 import os
 current_dir = os.path.abspath(os.getcwd())
 
-import yaml
-
 from torch.utils.tensorboard import SummaryWriter
 writer = SummaryWriter('logs/')
 
 import sys
 
 device = torch.device('mps' if torch.backends.mps.is_available() else 'cpu')
+
+import yaml
+with open('model.yml', 'r') as file:
+    yaml_input = yaml.safe_load(file)
 
 
 '''
@@ -31,7 +33,7 @@ device = torch.device('mps' if torch.backends.mps.is_available() else 'cpu')
     ===================================
 '''
 
-classes = ('guitar', 'piano', 'drum', 'violin')
+classes = utils.get_classes()
 
 notes = '_no_split_test_'
 
@@ -78,12 +80,6 @@ train_loader = DataLoader(dataset=dataset, batch_size=4, shuffle=True, num_worke
     Hyperparameters
     ===================================
 '''
-
-with open('model.yml', 'r') as file:
-    yaml_input = yaml.safe_load(file)
-
-
-
 
 num_classes = yaml_input['train_loop']['num_classes']
 CNN_model = CNN(yaml_input['model_parameters']).to(device)

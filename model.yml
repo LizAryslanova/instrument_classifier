@@ -20,11 +20,16 @@ model_parameters:
 
 train_loop:
   # name and location of pickles
-  #classes: !!python/tuple ['guitar', 'piano', 'drum', 'violin']
+
+  classes:
+    c_1: 'guitar'
+    c_2: 'piano'
+    c_3: 'drum'
+    c_4: 'violin'
 
   num_classes: 4
   learning_rate: 0.000006
-  num_epochs: 170
+  num_epochs: 2
 
   # For the scheduler:
   step_size: 20
