@@ -9,15 +9,10 @@ import pickle
 
 import utils
 from cnn import CNN
-
 import os
-
-
+import pytest
 
 current_dir = os.path.abspath(os.getcwd())
-
-
-
 
 
 
@@ -40,7 +35,7 @@ model = torch.load(current_dir + '/unit_testing/cnn_for_tests.pt')
 # ===========================================
 
 # utils.test
-def utils_test():
+def test_utils_test():
     '''
         Correct data input was done manually for the model that was saved to unit_testing folder.
         Loads the model state from unit_testing folder and runs it through utils.test function.
@@ -63,7 +58,9 @@ def utils_test():
     predicted, accuracies, n_class_correct, n_class_samples = utils.test(model, X_test, y_test, classes)
     predicted = predicted.numpy()
 
-    if correct_predicted.all() == predicted.all() and correct_accuracies == accuracies and correct_n_class_correct == n_class_correct and correct_n_class_samples == n_class_samples:
+    assert correct_predicted.all() == predicted.all()
+
+    '''if correct_predicted.all() == predicted.all() and correct_accuracies == accuracies and correct_n_class_correct == n_class_correct and correct_n_class_samples == n_class_samples:
         print('✓ utils.test is all good')
     else:
         if correct_predicted.all() != predicted.all():
@@ -83,17 +80,21 @@ def utils_test():
             print('Correct = ', correct_n_class_correct)
             print('utils.test = ', n_class_correct)
 
-    print(' ')
+    print(' ') '''
 
 
 # ===========================================
 
 # utils_dimensions_for_linear_layer test
-def utils_dimensions_for_linear_layer():
+def test_utils_dimensions_for_linear_layer():
     '''
         Checks if calculating dimensions for the linear layer works correctly against manually calculated results
     '''
-    print('===============================')
+    check = utils.dimensions_for_linear_layer(0, 0)
+
+    assert check == 0
+
+    '''print('===============================')
     print('Checking utils.dimensions_for_linear_layer')
 
     if utils.dimensions_for_linear_layer(0, 0) == 0 and utils.dimensions_for_linear_layer(100, 80) == 8000 and utils.dimensions_for_linear_layer(20, 80) == 1600:
@@ -110,13 +111,13 @@ def utils_dimensions_for_linear_layer():
             print('Correct answer to (20,80) input = 1600')
             print('Function output = ', utils.dimensions_for_linear_layer(20, 80))
 
-    print(' ')
+    print(' ')'''
 
 
 # ===========================================
 
 # utils.confusion_matrix test
-def confusion_matrix_test():
+def test_confusion_matrix():
     '''
         Checks if generating a confusion matrix works correctly
     '''
@@ -145,7 +146,7 @@ def confusion_matrix_test():
 # ===========================================
 
 # utils.plot_image test
-def utils_plot_image_test():
+def test_utils_plot_image():
     '''
         Runs through utils.plot_image and saves the resulting image to unit_testing folder.
         Currently need to check the image manually
@@ -173,7 +174,7 @@ def utils_plot_image_test():
 
 # ===========================================
 
-def utils_get_labels_from_nsynth_test():
+def test_utils_get_labels_from_nsynth():
     print('===============================')
     print('Checking utils.get_labels_from_nsynth')
 
@@ -194,7 +195,7 @@ def utils_get_labels_from_nsynth_test():
 
 # ===========================================
 
-def utils_audio_to_numpy_test():
+def test_utils_audio_to_numpy():
     print('===============================')
     print('Checking utils.audio_to_numpy')
     correct_array = np.array([[10.500757], [14.129261] ,  [2.5759351], [23.461042] ])
@@ -211,7 +212,7 @@ def utils_audio_to_numpy_test():
 
 # ===========================================
 
-def utils_audio_to_spectrogram_test():
+def test_utils_audio_to_spectrogram():
     print('===============================')
     print('Checking utils.audio_to_spectrogram')
 
@@ -225,7 +226,7 @@ def utils_audio_to_spectrogram_test():
 
 # ===========================================
 
-def utils_dim_of_spectrogram_test():
+def test_utils_dim_of_spectrogram():
     print('===============================')
     print('Checking utils.dim_of_spectrogram')
 
@@ -288,13 +289,15 @@ def test_utils_get_classes():
     =================================
 '''
 
-# utils_test()
-utils_dimensions_for_linear_layer()
-#confusion_matrix_test()
-#utils_plot_image_test()
-utils_get_labels_from_nsynth_test()
-utils_audio_to_numpy_test()
-utils_audio_to_spectrogram_test()
-utils_dim_of_spectrogram_test()
-test_utils_output_dimensions()
-test_utils_get_classes()
+
+#test_utils_dimensions_for_linear_layer()
+#test_utils_get_labels_from_nsynth()
+#test_utils_audio_to_numpy()
+#test_utils_audio_to_spectrogram()
+#test_utils_dim_of_spectrogram()
+#test_utils_output_dimensions()
+#test_utils_get_classes()
+
+# test_utils_test()
+#test_confusion_matrix()
+#test_utils_plot_image()

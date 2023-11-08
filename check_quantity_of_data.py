@@ -3,7 +3,7 @@ import pickle
 import utils
 import os
 
-current_dir = os.path.abspath(os.getcwd())
+current_dir = os.path.dirname(os.path.realpath(__file__))
 notes = '_no_split_test_'
 
 
