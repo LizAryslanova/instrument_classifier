@@ -12,6 +12,8 @@ from cnn import CNN
 
 import os
 
+
+
 current_dir = os.path.abspath(os.getcwd())
 
 
@@ -22,7 +24,7 @@ current_dir = os.path.abspath(os.getcwd())
 
 # ===========================================
 
-classes = ('guitar', 'piano', 'drum', 'violin')
+classes = utils.get_classes()
 
 # Un-Pickle Test sets
 with open(current_dir + '/pickles/kaggle_test_mel_8000_no_split_test__x', 'rb') as f:

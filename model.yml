@@ -29,7 +29,7 @@ train_loop:
 
   num_classes: 4
   learning_rate: 0.000006
-  num_epochs: 2
+  num_epochs: 5
 
   # For the scheduler:
   step_size: 20
