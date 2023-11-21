@@ -8,7 +8,7 @@ import numpy as np
 import utils
 import pickle
 
-current_dir = os.path.abspath(os.getcwd())
+current_dir = os.path.dirname(os.path.realpath(__file__))
 
 
 
@@ -45,46 +45,88 @@ nsynth_labels = ['bass_synthetic',
 '''
 Thoughts:
 
-what do i want right now?
+5 classes
+800 training files each
+120 test files each
 
-guitar: 'guitar_acoustic',
-piano: keyboard_acoustic',
+    bass_electronic
+    string_acoustic
+    guitar_electronic
+    keyboard_acoustic
+    keyboard_electronic
 
-=====
-Next ?
-bass: 'bass_acoustic', 'bass_electronic', 'bass_synthetic'
-vocals: 'vocal_electronic', 'vocal_synthetic', 'vocal_acoustic'
+
+    bass_electronic, string_acoustic, guitar_electronic, keyboard_acoustic, keyboard_electronic
+
+so: 4000 files train
+600 files test
 
 '''
 
 
-def move_600_guitar_and_piano_for_transfer_learning():
+def move_num_files_each_label(num_files_to_move, label='train'):
     '''
-    Moves 600 of each (guitar and piano labelled files) to a separate folder to be later processed for transfer learning
-    count_gutar, count_piano = (11380, 8068)
+    Moves num_files_to_move of each (bass_electronic, string_acoustic, guitar_electronic, keyboard_acoustic, keyboard_electronic labelled files) to a separate folder to be later processed for transfer learning
+
+    label = 'train' moves them to the train folder
+    label = 'test' moves them to the test folder
     '''
+
     import os
-    count_gutar = 0
-    count_piano = 0
+    count_bass_electronic = 0
+    count_string_acoustic = 0
+    count_guitar_electronic = 0
+    count_keyboard_acoustic = 0
+    count_keyboard_electronic = 0
+
+
     big_folder = current_dir + '/audio_files/nsynth/Training_audios/'
-    destination_address = current_dir + '/audio_files/nsynth/For_transfer_guitar_piano/'
+    destination_address = current_dir + '/audio_files/nsynth/for_5_class_model/' + label
+
+
 
     for i in range(31):
         folder_address = big_folder + str(i+1) + '/'
+
         for file in os.listdir(folder_address):
             if file[-4:] == '.wav':
                 label = file[:-16]
-                if label == 'guitar_acoustic':
-                    count_gutar += 1
-                    if count_gutar < 600:
+
+                if label == 'bass_electronic':
+                    count_bass_electronic += 1
+                    if count_bass_electronic < num_files_to_move:
                         # move that guitaf file into a special folder
                         src_path = os.path.join(folder_address, file)
                         dst_path = os.path.join(destination_address, file)
                         os.rename(src_path, dst_path)
 
+                elif label == 'string_acoustic':
+                    count_string_acoustic += 1
+                    if count_string_acoustic < num_files_to_move:
+                        # move the file on the special folder
+                        src_path = os.path.join(folder_address, file)
+                        dst_path = os.path.join(destination_address, file)
+                        os.rename(src_path, dst_path)
+
+                elif label == 'guitar_electronic':
+                    count_guitar_electronic += 1
+                    if count_guitar_electronic < num_files_to_move:
+                        # move the file on the special folder
+                        src_path = os.path.join(folder_address, file)
+                        dst_path = os.path.join(destination_address, file)
+                        os.rename(src_path, dst_path)
+
                 elif label == 'keyboard_acoustic':
-                    count_piano += 1
-                    if count_piano < 600:
+                    count_keyboard_acoustic += 1
+                    if count_keyboard_acoustic < num_files_to_move:
+                        # move the file on the special folder
+                        src_path = os.path.join(folder_address, file)
+                        dst_path = os.path.join(destination_address, file)
+                        os.rename(src_path, dst_path)
+
+                elif label == 'keyboard_electronic':
+                    count_keyboard_electronic += 1
+                    if count_keyboard_electronic < num_files_to_move:
                         # move the file on the special folder
                         src_path = os.path.join(folder_address, file)
                         dst_path = os.path.join(destination_address, file)
@@ -92,16 +134,26 @@ def move_600_guitar_and_piano_for_transfer_learning():
 
 
 
-# works ringt now for the folder with guitars and pianos (acoustic)
+# works right now for the folder with 5 labels
 def nsynth_label(file):
-    Sound_Guitar = 0
-    Sound_Piano = 1
+    bass_electronic = 0
+    string_acoustic = 1
+    guitar_electronic = 2
+    keyboard_acoustic = 3
+    keyboard_electronic = 4
+
     if file[-4:] == '.wav':
         nsynth_label = file[:-16]
-        if 'guitar_acoustic' in nsynth_label:
-            label = Sound_Guitar
+        if 'bass_electronic' in nsynth_label:
+            label = bass_electronic
+        elif 'string_acoustic' in nsynth_label:
+            label = string_acoustic
+        elif 'guitar_electronic' in nsynth_label:
+            label = guitar_electronic
         elif 'keyboard_acoustic' in nsynth_label:
-            label = Sound_Piano
+            label = keyboard_acoustic
+        elif 'keyboard_electronic' in nsynth_label:
+            label = keyboard_electronic
         else:
             label = 'skip'
     else:
@@ -122,7 +174,8 @@ def process_folder(folder_address, number_of_files):
         Returns STFT absolute values and labels as numpy arrays
     '''
 
-    image_shape_a, image_shape_b, channels = utils.dim_of_spectrogram()
+    image_shape_a, _, channels = utils.dim_of_spectrogram()
+    image_shape_b = 65
 
     # create empty X and y arrays
     X_long = np.zeros(shape=(number_of_files, image_shape_a, image_shape_b, channels),
@@ -138,7 +191,7 @@ def process_folder(folder_address, number_of_files):
                 print ('Processing: ' + str(number_of_labelled_files + 1) + '   Name: ' + file)
             # !!!!! create a numpy array od the correct shape and a second one with labels !!!!!!
             samples, sr = utils.audio_to_samples(folder_address, file)
-            X_long[number_of_labelled_files] = utils.audio_to_numpy(samples, sr, 8000)
+            X_long[number_of_labelled_files] = utils.audio_to_numpy(samples, sr, 8000, seconds_to_cut=1.5)
             y_long[number_of_labelled_files] = nsynth_label(file)
             number_of_labelled_files += 1
 
@@ -155,17 +208,50 @@ def process_folder(folder_address, number_of_files):
 
 
 
-folder_address = current_dir + '/audio_files/nsynth/For_transfer_guitar_piano/'
-number_of_files = 1300
+# ==========================
+
+    # Moving files to train and test folders
+
+# ==========================
+
+num_files_to_move_train = 0
+num_files_to_move_test = 0
+
+move_num_files_each_label(num_files_to_move_train, label='train')
+move_num_files_each_label(num_files_to_move_test, label='test')
+
+print('Moved all the files')
+
+#exit()
+
+# ==========================
+
+    # Processing train and test folders
+
+# ==========================
+
+
+folder_address_train = current_dir + '/audio_files/nsynth/for_5_class_model/' + 'train/'
+folder_address_test = current_dir + '/audio_files/nsynth/for_5_class_model/' + 'test/'
+number_of_files_train = 800 * 5
+number_of_files_test = 120 * 5
 
 
 
-transfer_X, transfer_y = process_folder(folder_address, number_of_files)
+
+X_train, y_train = process_folder(folder_address_train, number_of_files_train)
+X_test, y_test = process_folder(folder_address_test, number_of_files_test)
 
 
-print(transfer_X.shape)
 
-with open(current_dir + '/pickles/nsynth_transfer_x', 'wb') as f:
-    pickle.dump(transfer_X , f)
-with open(current_dir + '/pickles/nsynth_transfer_y', 'wb') as f:
-    pickle.dump(transfer_y , f)
+with open(current_dir + '/pickles/nsynth_train_x', 'wb') as f:
+    pickle.dump(X_train , f)
+with open(current_dir + '/pickles/nsynth_train_y', 'wb') as f:
+    pickle.dump(y_train , f)
+with open(current_dir + '/pickles/nsynth_test_x', 'wb') as f:
+    pickle.dump(X_test , f)
+with open(current_dir + '/pickles/nsynth_test_y', 'wb') as f:
+    pickle.dump(y_test , f)
+
+
+os.system('say "Cookie, I pickle the numpys." ')

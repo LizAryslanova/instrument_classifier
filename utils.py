@@ -9,7 +9,7 @@ import pickle
 
 
 import os
-current_dir = os.path.abspath(os.getcwd())
+current_dir = os.path.dirname(os.path.realpath(__file__))
 
 
 
@@ -100,7 +100,7 @@ def confusion_matrix(y_true, y_pred):
     from sklearn.metrics import confusion_matrix
     import sklearn
 
-    metric = sklearn.metrics.confusion_matrix(y_true.cpu(), y_pred.cpu(), labels = [0, 1, 2, 3])
+    metric = sklearn.metrics.confusion_matrix(y_true.cpu(), y_pred.cpu(), labels = [0, 1, 2, 3, 4])
     return metric
 
 
@@ -129,8 +129,9 @@ def plot_confusion_matrix(y_true, y_pred, classes):
                       rowLoc='left',
                       colLabels=column_headers, loc = 'center')
 
-    the_table.scale(1.5, 2.5)
-    the_table.set_fontsize(14)
+    the_table.scale(2.3, 2)
+    the_table.auto_set_font_size(False)
+    the_table.set_fontsize(8)
 
     # Hide axes
     ax = plt.gca()
@@ -140,7 +141,7 @@ def plot_confusion_matrix(y_true, y_pred, classes):
     plt.box(on=None)
 
     footer_text = '// Rows - true labels; Columns - predicted labels'
-    plt.figtext(0.95, 0.05, footer_text, horizontalalignment='right', size=8, weight='light')
+    plt.figtext(0.95, 0.05, footer_text, horizontalalignment='right', fontsize=8, weight='light')
 
     # Add title
     plt.title('Confusion Matrix')
@@ -279,7 +280,7 @@ def cut_audio_to_samples(samples, sample_rate, seconds_to_cut):
 
 
 
-def audio_to_numpy(samples, sample_rate, fmax):
+def audio_to_numpy(samples, sample_rate, fmax, seconds_to_cut = 3):
     '''
         ===================================
         Takes in the samples and sample rate (from audio_to_samples function)
@@ -301,7 +302,6 @@ def audio_to_numpy(samples, sample_rate, fmax):
     trimmed_signal, _ = librosa.effects.trim(samples, top_db=15)
 
     sr = 22050 # sample rate, used to cut 3 seconds
-    seconds_to_cut = 3
     cut_time = int(sr * seconds_to_cut)
     cut_signal = trimmed_signal[0:cut_time]
 
@@ -481,7 +481,7 @@ def get_classes():
         yaml_input = yaml.safe_load(file)
 
     classes = ()
-    for i in range(yaml_input['train_loop']['num_classes']):
+    for i in range(yaml_input['model_parameters']['num_classes']):
         classes = classes + (yaml_input['train_loop']['classes']['c_'+str(i+1)], )
     return classes
 

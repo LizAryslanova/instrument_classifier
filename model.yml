@@ -8,7 +8,7 @@ model_parameters:
   stride_conv_2: 1
   padding_conv_2: 0
 
-  kernel_conv_3: 3
+  kernel_conv_3: 5
   stride_conv_3: 1
   padding_conv_3: 0
 
@@ -16,21 +16,38 @@ model_parameters:
   stride_pool: 2
   padding_pool: 0
 
+  num_classes: 5
+
 
 
 train_loop:
   # name and location of pickles
+  x_train_address: '/pickles/nsynth_train_x'
+  y_train_address: '/pickles/nsynth_train_y'
+  x_test_address: '/pickles/nsynth_test_x'
+  y_test_address: '/pickles/nsynth_test_y'
+
+
+
 
   classes:
-    c_1: 'guitar'
-    c_2: 'piano'
-    c_3: 'drum'
-    c_4: 'violin'
+    #c_1: 'guitar'
+    #c_2: 'piano'
+    #c_3: 'drum'
+    #c_4: 'violin'
 
-  num_classes: 4
-  learning_rate: 0.000006
-  num_epochs: 5
+    c_1: 'bass_el'
+    c_2: 'string_ac'
+    c_3: 'guitar_el'
+    c_4: 'keys_ac'
+    c_5: 'keys_el'
+
+
+  learning_rate: 0.0001
+  num_epochs: 100
 
   # For the scheduler:
-  step_size: 20
-  gamma: 0.7
+  step_size: 10
+  gamma: 0.5
+
+  model_results_address: '/model_results/'

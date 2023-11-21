@@ -11,7 +11,7 @@ import pandas as pd
 
 import utils
 
-current_dir = os.path.abspath(os.getcwd())
+current_dir = os.path.dirname(os.path.realpath(__file__))
 
 
 

@@ -2,16 +2,20 @@ import numpy as np
 import pickle
 import utils
 import os
+import yaml
 
 current_dir = os.path.dirname(os.path.realpath(__file__))
-notes = '_no_split_test_'
+
+with open('model.yml', 'r') as file:
+    yaml_input = yaml.safe_load(file)
 
 
-with open(current_dir + '/pickles/kaggle_test_mel_8000' + notes + '_x', 'rb') as f:
+
+with open(current_dir + yaml_input['train_loop']['x_test_address'], 'rb') as f:
     X_test = pickle.load(f)
-
-with open(current_dir + '/pickles/kaggle_train_mel_8000' + notes + '_x', 'rb') as f:
+with open(current_dir + yaml_input['train_loop']['x_train_address'], 'rb') as f:
     X_train = pickle.load(f)
+
 
 
 test_size = np.shape(X_test)

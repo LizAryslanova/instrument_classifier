@@ -6,22 +6,15 @@ import numpy as np
 import torch.optim as optim
 import matplotlib.pyplot as plt
 import pickle
-
 import utils
 from cnn import CNN
-
 from torch.optim import lr_scheduler
-
 import os
-current_dir = os.path.abspath(os.getcwd())
-
+current_dir = os.path.dirname(os.path.realpath(__file__))
 from torch.utils.tensorboard import SummaryWriter
 writer = SummaryWriter('logs/')
-
 import sys
-
 device = torch.device('mps' if torch.backends.mps.is_available() else 'cpu')
-
 import yaml
 with open('model.yml', 'r') as file:
     yaml_input = yaml.safe_load(file)
@@ -35,12 +28,12 @@ with open('model.yml', 'r') as file:
 
 classes = utils.get_classes()
 
-notes = '_no_split_test_'
+
 
 # Un-Pickle Test sets
-with open(current_dir + '/pickles/kaggle_test_mel_8000' + notes + '_x', 'rb') as f:
+with open(current_dir + yaml_input['train_loop']['x_test_address'], 'rb') as f:
     X_test = pickle.load(f)
-with open(current_dir + '/pickles/kaggle_test_mel_8000' + notes + '_y', 'rb') as f:
+with open(current_dir + yaml_input['train_loop']['y_test_address'], 'rb') as f:
     y_test = pickle.load(f)
 
 X_test = torch.from_numpy(X_test.astype(np.float32))
@@ -52,9 +45,9 @@ class TrainSet(Dataset):
 
     def __init__(self, transform=None):
         # data loading
-        with open(current_dir + '/pickles/kaggle_train_mel_8000' + notes + '_x', 'rb') as f:
+        with open(current_dir + yaml_input['train_loop']['x_train_address'], 'rb') as f:
             X_train = pickle.load(f)
-        with open(current_dir + '/pickles/kaggle_train_mel_8000' + notes + '_y', 'rb') as f:
+        with open(current_dir + yaml_input['train_loop']['y_train_address'], 'rb') as f:
             y_train = pickle.load(f)
 
         self.x = torch.from_numpy(X_train.astype(np.float32))
@@ -81,15 +74,16 @@ train_loader = DataLoader(dataset=dataset, batch_size=4, shuffle=True, num_worke
     ===================================
 '''
 
-num_classes = yaml_input['train_loop']['num_classes']
+num_classes = yaml_input['model_parameters']['num_classes']
 CNN_model = CNN(yaml_input['model_parameters']).to(device)
 learning_rate = yaml_input['train_loop']['learning_rate']
 num_epochs = yaml_input['train_loop']['num_epochs']
+destination_address = current_dir + yaml_input['train_loop']['model_results_address']
 
 loss_function = nn.CrossEntropyLoss()  # softmax is included
 optimizer = optim.SGD(CNN_model.parameters(), lr = learning_rate)
 
-destination_address = current_dir + '/model_results/'
+
 
 
 
@@ -162,7 +156,7 @@ for epoch in range(num_epochs):
     scheduler.step()
 
 
-writer.close()
+#writer.close()
 
 # Saving the Model
 import time
@@ -186,6 +180,5 @@ import os
 os.system('say "Cookie, I am plotting the picture." ')
 
 y_predicted, accuracies, n_class_correct, n_class_samples = utils.test(CNN_model, X_test, y_test, classes)
-
 utils.plot_image(training_loss, test_loss, num_epochs, learning_rate, classes, accuracies, y_test, y_predicted, filename, show = True)
 

@@ -5,22 +5,27 @@ from torch.utils.data import Dataset, DataLoader
 import numpy as np
 import torch.optim as optim
 import matplotlib.pyplot as plt
+import yaml
 
 import utils
 import pickle
 
 import os
-current_dir = os.path.abspath(os.getcwd())
+current_dir = os.path.dirname(os.path.realpath(__file__))
 
-
+with open('model.yml', 'r') as file:
+    yaml_input = yaml.safe_load(file)
 
 
 # Un-Pickle Test sets
-with open(current_dir + '/pickles/kaggle_test_mel_8000_no_split_test__x', 'rb') as f:
+
+with open(current_dir + yaml_input['train_loop']['x_test_address'], 'rb') as f:
     X_test = pickle.load(f)
 X_test = torch.from_numpy(X_test.astype(np.float32))
 
-num_classes = 4
+
+
+
 
 
 '''
@@ -73,9 +78,10 @@ class CNN(nn.Module):
 
         #===========================
 
-        self.fc1 = nn.Linear(40 * utils.dimensions_for_linear_layer(height_after_pool_3, width_after_pool_3), 200)
-        self.fc2 = nn.Linear(200, 84)
-        self.fc3 = nn.Linear(84, num_classes)
+        self.fc1 = nn.Linear(40 * utils.dimensions_for_linear_layer(height_after_pool_3, width_after_pool_3), 400)
+        self.fc2 = nn.Linear(400, 200)
+        self.fc3 = nn.Linear(200, 84)
+        self.fc4 = nn.Linear(84, model['num_classes'])
 
 
     def forward(self, x):
@@ -86,6 +92,7 @@ class CNN(nn.Module):
         x = torch.flatten(x, 1)
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
-        return self.fc3(x)
+        x = F.relu(self.fc3(x))
+        return self.fc4(x)
 
 
