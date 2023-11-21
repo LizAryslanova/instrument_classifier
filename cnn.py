@@ -43,7 +43,7 @@ class CNN(nn.Module):
         stride_conv_1 = model['stride_conv_1']
         padding_conv_1 = model['padding_conv_1']
 
-        self.conv1 = nn.Conv2d(1, 6, kernel_conv_1, stride_conv_1, padding_conv_1)     # 1 input channel
+        self.conv1 = nn.Conv2d(1, model['out_conv_1'], kernel_conv_1, stride_conv_1, padding_conv_1)     # 1 input channel
         height_after_conv_1, width_after_conv_1 = utils.output_dimensions(X_test.shape[2], X_test.shape[3], padding_conv_1, kernel_conv_1, stride_conv_1)
 
         #===========================
@@ -61,7 +61,7 @@ class CNN(nn.Module):
         stride_conv_2 = model['stride_conv_2']
         padding_conv_2 = model['padding_conv_2']
 
-        self.conv2 = nn.Conv2d(6, 16, kernel_conv_2, stride_conv_2, padding_conv_2)
+        self.conv2 = nn.Conv2d(model['out_conv_1'], model['out_conv_2'], kernel_conv_2, stride_conv_2, padding_conv_2)
         height_after_conv_2, width_after_conv_2 = utils.output_dimensions(height_after_pool_1, width_after_pool_1, padding_conv_2, kernel_conv_2, stride_conv_2)
         height_after_pool_2, width_after_pool_2 = utils.output_dimensions(height_after_conv_2, width_after_conv_2, padding_pool, kernel_pool, stride_pool)
 
@@ -71,17 +71,17 @@ class CNN(nn.Module):
         stride_conv_3 = model['stride_conv_3']
         padding_conv_3 = model['padding_conv_3']
 
-        self.conv3 = nn.Conv2d(16, 40, kernel_conv_3, stride_conv_3, padding_conv_3)
+        self.conv3 = nn.Conv2d(model['out_conv_2'], model['out_conv_3'], kernel_conv_3, stride_conv_3, padding_conv_3)
         height_after_conv_3, width_after_conv_3 = utils.output_dimensions(height_after_pool_2, width_after_pool_2, padding_conv_3, kernel_conv_3, stride_conv_3)
         height_after_pool_3, width_after_pool_3 = utils.output_dimensions(height_after_conv_3, width_after_conv_3, padding_pool, kernel_pool, stride_pool)
 
 
         #===========================
 
-        self.fc1 = nn.Linear(40 * utils.dimensions_for_linear_layer(height_after_pool_3, width_after_pool_3), 400)
-        self.fc2 = nn.Linear(400, 200)
-        self.fc3 = nn.Linear(200, 84)
-        self.fc4 = nn.Linear(84, model['num_classes'])
+        self.fc1 = nn.Linear(model['out_conv_3'] * utils.dimensions_for_linear_layer(height_after_pool_3, width_after_pool_3), model['out_fc1'])
+        self.fc2 = nn.Linear(model['out_fc1'], model['out_fc2'])
+        self.fc3 = nn.Linear(model['out_fc2'], model['out_fc3'])
+        self.fc4 = nn.Linear(model['out_fc3'], model['num_classes'])
 
 
     def forward(self, x):
