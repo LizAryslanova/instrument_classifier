@@ -90,7 +90,7 @@ def test(CNN_model, X_test, y_test, classes):
 
 
 # Creates a confusion matrix comparing test true labels with model predictions
-def confusion_matrix(y_true, y_pred):
+def confusion_matrix(y_true, y_pred, num_classes):
     '''
         ===================================
         Takes true and predicted values for labels (as tensors)
@@ -100,7 +100,12 @@ def confusion_matrix(y_true, y_pred):
     from sklearn.metrics import confusion_matrix
     import sklearn
 
-    metric = sklearn.metrics.confusion_matrix(y_true.cpu(), y_pred.cpu(), labels = [0, 1, 2, 3, 4])
+    labels = []
+
+    for i in range(num_classes):
+        labels.append(i)
+
+    metric = sklearn.metrics.confusion_matrix(y_true.cpu(), y_pred.cpu(), labels=labels)
     return metric
 
 
@@ -115,7 +120,9 @@ def plot_confusion_matrix(y_true, y_pred, classes):
     import numpy as np
     import matplotlib.pyplot as plt
 
-    confusion = confusion_matrix(y_true, y_pred)
+    num_classes = len(classes)
+
+    confusion = confusion_matrix(y_true, y_pred, num_classes)
 
     column_headers = classes
     row_headers = classes

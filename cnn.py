@@ -75,7 +75,6 @@ class CNN(nn.Module):
         height_after_conv_3, width_after_conv_3 = utils.output_dimensions(height_after_pool_2, width_after_pool_2, padding_conv_3, kernel_conv_3, stride_conv_3)
         height_after_pool_3, width_after_pool_3 = utils.output_dimensions(height_after_conv_3, width_after_conv_3, padding_pool, kernel_pool, stride_pool)
 
-
         #===========================
 
         self.fc1 = nn.Linear(model['out_conv_3'] * utils.dimensions_for_linear_layer(height_after_pool_3, width_after_pool_3), model['out_fc1'])
