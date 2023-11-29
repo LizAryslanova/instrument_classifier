@@ -1,11 +1,11 @@
 
 model_parameters:
-  kernel_conv_1: 5
+  kernel_conv_1: 2
   stride_conv_1: 1
   padding_conv_1: 0
   out_conv_1: 6
 
-  kernel_conv_2: 5
+  kernel_conv_2: 3
   stride_conv_2: 1
   padding_conv_2: 0
   out_conv_2: 16
@@ -53,7 +53,7 @@ train_loop:
 
 
   learning_rate: 0.0001
-  num_epochs: 100
+  num_epochs: 3
 
   # For the scheduler:
   step_size: 10
