@@ -214,8 +214,9 @@ def process_folder(folder_address, number_of_files):
 
 # ==========================
 
+num_of_classes = 5
 num_files_to_move_train = 0
-num_files_to_move_test = 0
+num_files_to_move_test = int(0.2 * num_files_to_move_train)
 
 move_num_files_each_label(num_files_to_move_train, label='train')
 move_num_files_each_label(num_files_to_move_test, label='test')
@@ -233,8 +234,8 @@ print('Moved all the files')
 
 folder_address_train = current_dir + '/audio_files/nsynth/for_5_class_model/' + 'train/'
 folder_address_test = current_dir + '/audio_files/nsynth/for_5_class_model/' + 'test/'
-number_of_files_train = 800 * 5
-number_of_files_test = 120 * 5
+number_of_files_train = num_files_to_move_train * num_of_classes
+number_of_files_test = number_of_files_test * num_of_classes
 
 
 

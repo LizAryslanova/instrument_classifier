@@ -120,14 +120,15 @@ for epoch in range(num_epochs):
 
         loss = loss_function(y_predicted, labels)
 
-        # Regularization
-        alpha = 0
-        l1_norm = sum(param.abs().sum() for param in CNN_model.parameters())
-        loss_l1 = loss + alpha * l1_norm
+        # Regularization - currently not supported by MPS
+        # alpha = 0.001
+        # l1_norm = sum(param.abs().sum() for param in CNN_model.parameters())
+        # loss_l1 = loss + alpha * l1_norm
 
 
-        optimizer.zero_grad()     # zero the gradients
-        loss_l1.backward()
+        optimizer.zero_grad()            # zero the gradients
+        loss.backward()
+        # loss_l1.backward()             # for adding regularization
         optimizer.step()                 # updates
 
         running_loss += loss.item()
