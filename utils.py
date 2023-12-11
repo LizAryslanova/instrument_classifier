@@ -482,9 +482,9 @@ def dim_of_spectrogram():
     return N.shape
 
 
-def get_classes():
+def get_classes(address = 'model.yml'):
     import yaml
-    with open('model.yml', 'r') as file:
+    with open(address, 'r') as file:
         yaml_input = yaml.safe_load(file)
 
     classes = ()
