@@ -250,12 +250,12 @@ def get_labels_from_nsynth():
 
 
 
-def audio_to_samples(folder_address, file):
+def audio_to_samples(folder_address, file, sr=True):
     '''
         ===================================
         Takes in the *file* from the *folder_address*, checks if the file is a .wav and if True:
         Loads through librosa and returns samples and sample rate
-
+        If sr = True it will use librosa's standart 22050 Hz, else it will use sr = None (and import with the file's sample rate)
         ===================================
     '''
     import librosa
@@ -265,7 +265,10 @@ def audio_to_samples(folder_address, file):
 
     if (file[-4:] == '.wav'):
         audio_file = folder_address + file
-        samples, sample_rate = librosa.load(audio_file)
+        if sr:
+            samples, sample_rate = librosa.load(audio_file)
+        else:
+            samples, sample_rate = librosa.load(audio_file, sr=None)
 
     return samples, sample_rate
 
@@ -308,7 +311,7 @@ def audio_to_numpy(samples, sample_rate, fmax, seconds_to_cut = 3):
 
     trimmed_signal, _ = librosa.effects.trim(samples, top_db=15)
 
-    sr = 22050 # sample rate, used to cut 3 seconds
+    sr = sample_rate    # sample rate, used to cut 3 seconds. 22050 for auto librosa choice
     cut_time = int(sr * seconds_to_cut)
     cut_signal = trimmed_signal[0:cut_time]
 
@@ -353,9 +356,11 @@ def audio_to_numpy(samples, sample_rate, fmax, seconds_to_cut = 3):
 
 
 
-def audio_to_mel_spectrogram(folder_address, file, destination_address):
+def audio_to_mel_spectrogram(folder_address, file, destination_address, sr = True, seconds_to_cut = 3):
     '''
         ===================================
+        If sr = True it will use librosa's standart 22050 Hz, else it will use sr = None (and import with the file's sample rate)
+
         Takes in the *file* from the *folder_address*, checks if the file is a .wav and if True:
             - trims the silence,
             - takes the first 3 seconds
@@ -373,12 +378,15 @@ def audio_to_mel_spectrogram(folder_address, file, destination_address):
     if (file[-4:] == '.wav'):
 
         audio_file = folder_address + file
-        samples, sample_rate = librosa.load(audio_file)
+
+        if sr:
+            samples, sample_rate = librosa.load(audio_file)
+        else:
+            samples, sample_rate = librosa.load(audio_file, sr = None)
         trimed_signal, _ = librosa.effects.trim(samples, top_db=15)
 
 
-        sr = 22050 # sample rate, used to cut 3 seconds
-        seconds_to_cut = 3
+        sr = sample_rate # sample rate, used to cut 3 seconds
         cut_time = int(sr * seconds_to_cut)
         cut_signal = trimed_signal[0:cut_time]
 
@@ -395,7 +403,7 @@ def audio_to_mel_spectrogram(folder_address, file, destination_address):
         fig = plt.figure(figsize=[1, 1])
         ax = fig.add_subplot(111)
         ax.axes.get_xaxis().set_visible (False)
-        ax. axes.get_yaxis().set_visible (False)
+        ax.axes.get_yaxis().set_visible (False)
         ax.set_frame_on(False)
         filename = destination_address + file[:-4] + '_mel'+ '.png'
 
@@ -403,17 +411,17 @@ def audio_to_mel_spectrogram(folder_address, file, destination_address):
 
         # MEL Spectrogram
         sgram_mag, _ = librosa.magphase(STFT_result)
-        mel_scale_sgram = librosa.feature.melspectrogram(S=sgram_mag, sr=sample_rate, n_mels=512, fmax = 6000)
+        mel_scale_sgram = librosa.feature.melspectrogram(S=sgram_mag, sr=sample_rate, n_mels=512, fmax = 8000)
         mel_sgram = librosa.amplitude_to_db(mel_scale_sgram, ref=np.min)
 
-        librosa.display.specshow(mel_sgram, x_axis='time', y_axis='off')
+        librosa.display.specshow(mel_sgram, x_axis='time', y_axis='off', sr = sample_rate)
 
         plt.savefig(filename, dpi=400, bbox_inches='tight', pad_inches=0)
         plt.close('all')
 
 
 
-def audio_to_spectrogram(folder_address, file, destination_address):
+def audio_to_spectrogram(folder_address, file, destination_address, sr = True, seconds_to_cut = 3):
     '''
         ===================================
         Takes in the *file* from the *folder_address*, checks if the file is a .wav and if True:
@@ -433,12 +441,18 @@ def audio_to_spectrogram(folder_address, file, destination_address):
     if (file[-4:] == '.wav'):
 
         audio_file = folder_address + file
+
+        if sr:
+            samples, sample_rate = librosa.load(audio_file)
+        else:
+            samples, sample_rate = librosa.load(audio_file, sr = None)
+
         samples, sample_rate = librosa.load(audio_file)
         trimed_signal, _ = librosa.effects.trim(samples, top_db=15)
 
 
-        sr = 22050 # sample rate, used to cut 3 seconds
-        seconds_to_cut = 3
+        sr = sample_rate # sample rate, used to cut 3 seconds
+
         cut_time = int(sr * seconds_to_cut)
         cut_signal = trimed_signal[0:cut_time]
 
@@ -457,7 +471,7 @@ def audio_to_spectrogram(folder_address, file, destination_address):
         fig = plt.figure(figsize=[1, 1])
         ax = fig.add_subplot(111)
         ax.axes.get_xaxis().set_visible (False)
-        ax. axes.get_yaxis().set_visible (False)
+        ax.axes.get_yaxis().set_visible (False)
         ax.set_frame_on(False)
         filename = destination_address + file[:-4] + '.png'
 
@@ -473,6 +487,11 @@ def audio_to_spectrogram(folder_address, file, destination_address):
 
 # Shape of the spectrogram
 def dim_of_spectrogram():
+    '''
+        ==========================
+        Returns dimensions of the spectrogram.
+        ==========================
+    '''
     folder_address = current_dir + '/unit_testing/'
     file = 'G53-71607-1111-229.wav'
     samples, sample_rate = audio_to_samples(folder_address, file)

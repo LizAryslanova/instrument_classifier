@@ -228,5 +228,3 @@ def A__utils_test():
 # ===========================================
 
 
-
-utils.audio_to_mel_spectrogram('/Users/cookie/dev/instrument_classifier/audio_files/nsynth/for_5_class_model/test/', 'keyboard_acoustic_010-075-127.wav', '/Users/cookie/dev/instrument_classifier/unit_testing/')
