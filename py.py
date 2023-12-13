@@ -20,46 +20,68 @@ file1 = 'string_acoustic_075-090-100.wav'
 file2 = 'G53-71607-1111-229.wav'
 
 
-samples1, sample_rate1 = utils.audio_to_samples(folder_address, file1, sr = False)
-#print(sample_rate1)
-
-samples2, sample_rate2 = utils.audio_to_samples(folder_address, file2, sr = False)
-#print(sample_rate2)
-
-
-_, sample_rate_1a = utils.cut_audio_to_samples(samples1, sample_rate1, 1)
-_, sample_rate_2a = utils.cut_audio_to_samples(samples2, sample_rate2, 1)
-
-
-#print(sample_rate_1a)
-#print(sample_rate_2a)
-
-
-
-#utils.audio_to_spectrogram(folder_address, file1, folder_address, sr = False, seconds_to_cut=0.4)
-#utils.audio_to_mel_spectrogram(folder_address, file1, folder_address, sr = False, seconds_to_cut=0.4)
 
 
 
 
-# Shape of the spectrogram
-def dim_of_spectrogram(file, sr = True, fmax = 8000):
+y_pred = torch.tensor([3, 1, 2, 1, 1, 1, 3, 1, 1, 3, 1, 3, 3, 1, 1, 3, 3, 3, 2, 1, 3, 1, 2, 1,
+        1, 1, 1, 1, 3, 1, 1, 2, 2, 1, 1, 3, 1, 1, 1, 1, 1, 3, 1, 1, 1, 3, 1, 2,
+        1, 1, 1, 3, 2, 2, 1, 1, 3, 2, 1, 1, 2, 0, 3, 1, 1, 3, 2, 2, 1, 0, 1, 2,
+        3, 1])
+y_test = torch.tensor([0, 1, 2, 1, 3, 1, 3, 1, 0, 3, 1, 3, 3, 1, 1, 3, 1, 3, 2, 1, 0, 1, 2, 1,
+        1, 1, 2, 1, 3, 1, 1, 2, 0, 1, 1, 2, 1, 1, 3, 1, 1, 3, 1, 1, 1, 3, 1, 2,
+        1, 1, 1, 2, 1, 2, 3, 1, 3, 2, 1, 1, 2, 0, 3, 1, 0, 3, 2, 2, 1, 0, 2, 2,
+        3, 1])
+
+
+
+def plot_classification_report(y_true, y_pred):
     '''
-        ==========================
-        Returns dimensions of the spectrogram.
-        Automatically takes sr as True - to use librosa's 22050 sample rate
-        Use sr = False to take the file's sample rate.
-        By default has fmax = 8000
-        ==========================
+        ===================================
+        Takes true and predicted values for labels (as tensors), tuple of classes
+        plots (but doesn't show) the classification report
+        ===================================
     '''
-    folder_address = current_dir + '/unit_testing/'
-    file = 'G53-71607-1111-229.wav'
-    samples, sample_rate = utils.audio_to_samples(folder_address, file, sr)
-    fmax = 8000
+    import numpy as np
+    import matplotlib.pyplot as plt
+    import sklearn
+    import sklearn.metrics
 
-    N = utils.audio_to_numpy(samples, sample_rate, fmax)
-    return N.shape
+    # confusion = confusion_matrix(y_true, y_pred, num_classes)
+    report = sklearn.metrics.classification_report(y_true.cpu(), y_pred.cpu())
 
 
-print(dim_of_spectrogram(file1, sr=False, fmax=2000))
-print(dim_of_spectrogram(file2, sr=False))
+    cell_text = []
+    for row in report:
+        cell_text.append([f'{x}' for x in row])
+
+    the_table = plt.table(cellText = cell_text, rowLoc='left', loc = 'center')
+
+    the_table.scale(2.3, 2)
+    the_table.auto_set_font_size(False)
+    the_table.set_fontsize(8)
+
+    # Hide axes
+    ax = plt.gca()
+    ax.get_xaxis().set_visible(False)
+    ax.get_yaxis().set_visible(False)
+    # Hide axes border
+    plt.box(on=None)
+
+    #plt.figtext(0.95, 0.05, footer_text, horizontalalignment='right', fontsize=8, weight='light')
+
+    # Add title
+    plt.title('Classification report')
+
+    plt.show()
+    print(report)
+
+
+
+
+
+
+plot_classification_report(y_test, y_pred)
+
+
+

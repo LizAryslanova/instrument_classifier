@@ -23,6 +23,8 @@ model_parameters:
   out_fc2: 200
   out_fc3: 84
 
+  dropout_probab: 0.4
+
 
 
   num_classes: 5
@@ -52,11 +54,11 @@ train_loop:
     c_5: 'keys_el'
 
 
-  learning_rate: 0.0001
-  num_epochs: 3
+  learning_rate: 0.0003
+  num_epochs: 140
 
   # For the scheduler:
-  step_size: 10
+  step_size: 13
   gamma: 0.5
 
   model_results_address: '/model_results/'

@@ -13,7 +13,8 @@ sys.path.append(current_dir)
 device = torch.device('mps' if torch.backends.mps.is_available() else 'cpu')
 import utils
 from cnn import CNN
-import pytest
+#import pytest
+
 
 
 
@@ -130,7 +131,7 @@ def A__utils_plot_image():
     num_epochs = 18
     learning_rate = 0.00002
 
-    y_true = torch.tensor([[1],[0],[0],[0],[0],[0],[1],[0],[0]]).to(device)
+    y_true = torch.tensor([[1],[0],[0],[0],[0],[0],[1],[0],[4]]).to(device)
     y_predicted = torch.tensor([[1],[0],[2],[0],[3],[2],[1],[0],[1]]).to(device)
 
     y_1 = [3,13,23,4,2,1,34,33]
@@ -161,7 +162,7 @@ def A__utils_audio_to_spectrogram():
 
 
 
-#A__utils_plot_image()
+A__utils_plot_image()
 #A__utils_audio_to_spectrogram()
 
 

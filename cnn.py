@@ -83,6 +83,15 @@ class CNN(nn.Module):
         self.fc4 = nn.Linear(model['out_fc3'], model['num_classes'])
 
 
+        #===========================
+
+        dropout_probab = model['dropout_probab']
+
+        self.dropout = nn.Dropout(dropout_probab)
+
+        #===========================
+
+
     def forward(self, x):
 
         x = self.pool(F.relu(self.conv1(x)))
@@ -90,8 +99,8 @@ class CNN(nn.Module):
         x = self.pool(F.relu(self.conv3(x)))
         x = torch.flatten(x, 1)
         x = F.relu(self.fc1(x))
+        x = self.dropout(x)
         x = F.relu(self.fc2(x))
+        x = self.dropout(x)
         x = F.relu(self.fc3(x))
         return self.fc4(x)
-
-

@@ -19,6 +19,8 @@ import yaml
 with open('model.yml', 'r') as file:
     yaml_input = yaml.safe_load(file)
 
+import sklearn
+
 
 '''
     ===================================

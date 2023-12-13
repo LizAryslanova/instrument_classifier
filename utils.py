@@ -108,9 +108,8 @@ def confusion_matrix(y_true, y_pred, num_classes):
     metric = sklearn.metrics.confusion_matrix(y_true.cpu(), y_pred.cpu(), labels=labels)
     return metric
 
-
 # Plots a confusion matrix
-def plot_confusion_matrix(y_true, y_pred, classes):
+def plot_confusion_matrix(y_true, y_pred, classes, width_scale, height_scale):
     '''
         ===================================
         Takes true and predicted values for labels (as tensors), tuple of classes
@@ -133,10 +132,10 @@ def plot_confusion_matrix(y_true, y_pred, classes):
 
     the_table = plt.table(cellText=cell_text,
                       rowLabels=row_headers,
-                      rowLoc='left',
+                      rowLoc='right',
                       colLabels=column_headers, loc = 'center')
 
-    the_table.scale(2.3, 2)
+    the_table.scale(width_scale, height_scale)
     the_table.auto_set_font_size(False)
     the_table.set_fontsize(8)
 
@@ -152,6 +151,86 @@ def plot_confusion_matrix(y_true, y_pred, classes):
 
     # Add title
     plt.title('Confusion Matrix')
+
+
+
+
+def do_classification_report(y_true, y_pred, classes):
+    import sklearn.metrics
+
+    column_headers = ['Precision', 'Recall', 'f1 Score', 'Support']
+    row_headers = list(classes) + ['Accuracy', 'Macro avg', 'Weighted avg']
+
+    classification_report = sklearn.metrics.classification_report(y_true.cpu(), y_pred.cpu())
+    lines = classification_report.split('\n')
+
+    # removing empty lines from the lisi of lines
+    for i in range(len(lines)):
+        if len(lines) >= i:
+            if len(lines[i]) == 0:
+                lines.pop(i)
+
+    # printing lines
+    #for i in range(len(lines)):
+    #    print (lines[i])
+
+    #===================================
+    # Creating table style (list) from the classification report (str)
+    table_classes = lines[1:-3]
+    table_summary = lines[-3:]
+    table = []
+
+    for line in table_classes:
+        t = line.strip().split()
+        table.append(t[1:])
+
+    l1 = ['', ''] + table_summary[0].strip().split()[1:]
+    table.append(l1)
+
+    for i in range(2):
+        table.append(table_summary[i+1].strip().split()[2:])
+
+    #===================================
+
+    return table, column_headers, row_headers
+
+
+
+# Plots a confusion matrix
+def plot_classification_report(y_true, y_pred, classes, width_scale, height_scale):
+    '''
+        ===================================
+        Takes true and predicted values for labels (as tensors), tuple of classes
+        plots (but doesn't show) the confusion matrix where Rows represent True labels and Columns represent - prebicted labels
+        ===================================
+    '''
+    import numpy as np
+    import matplotlib.pyplot as plt
+
+    num_classes = len(classes)
+    confusion_table, column_headers, row_headers = do_classification_report(y_true, y_pred, classes)
+
+    cell_text = []
+
+    for row in confusion_table:
+        cell_text.append([f'{x}' for x in row])
+
+    the_table = plt.table(cellText=cell_text, rowLabels=row_headers,
+                      rowLoc='right', colLabels=column_headers, loc = 'center')
+
+    the_table.scale(width_scale, height_scale)
+    the_table.auto_set_font_size(False)
+    the_table.set_fontsize(8)
+
+    # Hide axes
+    ax = plt.gca()
+    ax.get_xaxis().set_visible(False)
+    ax.get_yaxis().set_visible(False)
+    # Hide axes border
+    plt.box(on=None)
+
+    # Add title
+    plt.title('Classification Report')
 
 
 # Plots and saves the final image with losses on epochs, accuracies and a confusion matrix
@@ -174,6 +253,8 @@ def plot_image(training_loss, test_loss, num_epochs, learning_rate, classes, acc
     from matplotlib.gridspec import GridSpec
     import numpy as np
 
+    #===============================
+
     accuracy = ('Accuracy', )
     row_Labels = accuracy + classes
 
@@ -188,19 +269,29 @@ def plot_image(training_loss, test_loss, num_epochs, learning_rate, classes, acc
         y_offset = [acc[row]]
         cell_text.append([x for x in y_offset])
 
-    fig = plt.figure(figsize=(12, 6), layout="constrained")
+    #===============================
+
+    fig = plt.figure(figsize=(18, 6), layout="constrained")
     fig.suptitle(f'Loss functions for {num_epochs} epochs, learning rate = {str(learning_rate)}', fontsize = 24)
 
-    gs = GridSpec(nrows=2, ncols=12)
+    #===============================
 
-    ax_graphs = fig.add_subplot(gs[:, 0:7])
+    gs = GridSpec(nrows=2, ncols=4)
+
+    #===============================
+    # Graph
+
+    ax_graphs = fig.add_subplot(gs[:, 0:2])
     ax_graphs.plot(training_loss, 'g', label='Training Loss')
     ax_graphs.plot(test_loss, 'r', label='Test Loss')
     plt.xlabel('Epoch')
     plt.ylabel('Loss')
     plt.legend()
 
-    ax_table = fig.add_subplot(gs[0, -3:-1])
+    #===============================
+    # Table with accuracies
+
+    ax_table = fig.add_subplot(gs[0, -2])
     ax_table.set_axis_off()
     the_table = plt.table(cellText=cell_text,
                           colWidths = [0.5] * 1,
@@ -210,13 +301,28 @@ def plot_image(training_loss, test_loss, num_epochs, learning_rate, classes, acc
         if (row == 0):
             cell.set_text_props(weight='bold')
 
-    the_table.scale(1.5, 2)
-    the_table.set_fontsize(14)
+    width_scale_acc, height_scale_acc = 0.8, 2
+    the_table.scale(width_scale_acc, height_scale_acc)
+    the_table.set_fontsize(12)
 
-    ax_table2 = fig.add_subplot(gs[-1, -3:-1])
-    the_table_2 = plot_confusion_matrix(y_true, y_predicted, classes)
+    #===============================
+    # Confunsion matrix
+    width_scale_conf, height_scale_conf = 1.5, 1.7
+    ax_table2 = fig.add_subplot(gs[1, -1])
+    the_table_2 = plot_confusion_matrix(y_true, y_predicted, classes, width_scale_conf, height_scale_conf)
 
+
+    #===============================
+    # Classification report
+
+    width_scale_reprt, height_scale_reprt = 1.2, 1.3
+    ax_table3 = fig.add_subplot(gs[0, -1])
+    the_table3 = plot_classification_report(y_true, y_predicted, classes, width_scale_reprt, height_scale_reprt)
+
+
+    #===============================
     # Saving and naming the image
+
     filename = filename[:-3]  + '.png'
     plt.savefig(filename, dpi=400, bbox_inches='tight', pad_inches=0.1)
 
