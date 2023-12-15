@@ -175,12 +175,13 @@ def process_folder(folder_address, number_of_files):
     '''
 
     image_shape_a, _, channels = utils.dim_of_spectrogram()
-    image_shape_b = 65
+    image_shape_b = 47
 
     # create empty X and y arrays
     X_long = np.zeros(shape=(number_of_files, image_shape_a, image_shape_b, channels),
                       dtype=np.float32)
     y_long = np.zeros(shape=(number_of_files))
+
 
     # =====================
     number_of_labelled_files = 0
@@ -190,7 +191,7 @@ def process_folder(folder_address, number_of_files):
             if ( number_of_labelled_files % 50 ) == 0:
                 print ('Processing: ' + str(number_of_labelled_files + 1) + '   Name: ' + file)
             # !!!!! create a numpy array od the correct shape and a second one with labels !!!!!!
-            samples, sr = utils.audio_to_samples(folder_address, file)
+            samples, sr = utils.audio_to_samples(folder_address, file, sr=False)
             X_long[number_of_labelled_files] = utils.audio_to_numpy(samples, sr, 8000, seconds_to_cut=1.5)
             y_long[number_of_labelled_files] = nsynth_label(file)
             number_of_labelled_files += 1
@@ -234,10 +235,12 @@ print('Moved all the files')
 
 folder_address_train = current_dir + '/audio_files/nsynth/for_5_class_model/' + 'train/'
 folder_address_test = current_dir + '/audio_files/nsynth/for_5_class_model/' + 'test/'
-number_of_files_train = num_files_to_move_train * num_of_classes
-number_of_files_test = number_of_files_test * num_of_classes
 
+#number_of_files_train = num_files_to_move_train * num_of_classes
+#number_of_files_test = num_files_to_move_test * num_of_classes
 
+number_of_files_train = 3995
+number_of_files_test = 596
 
 
 X_train, y_train = process_folder(folder_address_train, number_of_files_train)
@@ -245,13 +248,13 @@ X_test, y_test = process_folder(folder_address_test, number_of_files_test)
 
 
 
-with open(current_dir + '/pickles/nsynth_train_x', 'wb') as f:
+with open(current_dir + '/pickles/nsynth_train_x_new_sr', 'wb') as f:
     pickle.dump(X_train , f)
-with open(current_dir + '/pickles/nsynth_train_y', 'wb') as f:
+with open(current_dir + '/pickles/nsynth_train_y_new_sr', 'wb') as f:
     pickle.dump(y_train , f)
-with open(current_dir + '/pickles/nsynth_test_x', 'wb') as f:
+with open(current_dir + '/pickles/nsynth_test_x_new_sr', 'wb') as f:
     pickle.dump(X_test , f)
-with open(current_dir + '/pickles/nsynth_test_y', 'wb') as f:
+with open(current_dir + '/pickles/nsynth_test_y_new_sr', 'wb') as f:
     pickle.dump(y_test , f)
 
 

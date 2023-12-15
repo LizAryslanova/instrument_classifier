@@ -33,10 +33,10 @@ model_parameters:
 
 train_loop:
   # name and location of pickles
-  x_train_address: '/pickles/nsynth_train_x'
-  y_train_address: '/pickles/nsynth_train_y'
-  x_test_address: '/pickles/nsynth_test_x'
-  y_test_address: '/pickles/nsynth_test_y'
+  x_train_address: '/pickles/nsynth_train_x_new_sr'
+  y_train_address: '/pickles/nsynth_train_y_new_sr'
+  x_test_address: '/pickles/nsynth_test_x_new_sr'
+  y_test_address: '/pickles/nsynth_test_y_new_sr'
 
 
 
@@ -54,11 +54,11 @@ train_loop:
     c_5: 'keys_el'
 
 
-  learning_rate: 0.0003
+  learning_rate: 0.0004
   num_epochs: 140
 
   # For the scheduler:
-  step_size: 13
-  gamma: 0.5
+  step_size: 10
+  gamma: 0.6
 
   model_results_address: '/model_results/'
