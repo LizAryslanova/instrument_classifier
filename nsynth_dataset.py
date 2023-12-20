@@ -175,7 +175,7 @@ def process_folder(folder_address, number_of_files):
     '''
 
     image_shape_a, _, channels = utils.dim_of_spectrogram()
-    image_shape_b = 47
+    image_shape_b = 32
 
     # create empty X and y arrays
     X_long = np.zeros(shape=(number_of_files, image_shape_a, image_shape_b, channels),
@@ -192,7 +192,7 @@ def process_folder(folder_address, number_of_files):
                 print ('Processing: ' + str(number_of_labelled_files + 1) + '   Name: ' + file)
             # !!!!! create a numpy array od the correct shape and a second one with labels !!!!!!
             samples, sr = utils.audio_to_samples(folder_address, file, sr=False)
-            X_long[number_of_labelled_files] = utils.audio_to_numpy(samples, sr, 8000, seconds_to_cut=1.5)
+            X_long[number_of_labelled_files] = utils.audio_to_numpy(samples, sr, 8000, seconds_to_cut=1)
             y_long[number_of_labelled_files] = nsynth_label(file)
             number_of_labelled_files += 1
 
@@ -248,13 +248,13 @@ X_test, y_test = process_folder(folder_address_test, number_of_files_test)
 
 
 
-with open(current_dir + '/pickles/nsynth_train_x_new_sr', 'wb') as f:
+with open(current_dir + '/pickles/nsynth_train_x_new_sr_1sec', 'wb') as f:
     pickle.dump(X_train , f)
-with open(current_dir + '/pickles/nsynth_train_y_new_sr', 'wb') as f:
+with open(current_dir + '/pickles/nsynth_train_y_new_sr_1sec', 'wb') as f:
     pickle.dump(y_train , f)
-with open(current_dir + '/pickles/nsynth_test_x_new_sr', 'wb') as f:
+with open(current_dir + '/pickles/nsynth_test_x_new_sr_1sec', 'wb') as f:
     pickle.dump(X_test , f)
-with open(current_dir + '/pickles/nsynth_test_y_new_sr', 'wb') as f:
+with open(current_dir + '/pickles/nsynth_test_y_new_sr_1sec', 'wb') as f:
     pickle.dump(y_test , f)
 
 

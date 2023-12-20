@@ -2,17 +2,17 @@
 model_parameters:
   kernel_conv_1: 2
   stride_conv_1: 1
-  padding_conv_1: 0
+  padding_conv_1: 2
   out_conv_1: 6
 
   kernel_conv_2: 3
   stride_conv_2: 1
-  padding_conv_2: 0
+  padding_conv_2: 2
   out_conv_2: 16
 
   kernel_conv_3: 5
   stride_conv_3: 1
-  padding_conv_3: 0
+  padding_conv_3: 2
   out_conv_3: 40
 
   kernel_pool: 2
@@ -23,7 +23,7 @@ model_parameters:
   out_fc2: 200
   out_fc3: 84
 
-  dropout_probab: 0.4
+  dropout_probab: 0.3
 
 
 
@@ -33,10 +33,10 @@ model_parameters:
 
 train_loop:
   # name and location of pickles
-  x_train_address: '/pickles/nsynth_train_x_new_sr'
-  y_train_address: '/pickles/nsynth_train_y_new_sr'
-  x_test_address: '/pickles/nsynth_test_x_new_sr'
-  y_test_address: '/pickles/nsynth_test_y_new_sr'
+  x_train_address: '/pickles/nsynth_train_x_new_sr_05sec'
+  y_train_address: '/pickles/nsynth_train_y_new_sr_05sec'
+  x_test_address: '/pickles/nsynth_test_x_new_sr_05sec'
+  y_test_address: '/pickles/nsynth_test_y_new_sr_05sec'
 
 
 
@@ -54,11 +54,11 @@ train_loop:
     c_5: 'keys_el'
 
 
-  learning_rate: 0.0004
+  learning_rate: 0.0002
   num_epochs: 140
 
   # For the scheduler:
-  step_size: 10
-  gamma: 0.6
+  step_size: 30
+  gamma: 0.5
 
   model_results_address: '/model_results/'
