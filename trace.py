@@ -13,7 +13,7 @@ device = torch.device('mps' if torch.backends.mps.is_available() else 'cpu')
 model = torch.load(current_dir + '/model_results/lr_0.0002_epochs_140_20231219-132849.pt')
 
 
-
+model.eval()
 
 
 # Un-Pickle Test sets
@@ -22,15 +22,12 @@ with open(current_dir + '/pickles/nsynth_test_x_new_sr_05sec', 'rb') as f:
 
 _, a, b, c = X_test.shape
 
-X_test = torch.from_numpy(X_test.astype(np.float32)).to(device)
+#X_test = torch.from_numpy(X_test.astype(np.float32)).to(device)
+#print(X_test.shape)
+#example = X_test
+#print(example.shape)
 
-print(X_test.shape)
-
-example = X_test
-
-print(example.shape)
-
-# example = torch.rand(1, a, b, c).to(device)
+example = torch.rand(1, a, b, c).to(device)
 
 
 
