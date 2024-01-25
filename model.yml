@@ -23,7 +23,7 @@ model_parameters:
   out_fc2: 200
   out_fc3: 84
 
-  dropout_probab: 0
+  dropout_probab: 0.3
 
 
 
@@ -55,7 +55,7 @@ train_loop:
 
 
   learning_rate: 0.0002
-  num_epochs: 3
+  num_epochs: 140
 
   # For the scheduler:
   step_size: 30
