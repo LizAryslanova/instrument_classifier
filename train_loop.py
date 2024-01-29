@@ -76,8 +76,11 @@ train_loader = DataLoader(dataset=dataset, batch_size=4, shuffle=True, num_worke
     ===================================
 '''
 
+image_width = X_test.shape[2]
+image_height = X_test.shape[3]
+
 num_classes = yaml_input['model_parameters']['num_classes']
-CNN_model = CNN(yaml_input['model_parameters']).to(device)
+CNN_model = CNN(image_width, image_height, **yaml_input['model_parameters']).to(device)
 learning_rate = yaml_input['train_loop']['learning_rate']
 num_epochs = yaml_input['train_loop']['num_epochs']
 destination_address = current_dir + yaml_input['train_loop']['model_results_address']
