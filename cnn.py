@@ -12,14 +12,21 @@ import utils
 
 class CNN(nn.Module):
     """ CNN model:
-    conv1 -> relu -> pool -> conv2 -> rule -> pool -> conv3 -> relu -> pool -> fc1 -> relu -> dropout -> fc2 -> relu -> dropout -> fc3 -> relu -> fc4
+    conv1 -> relu -> pool ->
+    conv2 -> rule -> pool ->
+    conv3 -> relu -> pool ->
+    fc1 -> relu -> dropout ->
+    fc2 -> relu -> dropout ->
+    fc3 -> relu ->
+    fc4
     """
 
-    def __init__(self, image_width, image_height, kernel_conv_1 = 2, stride_conv_1 = 1, padding_conv_1 = 2, out_conv_1 = 6, kernel_conv_2 = 3, stride_conv_2 = 1, padding_conv_2 = 2, out_conv_2 = 16, kernel_conv_3 = 5, stride_conv_3 = 1, padding_conv_3 = 2, out_conv_3 = 40, out_fc1 = 400, out_fc2 = 200, out_fc3 = 84, num_classes = 5, dropout_probab = 0.3):
+    def __init__(self, image_width, image_height, kernel_conv_1 = 2, stride_conv_1 = 1, padding_conv_1 = 2, out_conv_1 = 6, kernel_conv_2 = 3, stride_conv_2 = 1, padding_conv_2 = 2, out_conv_2 = 16, kernel_conv_3 = 5, stride_conv_3 = 1, padding_conv_3 = 2, out_conv_3 = 40, kernel_pool = 2, stride_pool = 2, padding_pool = 0, out_fc1 = 400, out_fc2 = 200, out_fc3 = 84, num_classes = 5, dropout_probab = 0.3):
         super().__init__()
 
 
-        self._conv1 = nn.Conv2d(1, out_conv_1, kernel_conv_1, stride_conv_1, padding_conv_1)     # 1 input channel
+
+        self.conv1 = nn.Conv2d(1, out_conv_1, kernel_conv_1, stride_conv_1, padding_conv_1)     # 1 input channel
 
         height_after_conv_1, width_after_conv_1 = utils.output_dimensions(image_width, image_height, padding_conv_1, kernel_conv_1, stride_conv_1)
 

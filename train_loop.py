@@ -6,7 +6,11 @@ import numpy as np
 import torch.optim as optim
 import matplotlib.pyplot as plt
 import pickle
+
 import utils
+import plotting_results
+import data_management
+
 from cnn import CNN
 from torch.optim import lr_scheduler
 import os
@@ -42,29 +46,14 @@ X_test = torch.from_numpy(X_test.astype(np.float32))
 y_test = torch.from_numpy(y_test).type(torch.LongTensor)
 
 
+# data loading
+with open(current_dir + yaml_input['train_loop']['x_train_address'], 'rb') as f:
+    X_train = pickle.load(f)
+with open(current_dir + yaml_input['train_loop']['y_train_address'], 'rb') as f:
+    y_train = pickle.load(f)
 
-class TrainSet(Dataset):
 
-    def __init__(self, transform=None):
-        # data loading
-        with open(current_dir + yaml_input['train_loop']['x_train_address'], 'rb') as f:
-            X_train = pickle.load(f)
-        with open(current_dir + yaml_input['train_loop']['y_train_address'], 'rb') as f:
-            y_train = pickle.load(f)
-
-        self.x = torch.from_numpy(X_train.astype(np.float32))
-        self.y = torch.from_numpy(y_train).type(torch.LongTensor)
-        self.n_samples = X_train.shape[0]
-        self.transform = transform
-
-    def __getitem__(self, index):
-        return self.x[index], self.y[index]
-
-    def __len__(self):
-        #len(dataset)
-        return self.n_samples
-
-dataset = TrainSet()
+dataset = data_management.TrainSet(X_train, y_train)
 train_loader = DataLoader(dataset=dataset, batch_size=4, shuffle=True, num_workers=0)
 
 
@@ -171,15 +160,23 @@ for epoch in range(num_epochs):
 #writer.close()
 
 # Saving the Model
-import time
-timestr = time.strftime("%Y%m%d-%H%M%S")
-name = 'lr_' + str(learning_rate) + '_epochs_' + str(num_epochs) + '_' + timestr
-filename = destination_address + name + '.pt'
-torch.save(CNN_model, filename)
+def save_the_model(learning_rate, num_epochs, destination_address, CNN_model, yaml_input):
+    """ Saves the model and the yml with parameters that were used """
+    import time
+    timestr = time.strftime("%Y%m%d-%H%M%S")
+    name = 'lr_' + str(learning_rate) + '_epochs_' + str(num_epochs) + '_' + timestr
+    filename = destination_address + name + '.pt'
+    torch.save(CNN_model, filename)
 
-# saving the yaml with all the model parameters
-with open(destination_address + name + ".yml", 'w') as file:
-    documents = yaml.dump(yaml_input, file)
+    import yaml
+    # saving the yaml with all the model parameters
+    with open(destination_address + name + ".yml", 'w') as file:
+        documents = yaml.dump(yaml_input, file)
+
+
+save_the_model(learning_rate, num_epochs, destination_address, CNN_model)
+
+
 
 
 '''
@@ -191,6 +188,6 @@ with open(destination_address + name + ".yml", 'w') as file:
 import os
 os.system('say "Cookie, I am plotting the picture." ')
 
-y_predicted, accuracies, n_class_correct, n_class_samples = utils.test(CNN_model, X_test, y_test, classes)
-utils.plot_image(training_loss, test_loss, num_epochs, learning_rate, classes, accuracies, y_test, y_predicted, filename, show = True)
+y_predicted, accuracies, n_class_correct, n_class_samples = plotting_results.test(CNN_model, X_test, y_test, classes)
+plotting_results.plot_image(training_loss, test_loss, num_epochs, learning_rate, classes, accuracies, y_test, y_predicted, filename, show = True)
 

@@ -1,3 +1,4 @@
+
 audio_files/*
 data/*
 __pycache__/*
@@ -6,3 +7,4 @@ pickles/*
 model_results/*
 logs/*
 runs/*
+traced_models/*

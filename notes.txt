@@ -1,0 +1,23 @@
+
+audio_to_spectral_data.py:
+
+    Contains functions:
+        - audio_to_samples(folder_address, file, sr=True)
+        - cut_audio_to_samples(samples, sample_rate, seconds_to_cut)
+        - audio_to_numpy(samples, sample_rate, fmax, seconds_to_cut = 3)
+        - audio_to_mel_spectrogram(folder_address, file, destination_address, sr = True, seconds_to_cut = 3)
+        - audio_to_spectrogram(folder_address, file, destination_address, sr = True, seconds_to_cut = 3)
+
+
+
+plotting_results.py:
+
+    Contains functions:
+        - test(CNN_model, X_test, y_test, classes)
+        - confusion_matrix(y_true, y_pred, num_classes)
+        - plot_confusion_matrix(y_true, y_pred, classes, width_scale, height_scale)
+        - do_classification_report(y_true, y_pred, classes)
+        - plot_classification_report(y_true, y_pred, classes, width_scale, height_scale)
+        - plot_image(training_loss, test_loss, num_epochs, learning_rate, classes, accuracies, y_true, y_predicted, filename, show = False)
+
+
