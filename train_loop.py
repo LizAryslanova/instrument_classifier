@@ -45,6 +45,7 @@ with open(current_dir + yaml_input['train_loop']['y_test_address'], 'rb') as f:
 X_test = torch.from_numpy(X_test.astype(np.float32))
 y_test = torch.from_numpy(y_test).type(torch.LongTensor)
 
+print(X_test.shape)
 
 # data loading
 with open(current_dir + yaml_input['train_loop']['x_train_address'], 'rb') as f:

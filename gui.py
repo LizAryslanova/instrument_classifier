@@ -57,10 +57,9 @@ while True:
                 with open(filename, "rt", encoding='utf-8') as f:
 
                     samples, sr = audio_to_spectral_data.audio_to_samples('', filename, sr=False)
-                    X = audio_to_spectral_data.audio_to_numpy(samples, sr, 8000, seconds_to_cut=1)
+                    X = audio_to_spectral_data.audio_to_numpy(samples, sr, 8000, seconds_to_cut=0.5)
 
                     current_dir = os.path.dirname(os.path.realpath(__file__))
-
                     # model built for .5 seconds
                     model = torch.load(current_dir + '/model_results/lr_0.0002_epochs_140_20231219-132849.pt')
 
@@ -73,7 +72,9 @@ while True:
 
                     X_empty[0] = X
 
-                    X = torch.from_numpy(X_empty.astype(np.float32))
+                    X = np.rollaxis(X_empty, 3, 1)
+
+                    X = torch.from_numpy(X.astype(np.float32))
 
 
 
