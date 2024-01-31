@@ -174,7 +174,7 @@ def save_the_model(learning_rate, num_epochs, destination_address, CNN_model, ya
         documents = yaml.dump(yaml_input, file)
 
 
-save_the_model(learning_rate, num_epochs, destination_address, CNN_model)
+save_the_model(learning_rate, num_epochs, destination_address, CNN_model, yaml_input)
 
 
 
