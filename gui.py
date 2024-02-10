@@ -12,9 +12,8 @@ import audio_to_spectral_data
 
 import torch
 import torchvision
-import os
 import pickle
-import numpy as np
+
 from cnn import CNN
 
 import sys
@@ -57,38 +56,48 @@ while True:
                 with open(filename, "rt", encoding='utf-8') as f:
 
                     samples, sr = audio_to_spectral_data.audio_to_samples('', filename, sr=False)
-                    X = audio_to_spectral_data.audio_to_numpy(samples, sr, 8000, seconds_to_cut=0.5)
+                    X = audio_to_spectral_data.audio_to_numpy(samples, 16000, 8000, seconds_to_cut=1)
 
                     current_dir = os.path.dirname(os.path.realpath(__file__))
-                    # model built for .5 seconds
-                    model = torch.load(current_dir + '/model_results/lr_0.0002_epochs_140_20231219-132849.pt')
-
+                    # model built for 1 second
+                    model = torch.load(current_dir + '/model_results/lr_0.0002_epochs_100_20240202-185037.pt')
 
                     a, b, c = X.shape
                     X_empty = np.zeros(shape=(1, a, b, c),
                      dtype=np.float32)
 
-                    print(X_empty.shape)
-
                     X_empty[0] = X
-
                     X = np.rollaxis(X_empty, 3, 1)
-
                     X = torch.from_numpy(X.astype(np.float32))
-
-
 
                     with torch.no_grad():
                         X = X.to(device)
-                        output = model(X)
+                        output = model(X).cpu().numpy()
+
+                    #classes = utils.get_classes()
+                    classes = ('Electronic Bass', 'Acoustic Strings', 'Acoustic Mallet', 'Acoustic Keyboard', 'Acoustic Guitar', 'Vocals')
+
+                    output[output < 0] = 0    # replaces negatives with 0
+                    sum_of_output = np.sum(output)
+                    output = np.round(100 * output / sum_of_output, decimals = 2)
+
+                    output_ascending_indices = output.argsort()
+                    output_descending_indices = np.flip(output_ascending_indices)
+
+                    for_popup = ''
+
+                    for i in range(len(output[0])):
+                        index = output_descending_indices[0][i]
+                        for_popup += str(classes[index]) + ' = ' + str(output[0][index]) + '%' + '\n'
+
+                    #for_popup = str(output) + '\n' + str(classes)
 
 
-                    print(X.shape)
+                    filename_for_popup = filename.split('/')
+                    print('filename = ', filename)
 
 
-
-
-                popup_text(filename, output)
+                popup_text(filename_for_popup[-1], for_popup)
             except Exception as e:
                 print("Error: ", e)
 

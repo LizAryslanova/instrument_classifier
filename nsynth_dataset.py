@@ -7,6 +7,7 @@ import numpy as np
 
 import utils
 import pickle
+import audio_to_spectral_data
 
 current_dir = os.path.dirname(os.path.realpath(__file__))
 
@@ -61,6 +62,18 @@ Thoughts:
 so: 4000 files train
 600 files test
 
+
+
+new labels for 6 classes:
+
+    bass_electronic
+    keyboard_acoustic
+    string_acoustic
+    mallet_acoustic
+    guitar_acoustic
+    vocal_electronic
+
+
 '''
 
 
@@ -73,15 +86,23 @@ def move_num_files_each_label(num_files_to_move, label='train'):
     '''
 
     import os
+    #count_bass_electronic = 0
+    #count_string_acoustic = 0
+    #count_guitar_electronic = 0
+    #count_keyboard_acoustic = 0
+    #count_keyboard_electronic = 0
+
+
     count_bass_electronic = 0
-    count_string_acoustic = 0
-    count_guitar_electronic = 0
     count_keyboard_acoustic = 0
-    count_keyboard_electronic = 0
+    count_string_acoustic = 0
+    count_mallet_acoustic = 0
+    count_guitar_acoustic = 0
+    count_vocal_acoustic = 0
 
 
     big_folder = current_dir + '/audio_files/nsynth/Training_audios/'
-    destination_address = current_dir + '/audio_files/nsynth/for_5_class_model/' + label
+    destination_address = current_dir + '/audio_files/nsynth/for_6_class_model/' + label
 
 
 
@@ -108,9 +129,9 @@ def move_num_files_each_label(num_files_to_move, label='train'):
                         dst_path = os.path.join(destination_address, file)
                         os.rename(src_path, dst_path)
 
-                elif label == 'guitar_electronic':
-                    count_guitar_electronic += 1
-                    if count_guitar_electronic < num_files_to_move:
+                elif label == 'mallet_acoustic':
+                    count_mallet_acoustic += 1
+                    if count_mallet_acoustic < num_files_to_move:
                         # move the file on the special folder
                         src_path = os.path.join(folder_address, file)
                         dst_path = os.path.join(destination_address, file)
@@ -124,13 +145,29 @@ def move_num_files_each_label(num_files_to_move, label='train'):
                         dst_path = os.path.join(destination_address, file)
                         os.rename(src_path, dst_path)
 
-                elif label == 'keyboard_electronic':
-                    count_keyboard_electronic += 1
-                    if count_keyboard_electronic < num_files_to_move:
+                elif label == 'guitar_acoustic':
+                    count_guitar_acoustic += 1
+                    if count_guitar_acoustic < num_files_to_move:
                         # move the file on the special folder
                         src_path = os.path.join(folder_address, file)
                         dst_path = os.path.join(destination_address, file)
                         os.rename(src_path, dst_path)
+
+                elif label == 'vocal_acoustic':
+                    count_vocal_acoustic += 1
+                    if count_vocal_acoustic < num_files_to_move:
+                        # move the file on the special folder
+                        src_path = os.path.join(folder_address, file)
+                        dst_path = os.path.join(destination_address, file)
+                        os.rename(src_path, dst_path)
+
+    #print('count_bass_electronic = ', count_bass_electronic)
+    #print('count_keyboard_acoustic = ', count_keyboard_acoustic)
+    #print('count_string_acoustic = ', count_string_acoustic)
+    #print('count_mallet_acoustic = ', count_mallet_acoustic)
+    #print('count_guitar_acoustic = ', count_guitar_acoustic)
+    #print('count_vocal_acoustic = ', count_vocal_acoustic)
+    #print('==================')
 
 
 
@@ -138,9 +175,10 @@ def move_num_files_each_label(num_files_to_move, label='train'):
 def nsynth_label(file):
     bass_electronic = 0
     string_acoustic = 1
-    guitar_electronic = 2
+    mallet_acoustic = 2
     keyboard_acoustic = 3
-    keyboard_electronic = 4
+    guitar_acoustic = 4
+    vocal_acoustic = 5
 
     if file[-4:] == '.wav':
         nsynth_label = file[:-16]
@@ -148,12 +186,14 @@ def nsynth_label(file):
             label = bass_electronic
         elif 'string_acoustic' in nsynth_label:
             label = string_acoustic
-        elif 'guitar_electronic' in nsynth_label:
-            label = guitar_electronic
+        elif 'mallet_acoustic' in nsynth_label:
+            label = mallet_acoustic
         elif 'keyboard_acoustic' in nsynth_label:
             label = keyboard_acoustic
-        elif 'keyboard_electronic' in nsynth_label:
-            label = keyboard_electronic
+        elif 'guitar_acoustic' in nsynth_label:
+            label = guitar_acoustic
+        elif 'vocal_acoustic' in nsynth_label:
+            label = vocal_acoustic
         else:
             label = 'skip'
     else:
@@ -191,8 +231,8 @@ def process_folder(folder_address, number_of_files):
             if ( number_of_labelled_files % 50 ) == 0:
                 print ('Processing: ' + str(number_of_labelled_files + 1) + '   Name: ' + file)
             # !!!!! create a numpy array od the correct shape and a second one with labels !!!!!!
-            samples, sr = utils.audio_to_samples(folder_address, file, sr=False)
-            X_long[number_of_labelled_files] = utils.audio_to_numpy(samples, sr, 8000, seconds_to_cut=1)
+            samples, sr = audio_to_spectral_data.audio_to_samples(folder_address, file, sr=False)
+            X_long[number_of_labelled_files] = audio_to_spectral_data.audio_to_numpy(samples, sr, 8000, seconds_to_cut=1)
             y_long[number_of_labelled_files] = nsynth_label(file)
             number_of_labelled_files += 1
 
@@ -215,7 +255,8 @@ def process_folder(folder_address, number_of_files):
 
 # ==========================
 
-num_of_classes = 5
+'''
+num_of_classes = 6
 num_files_to_move_train = 0
 num_files_to_move_test = int(0.2 * num_files_to_move_train)
 
@@ -223,6 +264,21 @@ move_num_files_each_label(num_files_to_move_train, label='train')
 move_num_files_each_label(num_files_to_move_test, label='test')
 
 print('Moved all the files')
+'''
+
+num_of_classes = 6
+num_files_to_move_train = 0
+num_files_to_move_test = int(0.2 * num_files_to_move_train)
+
+move_num_files_each_label(num_files_to_move_train, label='train')
+
+print('Moved all the files')
+
+
+
+
+
+
 
 #exit()
 
@@ -232,15 +288,16 @@ print('Moved all the files')
 
 # ==========================
 
+'''
 
-folder_address_train = current_dir + '/audio_files/nsynth/for_5_class_model/' + 'train/'
-folder_address_test = current_dir + '/audio_files/nsynth/for_5_class_model/' + 'test/'
+folder_address_train = current_dir + '/audio_files/nsynth/for_6_class_model/' + 'train/'
+folder_address_test = current_dir + '/audio_files/nsynth/for_6_class_model/' + 'test/'
 
 #number_of_files_train = num_files_to_move_train * num_of_classes
 #number_of_files_test = num_files_to_move_test * num_of_classes
 
-number_of_files_train = 3995
-number_of_files_test = 596
+number_of_files_train = 1075
+number_of_files_test = 211
 
 
 X_train, y_train = process_folder(folder_address_train, number_of_files_train)
@@ -248,14 +305,16 @@ X_test, y_test = process_folder(folder_address_test, number_of_files_test)
 
 
 
-with open(current_dir + '/pickles/nsynth_train_x_new_sr_1sec', 'wb') as f:
+with open(current_dir + '/pickles/nsynth_train_x_6_classes_180_each', 'wb') as f:
     pickle.dump(X_train , f)
-with open(current_dir + '/pickles/nsynth_train_y_new_sr_1sec', 'wb') as f:
+with open(current_dir + '/pickles/nsynth_train_y_6_classes_180_each', 'wb') as f:
     pickle.dump(y_train , f)
-with open(current_dir + '/pickles/nsynth_test_x_new_sr_1sec', 'wb') as f:
+with open(current_dir + '/pickles/nsynth_test_x_6_classes_180_each', 'wb') as f:
     pickle.dump(X_test , f)
-with open(current_dir + '/pickles/nsynth_test_y_new_sr_1sec', 'wb') as f:
+with open(current_dir + '/pickles/nsynth_test_y_6_classes_180_each', 'wb') as f:
     pickle.dump(y_test , f)
 
 
 os.system('say "Cookie, I pickle the numpys." ')
+
+'''

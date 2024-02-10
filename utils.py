@@ -6,6 +6,7 @@ from torch.utils.data import Dataset, DataLoader
 import numpy as np
 import torch.optim as optim
 import pickle
+import audio_to_spectral_data
 
 
 import os
@@ -74,10 +75,10 @@ def dim_of_spectrogram():
     '''
     folder_address = current_dir + '/unit_testing/'
     file = 'G53-71607-1111-229.wav'
-    samples, sample_rate = audio_to_samples(folder_address, file)
+    samples, sample_rate = audio_to_spectral_data.audio_to_samples(folder_address, file)
     fmax = 8000
 
-    N = audio_to_numpy(samples, sample_rate, fmax)
+    N = audio_to_spectral_data.audio_to_numpy(samples, sample_rate, fmax)
     return N.shape
 
 
@@ -135,3 +136,4 @@ def check_quantity_of_data(name_of_yml = 'model.yml'):
 
     print('Train = ', train_size)
     print('Test = ', test_size)
+

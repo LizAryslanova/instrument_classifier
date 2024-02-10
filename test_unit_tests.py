@@ -15,6 +15,7 @@ import utils
 from cnn import CNN
 #import pytest
 
+import plotting_results
 
 
 
@@ -131,16 +132,16 @@ def A__utils_plot_image():
     num_epochs = 18
     learning_rate = 0.00002
 
-    y_true = torch.tensor([[1],[0],[0],[0],[0],[0],[1],[0],[4]]).to(device)
-    y_predicted = torch.tensor([[1],[0],[2],[0],[3],[2],[1],[0],[1]]).to(device)
+    y_true = torch.tensor([[1],[0],[0],[3],[0],[0],[1],[0],[4]]).to(device)
+    y_predicted = torch.tensor([[1],[0],[2],[1],[3],[2],[1],[0],[1]]).to(device)
 
     y_1 = [3,13,23,4,2,1,34,33]
     y_2 = [10,3,43,41,2,10,4,3]
 
     classes = ('Guitar-Long', 'Piano-Tootoo', 'Drum-Tootoo', 'Violin-Tootoo', 'Blah-Tootoo')
-    accuracies = [87.3434234234, 12.4244444, 43.00004044, 55.444434, 66.4342345, 93.888]
+    accuracies = [87.342, 12.424, 43.004, 55.44, 66.4345, 93.888]
     filename = current_dir + '/unit_testing/test.pt'
-    utils.plot_image(y_1, y_2, num_epochs, learning_rate, classes, accuracies, y_true, y_predicted, filename, show = True)
+    plotting_results.plot_image(y_1, y_2, num_epochs, learning_rate, classes, accuracies, y_true, y_predicted, filename, show = True)
 
     print('Check unit_testing folder')
     print(' ')

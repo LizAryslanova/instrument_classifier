@@ -175,6 +175,15 @@ def save_the_model(learning_rate, num_epochs, destination_address, CNN_model, ya
         documents = yaml.dump(yaml_input, file)
 
 
+
+    import os
+    os.system('say "Cookie, I am plotting the picture." ')
+
+    y_predicted, accuracies, n_class_correct, n_class_samples = plotting_results.test(CNN_model, X_test, y_test, classes)
+    plotting_results.plot_image(training_loss, test_loss, num_epochs, learning_rate, classes, accuracies, y_test, y_predicted, filename, show = True)
+
+
+
 save_the_model(learning_rate, num_epochs, destination_address, CNN_model, yaml_input)
 
 
@@ -186,9 +195,10 @@ save_the_model(learning_rate, num_epochs, destination_address, CNN_model, yaml_i
     ===================================
 '''
 
+'''
 import os
 os.system('say "Cookie, I am plotting the picture." ')
 
 y_predicted, accuracies, n_class_correct, n_class_samples = plotting_results.test(CNN_model, X_test, y_test, classes)
 plotting_results.plot_image(training_loss, test_loss, num_epochs, learning_rate, classes, accuracies, y_test, y_predicted, filename, show = True)
-
+'''

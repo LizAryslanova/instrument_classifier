@@ -23,20 +23,20 @@ model_parameters:
   out_fc2: 200
   out_fc3: 84
 
-  dropout_probab: 0.3
+  dropout_probab: 0.4
 
 
 
-  num_classes: 5
+  num_classes: 10
 
 
 
 train_loop:
   # name and location of pickles
-  x_train_address: '/pickles/nsynth_train_x_new_sr_05sec'
-  y_train_address: '/pickles/nsynth_train_y_new_sr_05sec'
-  x_test_address: '/pickles/nsynth_test_x_new_sr_05sec'
-  y_test_address: '/pickles/nsynth_test_y_new_sr_05sec'
+  x_train_address: '/pickles/nsynth_train_x_m_loudener_10_classes_9_feb_24'
+  y_train_address: '/pickles/nsynth_train_y_m_loudener_10_classes_9_feb_24'
+  x_test_address: '/pickles/nsynth_test_x_m_loudener_10_classes_9_feb_24'
+  y_test_address: '/pickles/nsynth_test_y_m_loudener_10_classes_9_feb_24'
 
 
 
@@ -47,18 +47,38 @@ train_loop:
     #c_3: 'drum'
     #c_4: 'violin'
 
-    c_1: 'bass_el'
-    c_2: 'string_ac'
-    c_3: 'guitar_el'
-    c_4: 'keys_ac'
-    c_5: 'keys_el'
+    #c_1: 'bass_el'
+    #c_2: 'string_ac'
+    #c_3: 'guitar_el'
+    #c_4: 'keys_ac'
+    #c_5: 'keys_el'
+
+    #c_1: 'bass_el'
+    #c_2: 'string_ac'
+    #c_3: 'mallet_ac'
+    #c_4: 'keys_ac'
+    #c_5: 'guitar_ac'
+    #c_6: 'vocal_ac'
+
+    # M_LOUDENER 9_feb_24
+    c_1: 'Drums_Hat'
+    c_2: 'Drums_Tom'
+    c_3: 'Drums_Snare'
+    c_4: 'Drums_Kick'
+    c_5: 'Piano'
+    c_6: 'Guitar_Acoustic'
+    c_7: 'Brass'
+    c_8: 'Bass'
+    c_9: 'String'
+    c_10: 'Flute'
 
 
-  learning_rate: 0.0002
-  num_epochs: 2
+
+  learning_rate: 0.0003
+  num_epochs: 120
 
   # For the scheduler:
-  step_size: 30
+  step_size: 25
   gamma: 0.5
 
-  model_results_address: '/model_results/'
+  model_results_address: '/model_results/m_loudener/'
