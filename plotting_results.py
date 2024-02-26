@@ -243,7 +243,7 @@ def plot_image(training_loss, test_loss, num_epochs, learning_rate, classes, acc
 
     #===============================
 
-    fig = plt.figure(figsize=(18, 6), layout="constrained")
+    fig = plt.figure(figsize=(18, 9), layout="constrained")  #(figsize=(18, 6), layout="constrained")
     fig.suptitle(f'Loss functions for {num_epochs} epochs, learning rate = {str(learning_rate)}', fontsize = 24)
 
     #===============================
@@ -263,7 +263,7 @@ def plot_image(training_loss, test_loss, num_epochs, learning_rate, classes, acc
     #===============================
     # Table with accuracies
 
-    ax_table = fig.add_subplot(gs[:, -2])  #gs[0, -2]
+    ax_table = fig.add_subplot(gs[0, -2])  #gs[0, -2]
     ax_table.set_axis_off()
     the_table = plt.table(cellText=cell_text,
                           colWidths = [0.5] * 1,
@@ -273,13 +273,13 @@ def plot_image(training_loss, test_loss, num_epochs, learning_rate, classes, acc
         if (row == 0):
             cell.set_text_props(weight='bold')
 
-    width_scale_acc, height_scale_acc = 0.6, 1.8   # 0.8, 2
+    width_scale_acc, height_scale_acc = 0.8, 1.4   # 0.8, 2
     the_table.scale(width_scale_acc, height_scale_acc)
     the_table.set_fontsize(10) #12
 
     #===============================
     # Confunsion matrix
-    width_scale_conf, height_scale_conf = 1.3, 1 #1.5, 1.7
+    width_scale_conf, height_scale_conf = 2.1, 1.3 #1.5, 1.7
     ax_table2 = fig.add_subplot(gs[1, -1])
     the_table_2 = plot_confusion_matrix(y_true, y_predicted, classes, width_scale_conf, height_scale_conf)
 
@@ -287,7 +287,7 @@ def plot_image(training_loss, test_loss, num_epochs, learning_rate, classes, acc
     #===============================
     # Classification report
 
-    width_scale_reprt, height_scale_reprt = 1.2, 0.9 # 1.2, 1.3
+    width_scale_reprt, height_scale_reprt = 1.2, 1.1 # 1.2, 1.3
     ax_table3 = fig.add_subplot(gs[0, -1])
     the_table3 = plot_classification_report(y_true, y_predicted, classes, width_scale_reprt, height_scale_reprt)
 

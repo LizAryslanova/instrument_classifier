@@ -60,7 +60,9 @@ while True:
 
                     current_dir = os.path.dirname(os.path.realpath(__file__))
                     # model built for 1 second
-                    model = torch.load(current_dir + '/model_results/lr_0.0002_epochs_100_20240202-185037.pt')
+                    model = torch.load(current_dir + '/model_results/m_loudener/lr_0.0003_epochs_180_20240217-020708.pt')
+
+                    model.eval()
 
                     a, b, c = X.shape
                     X_empty = np.zeros(shape=(1, a, b, c),
@@ -75,7 +77,11 @@ while True:
                         output = model(X).cpu().numpy()
 
                     #classes = utils.get_classes()
-                    classes = ('Electronic Bass', 'Acoustic Strings', 'Acoustic Mallet', 'Acoustic Keyboard', 'Acoustic Guitar', 'Vocals')
+                    #classes = ('Electronic Bass', 'Acoustic Strings', 'Acoustic Mallet', 'Acoustic Keyboard', 'Acoustic Guitar', 'Vocals')
+
+
+                    classes = ('Drum_Kits', 'Drums_Kick','Drums_Tom', 'Drums_Snare', 'Drums_Hat', 'Vocals_Female', 'Vocals_Male', 'Bass', 'Guitar_Acoustic', 'Guitar_Electric', 'Piano', 'String', 'Brass', 'Flute')
+
 
                     output[output < 0] = 0    # replaces negatives with 0
                     sum_of_output = np.sum(output)
