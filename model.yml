@@ -33,10 +33,10 @@ model_parameters:
 
 train_loop:
   # name and location of pickles
-  x_train_address: '/pickles/train_x_m_loudener_14_classes_14_feb_24'
-  y_train_address: '/pickles/train_y_m_loudener_14_classes_14_feb_24'
-  x_test_address: '/pickles/test_x_m_loudener_14_classes_14_feb_24'
-  y_test_address: '/pickles/test_y_m_loudener_14_classes_14_feb_24'
+  x_train_address: '/pickles/train_x_m_loudener_14_classes_20240302-042433'
+  y_train_address: '/pickles/train_y_m_loudener_14_classes_20240302-042433'
+  x_test_address: '/pickles/test_x_m_loudener_14_classes_20240302-042433'
+  y_test_address: '/pickles/test_y_m_loudener_14_classes_20240302-042433'
 
 
 
@@ -93,7 +93,7 @@ train_loop:
 
 
   learning_rate: 0.0003
-  num_epochs: 180
+  num_epochs: 2
 
   # For the scheduler:
   step_size: 35

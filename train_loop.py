@@ -164,19 +164,21 @@ for epoch in range(num_epochs):
 def save_the_model(learning_rate, num_epochs, destination_address, CNN_model, yaml_input):
     """ Saves the model and the yml with parameters that were used """
     import time
+    import os
+
     timestr = time.strftime("%Y%m%d-%H%M%S")
     name = 'lr_' + str(learning_rate) + '_epochs_' + str(num_epochs) + '_' + timestr
-    filename = destination_address + name + '.pt'
+
+    destination_folder = destination_address + '/' + name
+    os.mkdir(destination_folder)
+    filename = destination_folder + '/' + name + '.pt'
     torch.save(CNN_model, filename)
 
     import yaml
     # saving the yaml with all the model parameters
-    with open(destination_address + name + ".yml", 'w') as file:
+    with open(destination_folder + '/' + name + ".yml", 'w') as file:
         documents = yaml.dump(yaml_input, file)
 
-
-
-    import os
     os.system('say "Cookie, I am plotting the picture." ')
 
     y_predicted, accuracies, n_class_correct, n_class_samples = plotting_results.test(CNN_model, X_test, y_test, classes)

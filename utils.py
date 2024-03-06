@@ -68,11 +68,7 @@ def get_labels_from_nsynth():
 
 # Shape of the spectrogram
 def dim_of_spectrogram():
-    '''
-        ==========================
-        Returns dimensions of the spectrogram.
-        ==========================
-    '''
+    """ Returns dimensions of the spectrogram. """
     folder_address = current_dir + '/unit_testing/'
     file = 'G53-71607-1111-229.wav'
     samples, sample_rate = audio_to_spectral_data.audio_to_samples(folder_address, file)
