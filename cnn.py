@@ -13,7 +13,7 @@ import utils
 class CNN(nn.Module):
     """ CNN model:
     conv1 -> relu -> pool ->
-    conv2 -> rule -> pool ->
+    conv2 -> relu -> pool ->
     conv3 -> relu -> pool ->
     fc1 -> relu -> dropout ->
     fc2 -> relu -> dropout ->

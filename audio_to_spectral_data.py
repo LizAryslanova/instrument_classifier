@@ -57,7 +57,7 @@ def cut_audio_to_samples(samples, sample_rate, seconds_to_cut):
 
 
 
-def audio_to_numpy(samples, sample_rate, fmax, seconds_to_cut = 3):
+def audio_to_numpy(samples, sample_rate, fmax, seconds_to_cut = 1, trim = True):
 
     '''
         ===================================
@@ -76,8 +76,10 @@ def audio_to_numpy(samples, sample_rate, fmax, seconds_to_cut = 3):
     from librosa.effects import trim
     import numpy as np
 
-
-    trimmed_signal, _ = librosa.effects.trim(samples, top_db=15)
+    if trim == True:
+        trimmed_signal, _ = librosa.effects.trim(samples, top_db=15)
+    else:
+        trimmed_signal = samples
 
     # sample rate, used to cut 3 seconds. 22050 for auto librosa choice
     cut_time = int(sample_rate * seconds_to_cut)
@@ -85,7 +87,10 @@ def audio_to_numpy(samples, sample_rate, fmax, seconds_to_cut = 3):
 
     # normalize data
     max_peak = np.max(np.abs(cut_signal))
-    ratio = 1 / max_peak
+    if max_peak != 0:
+        ratio = 1 / max_peak
+    else:
+        ratio = 1
     normalised_signal = cut_signal * ratio
 
     # padding with 0 for things shorter that 3 seconds
@@ -112,19 +117,6 @@ def audio_to_numpy(samples, sample_rate, fmax, seconds_to_cut = 3):
     mel_sgram = mel_spec_db
 
 
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    '''
-    STFT_result = librosa.stft(normalised_signal)
-    STFT_abs = np.abs(STFT_result)
-    # MEL Spectrogram
-    sgram_mag, _ = librosa.magphase(STFT_result)
-    mel_scale_sgram = librosa.feature.melspectrogram(S=sgram_mag, sr=sample_rate, n_mels=512, fmax = fmax)
-    mel_sgram = librosa.amplitude_to_db(mel_scale_sgram, ref=np.min)
-    '''
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    #print(STFT_abs.shape)
-    #print(STFT_abs[10,50])
-
     #a, b = STFT_result.shape
     a, b = mel_sgram.shape
     channels = 1    # use 3 for RGB
@@ -139,8 +131,6 @@ def audio_to_numpy(samples, sample_rate, fmax, seconds_to_cut = 3):
         final_array[:,:,i] = multiplyer * mel_sgram
 
     return final_array
-
-
 
 
 

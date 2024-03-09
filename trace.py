@@ -16,7 +16,7 @@ def trace_the_model():
     device = torch.device('cpu') # ('mps' if torch.backends.mps.is_available() else 'cpu')
 
     # model built for .5 seconds
-    model = torch.load(current_dir + '/model_results/m_loudener/lr_0.0003_epochs_150_20240302-051316.pt')
+    model = torch.load('/Users/cookie/dev/instrument_classifier/model_results/m_loudener/lr_0.0003_epochs_150_20240302-051316/lr_0.0003_epochs_150_20240302-051316.pt')
     model = model.cpu().float()
 
     model.eval()

@@ -42,36 +42,6 @@ train_loop:
 
 
   classes:
-    #c_1: 'guitar'
-    #c_2: 'piano'
-    #c_3: 'drum'
-    #c_4: 'violin'
-
-    #c_1: 'bass_el'
-    #c_2: 'string_ac'
-    #c_3: 'guitar_el'
-    #c_4: 'keys_ac'
-    #c_5: 'keys_el'
-
-    #c_1: 'bass_el'
-    #c_2: 'string_ac'
-    #c_3: 'mallet_ac'
-    #c_4: 'keys_ac'
-    #c_5: 'guitar_ac'
-    #c_6: 'vocal_ac'
-
-    # M_LOUDENER 9_feb_24
-    #c_1: 'Drums_Hat'
-    #c_2: 'Drums_Tom'
-    #c_3: 'Drums_Snare'
-    #c_4: 'Drums_Kick'
-    #c_5: 'Piano'
-    #c_6: 'Guitar_Acoustic'
-    #c_7: 'Brass'
-    #c_8: 'Bass'
-    #c_9: 'String'
-    #c_10: 'Flute'
-
     # M_LOUDENER 14_feb_24
     c_1: 'Dr_Kits'
     c_2: 'Dr_Kick'
