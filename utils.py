@@ -45,11 +45,7 @@ def dimensions_for_linear_layer(width, height):
 
 
 def get_labels_from_nsynth():
-    '''
-        ===================================
-        Returns a list of all labels from nsynth sataset
-        ===================================
-    '''
+    '''  Returns a list of all labels from nsynth sataset '''
     import os
     nsynth_labels = []
     big_folder = current_dir + '/audio_files/nsynth/Training_audios/'
@@ -63,19 +59,6 @@ def get_labels_from_nsynth():
                     nsynth_labels.append(label)
     return nsynth_labels
 
-
-
-
-# Shape of the spectrogram
-def dim_of_spectrogram():
-    """ Returns dimensions of the spectrogram. """
-    folder_address = current_dir + '/unit_testing/'
-    file = 'G53-71607-1111-229.wav'
-    samples, sample_rate = audio_to_spectral_data.audio_to_samples(folder_address, file)
-    fmax = 8000
-
-    N = audio_to_spectral_data.audio_to_numpy(samples, sample_rate, fmax)
-    return N.shape
 
 
 def get_classes(address = 'model.yml'):
@@ -95,7 +78,6 @@ def get_classes(address = 'model.yml'):
 def look_at_mel_spectrograms(source_address = '/audio_files/from_kaggle/Test_submission/Test_submission/', destination_address = '/unit_testing/spectrograms/mel_4000/'):
     """ Takes all files in the source_address, creates a mel spectrogram for each and saves them in the destination_address.
     """
-
     import utils
     import os
     current_dir = os.path.dirname(os.path.realpath(__file__))
@@ -119,16 +101,13 @@ def check_quantity_of_data(name_of_yml = 'model.yml'):
     with open(name_of_yml, 'r') as file:
        yaml_input = yaml.safe_load(file)
 
-
     with open(current_dir + yaml_input['train_loop']['x_test_address'], 'rb') as f:
         X_test = pickle.load(f)
     with open(current_dir + yaml_input['train_loop']['x_train_address'], 'rb') as f:
         X_train = pickle.load(f)
 
-
     train_size = np.shape(X_train)
     test_size = np.shape(X_test)
-
 
     print('Train = ', train_size)
     print('Test = ', test_size)

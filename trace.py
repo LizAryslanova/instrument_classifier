@@ -1,10 +1,6 @@
 
-def trace_the_model():
-    """
-
-
-    """
-
+def trace_the_model(model_folder):
+    """ Traces the model from model_folder and saves traced version in the same folder  """
     import torch
     import torchvision
     import os
@@ -12,33 +8,21 @@ def trace_the_model():
     import numpy as np
     from cnn import CNN
 
-    current_dir = os.path.dirname(os.path.realpath(__file__))
-    device = torch.device('cpu') # ('mps' if torch.backends.mps.is_available() else 'cpu')
-
-    # model built for .5 seconds
-    model = torch.load('/Users/cookie/dev/instrument_classifier/model_results/m_loudener/lr_0.0003_epochs_150_20240302-051316/lr_0.0003_epochs_150_20240302-051316.pt')
+    file = model_folder.split('/')[-1]
+    model_address = model_folder + '/' + file + '.pt'
+    model_yaml = model_folder + '/' + file + '.yml'
+    device = torch.device('cpu')
+    model = torch.load(model_address)
     model = model.cpu().float()
-
     model.eval()
 
+    import yaml
+    with open(model_yaml, 'r') as yaml_file:
+        yaml_input = yaml.safe_load(yaml_file)
 
-    # Un-Pickle Test sets
-    with open(current_dir + '/pickles/test_x_m_loudener_14_classes_20240302-042433', 'rb') as f:
-        X_test = pickle.load(f)
-
-    _, a, b, c = X_test.shape
-
-    #X_test = torch.from_numpy(X_test.astype(np.float32)).to(device)
-    #print(X_test.shape)
-    #example = X_test
-    #print(example.shape)
-
-    example = torch.rand(1, a, b, c).to(device)
-
-    print(a, b, c)
-
-
+    mel_size = yaml_input['preprocessing']['mel_size']
+    time_size = yaml_input['preprocessing']['time_size']
+    example = torch.rand(1, 1, mel_size, time_size).to(device)
     traced_script_module = torch.jit.trace(model, example)
-    traced_script_module.save("m_loudener_20240302-042433.pt")
+    traced_script_module.save(model_folder + '/' + 'm_loudener_' + file + '.pt')
 
-trace_the_model()

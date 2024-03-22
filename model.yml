@@ -1,72 +1,67 @@
-
 model_parameters:
+  dropout_probab: 0.35
   kernel_conv_1: 2
-  stride_conv_1: 1
-  padding_conv_1: 2
-  out_conv_1: 6
-
   kernel_conv_2: 3
-  stride_conv_2: 1
-  padding_conv_2: 2
-  out_conv_2: 16
-
   kernel_conv_3: 5
-  stride_conv_3: 1
-  padding_conv_3: 2
-  out_conv_3: 40
-
   kernel_pool: 2
-  stride_pool: 2
-  padding_pool: 0
-
+  num_classes: 14
+  out_conv_1: 6
+  out_conv_2: 16
+  out_conv_3: 40
   out_fc1: 400
   out_fc2: 200
   out_fc3: 84
-
-  dropout_probab: 0.35
-
-
-
-  num_classes: 14
-
-
-
+  padding_conv_1: 2
+  padding_conv_2: 2
+  padding_conv_3: 2
+  padding_pool: 0
+  stride_conv_1: 1
+  stride_conv_2: 1
+  stride_conv_3: 1
+  stride_pool: 2
+preprocessing:
+  address_for_mel_spectrograms: /Users/cookie/dev/m_loudener/audio_files/_train_test_dataset/mels_
+  after_trim: pad
+  duration_sec: 0.4
+  fft_hop: 128
+  fft_size: 2048
+  filter_dc: true
+  fmax: 8000
+  librosa_trim_db: 15
+  mel_power: 1.0
+  mel_size: 512
+  number_of_files_per_class_train: 650
+  number_of_files_test: 3640
+  number_of_files_train: 16186
+  number_of_shifted_spectrograms: 2
+  sample_rate: 16000
+  stft_center: false
+  time_size: 35
+  to_save_pickles: null
+  train_test_files_destination_folder: /Users/cookie/dev/m_loudener/audio_files/_train_test_dataset/
 train_loop:
-  # name and location of pickles
-  x_train_address: '/pickles/train_x_m_loudener_14_classes_20240302-042433'
-  y_train_address: '/pickles/train_y_m_loudener_14_classes_20240302-042433'
-  x_test_address: '/pickles/test_x_m_loudener_14_classes_20240302-042433'
-  y_test_address: '/pickles/test_y_m_loudener_14_classes_20240302-042433'
-
-
-
-
   classes:
-    # M_LOUDENER 14_feb_24
-    c_1: 'Dr_Kits'
-    c_2: 'Dr_Kick'
-    c_3: 'Dr_Tom'
-    c_4: 'Dr_Snare'
-    c_5: 'Dr_Hat'
-
-    c_6: 'Voc_F'
-    c_7: 'Voc_M'
-
-    c_8: 'Bass'
-    c_9: 'G_Ac'
-    c_10: 'G_El'
-    c_11: 'Piano'
-    c_12: 'String'
-
-    c_13: 'Brass'
-    c_14: 'Flute'
-
-
-  learning_rate: 0.0003
-  num_epochs: 2
-
-  # For the scheduler:
-  step_size: 35
+    c_1: Drum_Kits
+    c_10: Piano
+    c_11: String
+    c_12: Brass
+    c_13: Flute
+    c_14: Full_Mix
+    c_2: Drums_Kick
+    c_3: Drums_Tom
+    c_4: Drums_Snare
+    c_5: Drums_Hat
+    c_6: Vocals
+    c_7: Bass
+    c_8: Guitar_Acoustic
+    c_9: Guitar_Electric
   gamma: 0.5
-
-  model_results_address: '/model_results/m_loudener/'
+  learning_rate: 0.0003
+  model_results_address: /model_results/m_loudener/
+  num_epochs: 170
+  step_size: 35
+  validation_set: /Users/cookie/dev/m_loudener/audio_files/_train_test_dataset/Validation_Set/
+  x_test_address: /Users/cookie/dev/m_loudener/pickles/test_x_m_loudener_14_classes_0.4seconds_20240322-211045
+  x_train_address: /Users/cookie/dev/m_loudener/pickles/train_x_m_loudener_14_classes_0.4seconds_20240322-211045
+  y_test_address: /Users/cookie/dev/m_loudener/pickles/test_y_m_loudener_14_classes_0.4seconds_20240322-211045
+  y_train_address: /Users/cookie/dev/m_loudener/pickles/train_y_m_loudener_14_classes_0.4seconds_20240322-211045

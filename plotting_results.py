@@ -1,16 +1,3 @@
-'''
-Contains functions:
-    test(CNN_model, X_test, y_test, classes)
-    confusion_matrix(y_true, y_pred, num_classes)
-    plot_confusion_matrix(y_true, y_pred, classes, width_scale, height_scale)
-    do_classification_report(y_true, y_pred, classes)
-    plot_classification_report(y_true, y_pred, classes, width_scale, height_scale)
-    plot_image(training_loss, test_loss, num_epochs, learning_rate, classes, accuracies, y_true, y_predicted, filename, show = False)
-'''
-
-
-
-
 
 # Calculate predicred values on a test set, calculate accuracies
 def test(CNN_model, X_test, y_test, classes):

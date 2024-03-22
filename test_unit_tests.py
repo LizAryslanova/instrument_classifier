@@ -65,15 +65,6 @@ def test_utils_audio_to_numpy():
     function_array = utils.audio_to_numpy(samples, sr, 11025)[0, 0:4].round(2)
     assert (correct_array == function_array).all()
 
-
-# ===========================================
-
-def test_utils_dim_of_spectrogram():
-    correct_dims = (512, 130, 1)
-    function_dims = utils.dim_of_spectrogram()
-    assert correct_dims == function_dims
-
-
 # ===========================================
 
 def test_utils_output_dimensions():

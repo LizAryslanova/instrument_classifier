@@ -1,20 +1,10 @@
-'''
-Contains functions:
-    audio_to_samples(folder_address, file, sr=True)
-    cut_audio_to_samples(samples, sample_rate, seconds_to_cut)
-    audio_to_numpy(samples, sample_rate, fmax, seconds_to_cut = 3)
-    audio_to_mel_spectrogram(folder_address, file, destination_address, sr = True, seconds_to_cut = 3)
-    audio_to_spectrogram(folder_address, file, destination_address, sr = True, seconds_to_cut = 3)
-'''
 
-
-
-def audio_to_samples(folder_address, file, sr=True):
+def audio_to_samples(folder_address, file, sr=16000):
     '''
         ===================================
         Takes in the *file* from the *folder_address*, checks if the file is a .wav and if True:
         Loads through librosa and returns samples and sample rate
-        If sr = True it will use librosa's standart 22050 Hz, else it will use sr = None (and import with the file's sample rate)
+        If sr = True it will use librosa's standart 22050 Hz, else it will use sr = None (and import with the file's sample rate). If sr is a positive number - that would be the forces sample rate.
         If the file is recorded in stereo - at averages between channels and returns mono
         ===================================
     '''
@@ -41,51 +31,61 @@ def audio_to_samples(folder_address, file, sr=True):
 
 
 
+
 def cut_audio_to_samples(samples, sample_rate, seconds_to_cut):
     '''
         ===================================
         Takes in the samples and sample rate (from audio_to_samples function)
-        Return sampkle arrays that cuts the first seconds_to_cut
+        Return sample arrays that cuts the first seconds_to_cut
         ===================================
     '''
-
     cut_time = int(sample_rate * seconds_to_cut)
     cut_signal = samples[cut_time:]
-
     return cut_signal, sample_rate
 
 
 
 
-def audio_to_numpy(samples, sample_rate, fmax, seconds_to_cut = 1, trim = True):
+def audio_to_numpy(samples, yaml_address, librosa_export = False):
+    """ Converts samples (np.array) input into a (np.array) that is a mel spectrogram. Takes parameters from the yml file  """
 
-    '''
-        ===================================
-        Takes in the samples and sample rate (from audio_to_samples function)
-            - trims the silence,
-            - takes the first 3 seconds
-            - padds for files shorter than 3 seconds
-            - normalises
-            - stft
-            - returns a numpy array of absolute values after stft
-        ===================================
-    '''
 
     import librosa
     import librosa.display
     from librosa.effects import trim
     import numpy as np
+    import yaml
+    with open(yaml_address, 'r') as file:
+        yaml_input = yaml.safe_load(file)
 
-    if trim == True:
-        trimmed_signal, _ = librosa.effects.trim(samples, top_db=15)
-    else:
-        trimmed_signal = samples
+    # ===========================================
+    # parameters
+    sample_rate = yaml_input['preprocessing']['sample_rate']
+    max_freq = yaml_input['preprocessing']['fmax']
+    duration_s = yaml_input['preprocessing']['duration_sec']   # seconds_to_cut
+    fft_size = yaml_input['preprocessing']['fft_size']
+    fft_stride = yaml_input['preprocessing']['fft_hop']
+    mel_bins = yaml_input['preprocessing']['mel_size']
+    mel_power = yaml_input['preprocessing']['mel_power']
+    num_samples = duration_s * sample_rate
+    filter_dc = yaml_input['preprocessing']['filter_dc']
+    top_db = yaml_input['preprocessing']['librosa_trim_db']
+    stft_center = yaml_input['preprocessing']['stft_center']
+    after_trim = yaml_input['preprocessing']['after_trim']   # loop or pad
 
-    # sample rate, used to cut 3 seconds. 22050 for auto librosa choice
-    cut_time = int(sample_rate * seconds_to_cut)
-    cut_signal = trimmed_signal[0:cut_time]
+    # ===========================================
+    # trim the silence in the beginning (and end) of the file
+    trimmed_signal, _ = librosa.effects.trim(samples, top_db=top_db)
 
-    # normalize data
+    pad_amount = int ( fft_size / 2 )
+
+    trimmed_padded_signal = np.pad(trimmed_signal, pad_width=(pad_amount, pad_amount), mode = 'edge')
+
+    # cuts the duration_s seconds from the trimmed signal
+    cut_time = int(sample_rate * duration_s)
+    cut_signal = trimmed_padded_signal[0:cut_time]
+
+    # normalizes data
     max_peak = np.max(np.abs(cut_signal))
     if max_peak != 0:
         ratio = 1 / max_peak
@@ -93,41 +93,48 @@ def audio_to_numpy(samples, sample_rate, fmax, seconds_to_cut = 1, trim = True):
         ratio = 1
     normalised_signal = cut_signal * ratio
 
-    # padding with 0 for things shorter that 3 seconds
+    # padding with 0 for things shorter that duration_s seconds
     if (len(normalised_signal) < cut_time):
-        normalised_signal = np.pad(normalised_signal, pad_width=(0, cut_time - len(normalised_signal)))
+        if after_trim == 'pad':
+            normalised_signal = np.pad(normalised_signal, pad_width=(0, cut_time - len(normalised_signal)), mode = 'edge')
+        elif after_trim == 'loop':
+            print('DONT FORGET TO WRiTE THE LOOP PART: audio to spectral data, audio to numpy')
+            # check how much to add ?
+            # or just loop add the thing?
 
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-    # Parameters
-    sample_rate = 16_000
-    max_freq = 8_000
-    duration_s = 1
-    fft_size = 2048
-    fft_stride = 512
-    mel_bins = 512
-    num_samples = duration_s * sample_rate
+    # esporting the result after trim and normalise
+    if librosa_export:
+        import soundfile as sf
+        sf.write('/Users/cookie/dev/m_loudener/AFTER_LIBROSA.wav', normalised_signal, sample_rate)
 
-    # This provides the exact same result as the code currently used, I recommend switching to this
-    mel_spec = librosa.feature.melspectrogram (y=normalised_signal, sr=sample_rate, n_fft=fft_size, hop_length=fft_stride, n_mels=mel_bins, power=1.0, fmax=max_freq)
+    # Use intermediate STFT to have the option of filtering DC out
+    STFT_result = np.abs (librosa.stft (normalised_signal, n_fft=fft_size, hop_length=fft_stride, center = stft_center)) ** mel_power
 
+    if filter_dc:
+        STFT_result[0] = 0
+        STFT_result[1] = 0 # first row contains the frequency of the windowing function
+
+    mel_spec = librosa.feature.melspectrogram (S=STFT_result, sr=sample_rate, n_mels=mel_bins, fmax=max_freq)
     # Convert to decibels in [0, 80]
     mel_spec_db = librosa.amplitude_to_db (mel_spec, ref=1.0, top_db=80.0)
     mel_spec_db -= mel_spec_db.min()
     mel_sgram = mel_spec_db
 
+    # creates a final_array. Can do greyslale data. For that change: channels = 3; multiplyer = 255
+    a_mel_size, b_time_size = mel_sgram.shape
 
-    #a, b = STFT_result.shape
-    a, b = mel_sgram.shape
+    # write time_size to yml
+
+    yaml_input['preprocessing']['time_size'] = b_time_size
+
+    with open(yaml_address, 'w') as yml_file:
+        documents = yaml.dump(yaml_input, yml_file)
+
     channels = 1    # use 3 for RGB
     multiplyer = 1   # use 255 for greyscale RGB
-
-
-    final_array = np.zeros(shape=(a, b, channels), dtype=np.float32)
-
+    final_array = np.zeros(shape=(a_mel_size, b_time_size, channels), dtype=np.float32)
     for i in range(channels):
-        # img[:,:,i] = multiplyer * D_abs
-        # final_array[:,:,i] = multiplyer * STFT_abs
         final_array[:,:,i] = multiplyer * mel_sgram
 
     return final_array
@@ -137,130 +144,56 @@ def audio_to_numpy(samples, sample_rate, fmax, seconds_to_cut = 1, trim = True):
 
 
 
-def audio_to_mel_spectrogram(folder_address, file, destination_address, sr = True, seconds_to_cut = 3):
-    '''
-        ===================================
-        If sr = True it will use librosa's standart 22050 Hz, else it will use sr = None (and import with the file's sample rate)
+def audio_to_mel_spectrogram(folder_address, file, yaml_address = '/Users/cookie/dev/instrument_classifier/model.yml'):
+    """ Draws and saves mel spectrograms using audio_to_numpy calculations """
 
-        Takes in the *file* from the *folder_address*, checks if the file is a .wav and if True:
-            - trims the silence,
-            - takes the first 3 seconds
-            - adds 0 padding if the file is shorter
-            - creates a spectrogram image
-            - saves image destination_address with the same name as the original file (.png)
-        ===================================
-    '''
+
     import matplotlib.pyplot as plt
-    import librosa
-    import librosa.display
-    from librosa.effects import trim
-    import numpy as np
+    import yaml
+    import os
 
-    if (file[-4:] == '.wav'):
+    with open(yaml_address, 'r') as yml_file:
+        yaml_input = yaml.safe_load(yml_file)
+    sample_rate = yaml_input['preprocessing']['sample_rate']
+    destination_address = yaml_input['preprocessing']['address_for_mel_spectrograms']
+    duration_sec = yaml_input['preprocessing']['duration_sec']
+    fft_hop = yaml_input['preprocessing']['fft_hop']
 
-        audio_file = folder_address + file
 
-        if sr:
-            samples, sample_rate = librosa.load(audio_file)
+    if (file[-4:].lower() == '.wav'):
+
+        samples, _ = audio_to_samples(folder_address, file, sr = sample_rate)
+        mel_spec_db = audio_to_numpy(samples, yaml_address)
+
+        plt.imshow(mel_spec_db[:,:,0], interpolation='none', origin='lower', aspect=32/(512 * 1.5))
+
+        # CREATE A FOLDER to save all mel spectrograms
+        destination_folder = destination_address + str(duration_sec) + '_sec_' + str(fft_hop) + '_hop' + '/'
+
+        if os.path.isdir(destination_folder) == False:
+            os.mkdir(destination_folder)
+            filename = destination_folder + file[:-4] + '_mel'+ '.png'
+
+            plt.savefig(filename, dpi=400, bbox_inches='tight', pad_inches=0)
+            plt.close('all')
+
+
         else:
-            samples, sample_rate = librosa.load(audio_file, sr = None)
-        trimed_signal, _ = librosa.effects.trim(samples, top_db=15)
-
-
-        sr = sample_rate # sample rate, used to cut 3 seconds
-        cut_time = int(sr * seconds_to_cut)
-        cut_signal = trimed_signal[0:cut_time]
-
-        # normalize data
-        max_peak = np.max(np.abs(cut_signal))
-        ratio = 1 / max_peak
-        normalised_signal = cut_signal * ratio
-
-        # padding with 0 for things shorter that 3 seconds
-        if (len(normalised_signal) < cut_time):
-            cut_signal = np.pad(normalised_signal, pad_width=(0, cut_time - len(cut_signal)))
-
-
-        fig = plt.figure(figsize=[1, 1])
-        ax = fig.add_subplot(111)
-        ax.axes.get_xaxis().set_visible (False)
-        ax.axes.get_yaxis().set_visible (False)
-        ax.set_frame_on(False)
-        filename = destination_address + file[:-4] + '_mel'+ '.png'
-
-        STFT_result = librosa.stft(cut_signal, n_fft = 2048)
-
-        # MEL Spectrogram
-        sgram_mag, _ = librosa.magphase(STFT_result)
-        mel_scale_sgram = librosa.feature.melspectrogram(S=sgram_mag, sr=sample_rate, n_mels=512, fmax = 8000)
-        mel_sgram = librosa.amplitude_to_db(mel_scale_sgram, ref=np.min)
-
-        librosa.display.specshow(mel_sgram, x_axis='time', y_axis='off', sr = sample_rate)
-
-        plt.savefig(filename, dpi=400, bbox_inches='tight', pad_inches=0)
-        plt.close('all')
+            filename = destination_folder + file[:-4] + '_mel'+ '.png'
+            plt.savefig(filename, dpi=400, bbox_inches='tight', pad_inches=0)
+            plt.close('all')
 
 
 
-def audio_to_spectrogram(folder_address, file, destination_address, sr = True, seconds_to_cut = 3):
-    '''
-        ===================================
-        Takes in the *file* from the *folder_address*, checks if the file is a .wav and if True:
-            - trims the silence,
-            - takes the first 3 seconds
-            - adds 0 padding if the file is shorter
-            - creates a spectrogram image
-            - saves image destination_address with the same name as the original file (.png)
-        ===================================
-    '''
+
+
+
+def numpy_to_mel_spectrogram(numpy_array, file, address_to_save_spectrograms):
+
     import matplotlib.pyplot as plt
-    import librosa
-    import librosa.display
-    from librosa.effects import trim
-    import numpy as np
+    import os
 
-    if (file[-4:] == '.wav'):
-
-        audio_file = folder_address + file
-
-        if sr:
-            samples, sample_rate = librosa.load(audio_file)
-        else:
-            samples, sample_rate = librosa.load(audio_file, sr = None)
-
-        samples, sample_rate = librosa.load(audio_file)
-        trimed_signal, _ = librosa.effects.trim(samples, top_db=15)
-
-
-        sr = sample_rate # sample rate, used to cut 3 seconds
-
-        cut_time = int(sr * seconds_to_cut)
-        cut_signal = trimed_signal[0:cut_time]
-
-
-        # normalize data
-        max_peak = np.max(np.abs(cut_signal))
-        ratio = 1 / max_peak
-        normalised_signal = cut_signal * ratio
-
-
-        # padding with 0 for things shorter that 3 seconds
-        if (len(normalised_signal) < cut_time):
-            cut_signal = np.pad(normalised_signal, pad_width=(0, cut_time - len(cut_signal)))
-
-
-        fig = plt.figure(figsize=[1, 1])
-        ax = fig.add_subplot(111)
-        ax.axes.get_xaxis().set_visible (False)
-        ax.axes.get_yaxis().set_visible (False)
-        ax.set_frame_on(False)
-        filename = destination_address + file[:-4] + '.png'
-
-        D = librosa.stft(cut_signal)
-        S_db = librosa.amplitude_to_db(abs(D), ref=np.max)
-        librosa.display.specshow(S_db, x_axis='time', y_axis='off')
-
-        plt.savefig(filename, dpi=400, bbox_inches='tight', pad_inches=0)
-        plt.close('all')
-
-
+    plt.imshow(numpy_array[:,:,0], interpolation='none', origin='lower', aspect=32/(512 * 1.5))
+    filename = address_to_save_spectrograms + file  + '.png'
+    plt.savefig(filename, dpi=400, bbox_inches='tight', pad_inches=0.1)
+    plt.close('all')
