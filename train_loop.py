@@ -65,7 +65,15 @@ a_mel_size_height = yaml_input['preprocessing']['mel_size']
 b_time_size_width = yaml_input['preprocessing']['time_size']
 
 num_classes = yaml_input['model_parameters']['num_classes']
-CNN_model = CNN(a_mel_size_height, b_time_size_width, **yaml_input['model_parameters']).to(device)
+
+# if 'new' - train from scratch, if 'address/' - train existing model
+type_of_training = yaml_input['train_loop']['type_of_training']
+if type_of_training == 'new':
+    CNN_model = CNN(a_mel_size_height, b_time_size_width, **yaml_input['model_parameters']).to(device)
+else:
+    CNN_model = torch.load(type_of_training)
+
+
 learning_rate = yaml_input['train_loop']['learning_rate']
 num_epochs = yaml_input['train_loop']['num_epochs']
 destination_address = current_dir + yaml_input['train_loop']['model_results_address']

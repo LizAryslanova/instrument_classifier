@@ -101,6 +101,18 @@ def validation(folder_address, model_folder, trim = True):
         if file[-4:].lower() == '.wav':
             # get the label
             label = file.split('#', 1)[0]
+            if len(yaml_input['train_loop']['classes']) == 2:
+                if file.split('#', 1)[0] == 'Full_Mix':
+                        label = 'Full_Mix'
+                else:
+                        label = 'Solo'
+            elif len(yaml_input['train_loop']['classes']) == 3:
+                if file.split('#', 1)[0] == 'Full_Mix':
+                    label = 'Full_Mix'
+                elif file.split('#', 1)[0] == 'Drum_Kits':
+                    label = 'Drum_Kits'
+                else:
+                    label == 'Solo'
             y_correct_label.append(label)
             y_correct_number.append(DICT_OF_LABELS[label])
 
@@ -351,7 +363,7 @@ def translation_invariance(model_folder):
 
     # 1. manufactured signal test without preprocessing
 
-    '''
+
 
     header_text = 'No preprocessing' + '\n'
     print(header_text)
@@ -365,7 +377,7 @@ def translation_invariance(model_folder):
         plt.show()
         X_torch = torch.from_numpy(X.astype(np.float32))
         to_txt_file = run_through_the_model(model_folder, X_torch, header_text)
-    '''
+
 
     # 2. real signal example, processed
 
@@ -448,5 +460,5 @@ if __name__ == "__main__":
 
     '''
 
-    translation_invariance('/Users/cookie/dev/instrument_classifier/model_results/m_loudener/lr_0.0003_epochs_170_20240322-224322/')
+    translation_invariance('/Users/cookie/dev/instrument_classifier/model_results/m_loudener/lr_0.0003_epochs_220_20240323-064500/')
 

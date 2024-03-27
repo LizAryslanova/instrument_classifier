@@ -4,7 +4,7 @@ model_parameters:
   kernel_conv_2: 3
   kernel_conv_3: 5
   kernel_pool: 2
-  num_classes: 14
+  num_classes: 2
   out_conv_1: 6
   out_conv_2: 16
   out_conv_3: 40
@@ -22,46 +22,35 @@ model_parameters:
 preprocessing:
   address_for_mel_spectrograms: /Users/cookie/dev/m_loudener/audio_files/_train_test_dataset/mels_
   after_trim: pad
-  duration_sec: 0.4
-  fft_hop: 128
+  duration_sec: 1.4
+  fft_hop: 512
   fft_size: 2048
   filter_dc: true
   fmax: 8000
   librosa_trim_db: 15
-  mel_power: 1.0
+  mel_power: 1
   mel_size: 512
-  number_of_files_per_class_train: 650
-  number_of_files_test: 3640
-  number_of_files_train: 16186
-  number_of_shifted_spectrograms: 2
+  number_of_files_per_class_train: 10
+  number_of_files_test: 2
+  number_of_files_train: 10
+  number_of_shifted_spectrograms: 1
   sample_rate: 16000
   stft_center: false
-  time_size: 35
+  time_size: 40
   to_save_pickles: null
   train_test_files_destination_folder: /Users/cookie/dev/m_loudener/audio_files/_train_test_dataset/
 train_loop:
   classes:
-    c_1: Drum_Kits
-    c_10: Piano
-    c_11: String
-    c_12: Brass
-    c_13: Flute
-    c_14: Full_Mix
-    c_2: Drums_Kick
-    c_3: Drums_Tom
-    c_4: Drums_Snare
-    c_5: Drums_Hat
-    c_6: Vocals
-    c_7: Bass
-    c_8: Guitar_Acoustic
-    c_9: Guitar_Electric
+    c_1: Full_Mix
+    c_2: Solo
   gamma: 0.5
-  learning_rate: 0.0003
+  learning_rate: 2.0e-06
   model_results_address: /model_results/m_loudener/
-  num_epochs: 170
-  step_size: 35
+  num_epochs: 280
+  step_size: 75
+  type_of_training: new
   validation_set: /Users/cookie/dev/m_loudener/audio_files/_train_test_dataset/Validation_Set/
-  x_test_address: /Users/cookie/dev/m_loudener/pickles/test_x_m_loudener_14_classes_0.4seconds_20240322-211045
-  x_train_address: /Users/cookie/dev/m_loudener/pickles/train_x_m_loudener_14_classes_0.4seconds_20240322-211045
-  y_test_address: /Users/cookie/dev/m_loudener/pickles/test_y_m_loudener_14_classes_0.4seconds_20240322-211045
-  y_train_address: /Users/cookie/dev/m_loudener/pickles/train_y_m_loudener_14_classes_0.4seconds_20240322-211045
+  x_test_address: /Users/cookie/dev/m_loudener/pickles/m_loudener_2_classes_1.4_seconds_20240327-202050/test_x_m_loudener_2_classes_1.4_seconds_20240327-202050
+  x_train_address: /Users/cookie/dev/m_loudener/pickles/m_loudener_2_classes_1.4_seconds_20240327-202050/train_x_m_loudener_2_classes_1.4_seconds_20240327-202050
+  y_test_address: /Users/cookie/dev/m_loudener/pickles/m_loudener_2_classes_1.4_seconds_20240327-202050/test_y_m_loudener_2_classes_1.4_seconds_20240327-202050
+  y_train_address: /Users/cookie/dev/m_loudener/pickles/m_loudener_2_classes_1.4_seconds_20240327-202050/train_y_m_loudener_2_classes_1.4_seconds_20240327-202050
