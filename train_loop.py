@@ -158,6 +158,8 @@ def save_the_model(learning_rate, num_epochs, destination_address, CNN_model, ya
     filename = destination_folder + '/' + name + '.pt'
     torch.save(CNN_model, filename)
 
+    yaml_input['model_name'] = timestr
+
     import yaml
     # saving the yaml with all the model parameters
     with open(destination_folder + '/' + name + ".yml", 'w') as file:

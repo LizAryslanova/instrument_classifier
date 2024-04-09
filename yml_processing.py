@@ -65,6 +65,7 @@ def create_modelTrates_yml(from_yaml_address = YML_ADDRESS, to_yaml_address = '/
     yaml_output['mel_power'] = yaml_input['preprocessing']['mel_power']
     yaml_output['time_size'] = yaml_input['preprocessing']['time_size']
     yaml_output['filter_dc'] = yaml_input['preprocessing']['filter_dc']
+    yaml_output['model_name'] = yaml_input['model_name']
 
     with open(to_yaml_address, 'w') as file:
         documents = yaml.dump(yaml_output, file)
@@ -75,7 +76,5 @@ def create_modelTrates_yml(from_yaml_address = YML_ADDRESS, to_yaml_address = '/
     to_json_address = to_yaml_address[:-4] + '.json'
 
     with open(to_json_address, 'w') as json_file:
-        json.dump(configuration, json_file)
-    output = json.dumps(json.load(open(to_json_address)), indent=2)
-    #print(output)
+        json.dump(configuration, json_file, indent = 4)
 

@@ -146,6 +146,7 @@ def validation(folder_address, model_folder, trim = True):
             sum_of_output = np.sum(output)
             output = np.round(100 * output / sum_of_output, decimals = 2)
 
+
             output_ascending_indices = output.argsort()
             output_descending_indices = np.flip(output_ascending_indices)
 
@@ -187,7 +188,6 @@ def validation(folder_address, model_folder, trim = True):
     # Saving and naming the image
     filename = destination_address + name + '_validation_confusion_matrix' + '.png'
     plt.savefig(filename, dpi=400, bbox_inches='tight', pad_inches=0.1)
-
 
 
 
@@ -460,5 +460,9 @@ if __name__ == "__main__":
 
     '''
 
-    translation_invariance('/Users/cookie/dev/instrument_classifier/model_results/m_loudener/lr_0.0003_epochs_220_20240323-064500/')
+    #translation_invariance('/Users/cookie/dev/instrument_classifier/model_results/m_loudener/lr_0.0003_epochs_220_20240323-064500/')
 
+
+    folder_address = '/Users/cookie/dev/m_loudener/audio_files/_train_test_dataset/Validation_Set/'
+    model_address = '/Users/cookie/dev/instrument_classifier/model_results/m_loudener/multi_class_models/lr_7e-05_epochs_180_20240330-023211/'
+    validation(folder_address, model_address)

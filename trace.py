@@ -26,3 +26,22 @@ def trace_the_model(model_folder):
     traced_script_module = torch.jit.trace(model, example)
     traced_script_module.save(model_folder + '/' + 'm_loudener_' + file + '.pt')
 
+
+
+    # Save to onnx
+    torch_model = model
+    torch_input = example
+    onnx_program = torch.onnx.dynamo_export(torch_model, torch_input)
+
+    onnx_program.save(model_folder + '/' + 'm_loudener_' + file + '.onnx')
+
+
+    import onnx
+    onnx_model = onnx.load(model_folder + '/' + 'm_loudener_' + file + '.onnx')
+    onnx.checker.check_model(onnx_model)
+
+
+
+
+
+trace_the_model('/Users/cookie/dev/instrument_classifier/model_results/m_loudener/lr_2e-06_epochs_2_20240409-232144')
