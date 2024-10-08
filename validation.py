@@ -464,5 +464,5 @@ if __name__ == "__main__":
 
 
     folder_address = '/Users/cookie/dev/m_loudener/audio_files/_train_test_dataset/Validation_Set/'
-    model_address = '/Users/cookie/dev/instrument_classifier/model_results/m_loudener/multi_class_models/lr_7e-05_epochs_180_20240330-023211/'
+    model_address = '/Users/cookie/Desktop/Release_Models/lr_2e-06_epochs_280_20240327-181755/'
     validation(folder_address, model_address)

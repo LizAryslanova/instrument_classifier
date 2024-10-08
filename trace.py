@@ -31,12 +31,14 @@ def trace_the_model(model_folder):
     # Save to onnx
     torch_model = model
     torch_input = example
+
+    import onnx
     onnx_program = torch.onnx.dynamo_export(torch_model, torch_input)
 
     onnx_program.save(model_folder + '/' + 'm_loudener_' + file + '.onnx')
 
 
-    import onnx
+
     onnx_model = onnx.load(model_folder + '/' + 'm_loudener_' + file + '.onnx')
     onnx.checker.check_model(onnx_model)
 
@@ -44,4 +46,4 @@ def trace_the_model(model_folder):
 
 
 
-trace_the_model('/Users/cookie/dev/instrument_classifier/model_results/m_loudener/lr_2e-06_epochs_2_20240409-232144')
+trace_the_model('/Users/cookie/Desktop/Release_Models/lr_2e-06_epochs_280_20240327-181755')

@@ -37,9 +37,9 @@ preprocessing:
   librosa_trim_db: 15
   mel_power: 1.0
   mel_size: 512
-  number_of_files_per_class_train: 900
+  number_of_files_per_class_train: 100
   number_of_files_test: 1300
-  number_of_files_train: 11095
+  number_of_files_train: 1300
   number_of_shifted_spectrograms: 1
   sample_rate: 16000
   stft_center: false
